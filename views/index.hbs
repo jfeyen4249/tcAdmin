@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Desktop Menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-200">
+    <!-- Windows Desktop Menu -->
+    <div class="bg-blue-600 p-4 shadow-md">
+        <div class="container mx-auto">
+            <ul class="flex space-x-4 text-white">
+                <li class="relative">
+                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('fileSubMenu')">Dashboard</button>
+                    <!-- Submenu -->
+                    <ul id="fileSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2 w-15">
+                        <li class="px-4 py-2 hover:bg-blue-700 ">Status</li>
+                    </ul>
+                </li>
+                <li class="relative">
+                    <button class="py-2 px-8 hover:bg-blue-700" onclick="toggleSubMenu('editSubMenu')">Configuations</button>
+                    <!-- Submenu -->
+                    <ul id="editSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
+                        <li class="px-4 py-2 hover:bg-blue-700">AP's</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Firewall</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Switches</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Servers</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Smartboards</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Printers</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Phones</li>
+                       
+                    </ul>
+                </li>
+                <li class="relative">
+                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('viewSubMenu')">Inventory</button>
+                    <!-- Submenu -->
+                    <ul id="viewSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
+                        <li class="px-4 py-2 hover:bg-blue-700">View</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Add</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Edit</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Delete</li>
+                    </ul>
+                </li>
+                <li class="relative">
+                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('helpSubMenu')">Passwords</button>
+                    <!-- Submenu -->
+                    <ul id="helpSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
+                        <li class="px-4 py-2 hover:bg-blue-700">View</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Add</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Edit</li>
+                    </ul>
+                </li>
+
+                <li class="relative">
+                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('chromeSubMenu')">Chromebook Repair</button>
+                    <!-- Submenu -->
+                    <ul id="chromeSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
+                        <li class="px-4 py-2 hover:bg-blue-700">Add an RMA</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Status of Repairs</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Chromebook History</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Status of Repairs</li>
+                    </ul>
+                </li>
+
+                <li class="relative ml-auto"> <!-- Add ml-auto to move the last button to the right -->
+                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('tcSubMenu')">
+                        <img src="./img/tc-logo-menu.png" class="" alt="">
+                    </button>
+                    <!-- Submenu -->
+                    <ul id="tcSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
+                        <li class="px-4 py-2 hover:bg-blue-700">Settings</li>
+                        <li class="px-4 py-2 hover:bg-blue-700">Logout</li>
+                    </ul>
+                </li>
+            </ul>
+
+
+        </div>
+    </div>
+
+    <!-- Page Content -->
+    <div class="container mx-auto p-8 mt-8 bg-white rounded-lg shadow-md" id="app">
+        <h1 class="text-2xl font-semibold">Welcome to your Windows Desktop Program</h1>
+        <p>Your content goes here.</p>
+    </div>
+
+    <!-- JavaScript to toggle submenus and close them on outside click -->
+    <script>
+        function toggleSubMenu(subMenuId) {
+            const submenu = document.getElementById(subMenuId);
+            if (submenu) {
+                submenu.classList.toggle('hidden');
+            }
+
+            // Close other open submenus
+            const submenus = document.querySelectorAll('.absolute');
+            submenus.forEach(submenuItem => {
+                if (submenuItem.id !== subMenuId) {
+                    submenuItem.classList.add('hidden');
+                }
+            });
+        }
+
+        const app = document.getElementById('app')
+         app.addEventListener('click', function (event) {
+             const submenus = document.querySelectorAll('.absolute');
+            submenus.forEach(submenuItem => {
+                if (submenuItem.id !== subMenuId) {
+                    submenuItem.classList.add('hidden');
+                    
+                }
+            });
+         });
+    </script>
+</body>
+</html>

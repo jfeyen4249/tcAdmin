@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Desktop Menu</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link href="./main.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900">
+   
+
+    <!-- Page Content -->
+    <div class="container mx-auto p-8 mt-16 bg-gray-500 rounded-lg shadow-md text-center" id="app">
+        
+            <img src="./img/tc-logo.png" class="mb-8 mt-4 login-logo" alt="">
+        
+        <h1 class="text-2xl font-semibold">TC Admin Login</h1>
+        
+        <div class="mt-16 flex flex-col w-half login-boxes">
+            <input type="text" name="" id="username" placeholder="Username" class="mb16 login-box">
+            <input type="password" name="" id="password" placeholder="Password"  class="mb16 login-box">
+            <button class="login-btn" id="loginBTN">Login</button>
+
+        </div>
+    </div>
+
+    <!-- JavaScript to toggle submenus and close them on outside click -->
+    <script>
+       const loginBTN = document.getElementById('loginBTN')
+
+       loginBTN.addEventListener('click', () => {
+         window.location.href = '/inventory'
+       })
+
+
+    </script>
+</body>
+</html>

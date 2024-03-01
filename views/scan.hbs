@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Barcode Scanner</title>
+<style>
+  #video-container {
+    margin: 20px auto;
+    width: 90%;
+    max-width: 600px;
+  }
+  #barcode-result {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+<div id="video-container">
+  <video id="video" playsinline style="width: 100%;"></video>
+</div>
+<div id="barcode-result"></div>
+
+<script>
+  const video = document.getElementById('video');
+  const barcodeResult = document.getElementById('barcode-result');
+
+  // Check if the browser supports getUserMedia
+  navigator.getUserMedia = navigator.getUserMedia ||
+                           navigator.webkitGetUserMedia ||
+                           navigator.mozGetUserMedia ||
+                           navigator.msGetUserMedia ||
+                           navigator.mediaDevices.getUserMedia;
+
+  if (navigator.getUserMedia) {
+    // Request access to the camera
+    navigator.getUserMedia(
+      { video: true },
+      // Success callback
+      function(stream) {
+        video.srcObject = stream;
+        video.play();
+      },
+      // Error callback
+      function(err) {
+        console.log("The following error occurred: " + err);
+      }
+    );
+
+    // Listen for when video has loaded metadata
+    video.addEventListener('loadedmetadata', function() {
+      // Set up the barcode scanner
+      const barcodeDetector = new BarcodeDetector();
+
+      setInterval(async () => {
+        try {
+          // Detect barcodes in the video stream
+          const barcodes = await barcodeDetector.detect(video);
+          if (barcodes.length > 0) {
+            // Display the detected barcode value
+            barcodeResult.textContent = "Detected barcode: " + barcodes[0].rawValue;
+          } else {
+            barcodeResult.textContent = "No barcode detected";
+          }
+        } catch (error) {
+          console.error('Barcode detection failed:', error);
+        }
+      }, 1000); // Scan for barcodes every second
+    });
+  } else {
+    // If getUserMedia is not supported, display an error message
+    console.log('getUserMedia not supported on your browser!');
+  }
+</script>
+</body>
+</html>

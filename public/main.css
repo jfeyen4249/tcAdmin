@@ -1,0 +1,52 @@
+.login-logo
+ {
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+    height: 183px;
+    width: auto;
+ }
+
+ .login-boxes {
+    width: 300px;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%);
+ }
+
+ .login-box {
+    margin: 5px;
+    text-align: center;
+    border-radius: 10px;
+    height: 30px;
+    font-size: 24px;
+ }
+
+ .login-btn {
+    margin: 5px;
+    background-color: green;
+    color: white;
+    height: 40px;
+    border-radius: 10px;
+    border: 2px solid white;
+ }
+
+ .login-btn:hover {
+    background-color: white;
+    color: green;
+    transition: 300ms;
+ }
+
+ .menu-logo {
+    position: relative;
+    height: auto;
+    width: 100px;
+    overflow: none;
+    float: right;
+ }
+
+ .menu-bar-logo {
+    width: 100px;
+    height: auto;
+
+ }

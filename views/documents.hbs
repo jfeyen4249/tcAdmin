@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>IT Documentation</title>
+</head>
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="./img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul>
+            <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">Dashboard</a></li>
+            <li class="mb-2"><a href="/status" class="text-white hover:text-blue-400">System Status</a></li>
+            <li class="mb-2"><a href="/docs" class="text-white hover:text-blue-400">Documentation</a></li>
+            <li class="mb-2"><a href="/inventory" class="text-white hover:text-blue-400">Inventory</a></li>
+            <li class="mb-2"><a href="/passwords" class="text-white hover:text-blue-400">Passwords</a></li>
+            <li class="mb-2"><a href="/settings" class="text-white hover:text-blue-400">Settings</a></li>
+            <li class="mb-2"><a href="#" class="text-white hover:text-blue-400" onclick="alert('You have been logged out!')">Logout</a></li>
+            <!-- Add more menu items as needed -->
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+        <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 float-right mr-10 mt-8"><i class="fa-solid fa-plus"></i> Add New Documentation</button>
+        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+            <h1 class="text-2xl font-bold mb-4">IT Documentation</h1>
+
+            <!-- Documentation List -->
+            <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center">
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Network Configuration</h2>
+                    <p></p>
+                    <button  id="network" class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4" ><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Software Installation Guide</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Server Docs</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Phone System Docs</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Printers Docs</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Firewall Docs</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <div class="bg-gray-200 p-4 rounded-md">
+                    <h2 class="text-lg font-semibold mb-2">Wireless Docs</h2>
+                    <p></p>
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Documentation</button>
+                </div>
+                <!-- Add more documentation items as needed -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div id="modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+        <div class="w-1/2 mx-auto mt-20 bg-white p-8 rounded shadow-md">
+            <h2 class="text-2xl font-bold mb-4">Edit Documentation</h2>
+            <form>
+                <!-- Documentation Title -->
+                <div class="mb-4">
+                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Title</label>
+                    <input type="text" id="modal-title" name="modal-title" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+                <!-- Documentation Content -->
+                <div class="mb-6">
+                    <label for="modal-content" class="block text-gray-600 text-sm font-medium mb-2">Content</label>
+                    <textarea id="modal-content" name="modal-content" class="w-full h-32 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></textarea>
+                </div>
+                <!-- Save Button -->
+                <button type="button" onclick="closeModal()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Save Documentation</button>
+                <button type="button" onclick="closeModal()" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const neworkBTN = document.getElementById('network')
+
+        neworkBTN.addEventListener('click', () => {
+            window.location.href = `/docs/network`
+        })
+
+        function loaddocs(docType) {
+
+            alert(` ${docType} was clicked`)
+             window.location.href =`/docs/${docType}`
+        }
+        
+        
+    </script>
+
+</body>
+</html>
