@@ -226,6 +226,17 @@ app.post("/login", async (req, res) => {
   );
 });
 
+app.get("/logout", validateSession,  (req, res) => {
+  const username = req.cookies.username;
+  connection.query(
+    `UPDATE users SET session = '' WHERE username = ?`,
+    [username],
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send('logged out')
+    }
+  );
+});
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
