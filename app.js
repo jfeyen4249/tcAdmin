@@ -5,7 +5,7 @@ const path = require("path"); // Import path module
 const fs = require("fs"); // Import fs module
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
-
+const { v4: uuidv4 } = require("uuid");
 dotenv.config({ path: "./.env" });
 
 const crypto = require("crypto");
@@ -57,12 +57,13 @@ app.use(express.static(path.join(__dirname, "./public")));
 
 function validateSession(req, res, next) {
   const sessionID = req.cookies.session_id;
+  const username = req.cookies.username;
 
   if (sessionID) {
     // Check if the session ID exists in the user table
-    db.query(
-      "SELECT * FROM session WHERE session_id = ? AND status = ?",
-      [sessionID, "Active"],
+    connection.query(
+      "SELECT * FROM users WHERE session = ? AND username = ?",
+      [sessionID, username],
       (err, results) => {
         if (err) {
           console.error(err);
@@ -88,7 +89,7 @@ app.get("/", (req, res) => {
   res.render("login");
 });
 
-app.get("/passwords", (req, res) => {
+app.get("/passwords", validateSession, (req, res) => {
   res.render("passwords");
 });
 
@@ -96,29 +97,25 @@ app.get("/server", (req, res) => {
   res.render("server");
 });
 
-app.get("/docs", (req, res) => {
-  res.render("documents");
-});
-
-app.get("/docs/:page", (req, res) => {
+app.get("/docs/:page",  validateSession, (req, res) => {
   let page = req.params.page;
   console.log(page);
   res.render("docs");
 });
 
-app.get("/inventory", (req, res) => {
+app.get("/inventory", validateSession,  (req, res) => {
   res.render("inventory");
 });
 
-app.get("/inventory/wireless", (req, res) => {
+app.get("/inventory/wireless",  validateSession, (req, res) => {
   res.render("wireless");
 });
 
-app.get("/inventory/macbook", (req, res) => {
+app.get("/inventory/macbook", validateSession,  (req, res) => {
   res.render("macbook");
 });
 
-app.get("/inventory/ipad", (req, res) => {
+app.get("/inventory/ipad", validateSession,  (req, res) => {
   res.render("ipad");
 });
 
@@ -135,7 +132,7 @@ app.get("/dpass", (req, res) => {
 
 // Data API Calls
 
-app.get("/servers", (req, res) => {
+app.get("/servers", validateSession,  (req, res) => {
   connection.query(
     `SELECT * FROM server_info`,
     function (error, results, fields) {
@@ -147,11 +144,96 @@ app.get("/servers", (req, res) => {
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
+// ********************************************         User API Calls         ********************************************
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+
+app.post("/user", async (req, res) => {
+  const salt = await bcrypt.genSalt();
+  const hashedPassword = await bcrypt.hash(req.body.password, salt);
+  connection.query(
+    `SELECT username FROM users WHERE username = ?`,
+    [req.body.username],
+    (err, results) => {
+      if (err) {
+        console.error(err);
+      } else if (results.length > 0) {
+        res.send("This email is already in use!");
+      } else {
+        connection.query(
+          `INSERT INTO users SET username = ?, password = ?, name = ?, phone = ?`,
+          [req.body.username, hashedPassword, req.body.name, req.body.phone],
+          (err, results) => {
+            if (err) {
+              console.error(err);
+            } else {
+              res.send("Your account has been created and pending approval!");
+            }
+          }
+        );
+      }
+    }
+  );
+});
+
+app.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  connection.query(
+    "SELECT password FROM users WHERE username = ? AND status = ?",
+    [username, "Active"],
+    (err, results) => {
+      console.log(results);
+
+      bcrypt.compare(password, results[0].password, function (err, isMatch) {
+        if (err) {
+          throw err;
+        } else if (!isMatch) {
+          res.send("Incorrect username or password!");
+          // console.log("fail")
+        } else {
+          const sessionID = uuidv4();
+          connection.query(
+            "UPDATE users SET session = ? WHERE username = ?",
+            [sessionID, username],
+            (err) => {
+              if (err) {
+                console.error(err);
+              } else {
+                const currentDate = new Date();
+                // Add one year
+                currentDate.setFullYear(currentDate.getFullYear() + 1);
+                // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
+                res.cookie("session_id", sessionID, {
+                  maxAge: currentDate,
+                  httpOnly: true,
+                  secure: false,
+                  sameSite: "strict",
+                });
+                res.cookie("username", username, {
+                  maxAge: currentDate,
+                  httpOnly: true,
+                  secure: true,
+                  sameSite: "none",
+                });
+                //console.log('Pass')
+                res.send("Pass");
+              }
+            }
+          );
+        }
+      });
+    }
+  );
+});
+
+
+// ************************************************************************************************************************
+// ************************************************************************************************************************
 // ********************************************  Password Inventory API Calls  ********************************************
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/password-list", (req, res) => {
+app.get("/password-list", validateSession,  (req, res) => {
   connection.query(
     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true'`,
     function (error, results, fields) {
@@ -161,7 +243,7 @@ app.get("/password-list", (req, res) => {
   );
 });
 
-app.post("/password-list", (req, res) => {
+app.post("/password-list", validateSession,  (req, res) => {
   connection.query(
     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
     [req.query.id],
@@ -172,7 +254,7 @@ app.post("/password-list", (req, res) => {
   );
 });
 
-app.put("/password-list", (req, res) => {
+app.put("/password-list", validateSession,  (req, res) => {
   const searchQuery = req.query.search;
   connection.query(
     `SELECT id, info, service, updated, url, username, category 
@@ -193,7 +275,7 @@ app.put("/password-list", (req, res) => {
   );
 });
 
-app.get("/password", (req, res) => {
+app.get("/password", validateSession,  (req, res) => {
   connection.query(
     `SELECT password FROM passwords WHERE view = 'true' and id = ?`,
     [req.query.id],
@@ -204,7 +286,7 @@ app.get("/password", (req, res) => {
   );
 });
 
-app.post("/password", (req, res) => {
+app.post("/password",  validateSession, (req, res) => {
   let data = {
     service: req.body.service,
     url: req.body.url,
@@ -226,7 +308,7 @@ app.post("/password", (req, res) => {
   );
 });
 
-app.post("/password-update", (req, res) => {
+app.post("/password-update",  validateSession, (req, res) => {
   connection.query(
     `SELECT password FROM passwords WHERE id = ?`,
     [req.body.id],
@@ -286,7 +368,7 @@ app.post("/password-update", (req, res) => {
   //
 });
 
-app.get("/password-cat", (req, res) => {
+app.get("/password-cat",  validateSession, (req, res) => {
   connection.query(
     `SELECT category FROM password_cat ORDER BY category ASC`,
     function (error, results, fields) {
@@ -302,7 +384,7 @@ app.get("/password-cat", (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ap", (req, res) => {
+app.get("/ap",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM ap WHERE view = 'true' ORDER By Name ASC`,
     function (error, results, fields) {
@@ -312,7 +394,7 @@ app.get("/ap", (req, res) => {
   );
 });
 
-app.put("/ap", (req, res) => {
+app.put("/ap",  validateSession, (req, res) => {
   const searchQuery = req.query.search;
   connection.query(
     `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC`,
@@ -332,7 +414,7 @@ app.put("/ap", (req, res) => {
   );
 });
 
-app.get("/apmakes", (req, res) => {
+app.get("/apmakes",  validateSession, (req, res) => {
   connection.query(
     `SELECT make FROM makes WHERE view = 'true' AND type = 'AP' GROUP BY make ORDER BY make ASC;`,
     function (error, results, fields) {
@@ -342,7 +424,7 @@ app.get("/apmakes", (req, res) => {
   );
 });
 
-app.get("/buildings", (req, res) => {
+app.get("/buildings",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM buildings WHERE view = 'true' ORDER BY name ASC;`,
     function (error, results, fields) {
@@ -352,7 +434,7 @@ app.get("/buildings", (req, res) => {
   );
 });
 
-app.get("/model", (req, res) => {
+app.get("/model",  validateSession, (req, res) => {
   connection.query(
     `SELECT model FROM makes WHERE make = ? AND view = 'true' ORDER BY make ASC;`,
     [req.query.make],
@@ -363,7 +445,7 @@ app.get("/model", (req, res) => {
   );
 });
 
-app.post("/ap", (req, res) => {
+app.post("/ap",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM ap WHERE view = 'true' AND id = ?`,
     [req.query.id],
@@ -374,7 +456,7 @@ app.post("/ap", (req, res) => {
   );
 });
 
-app.post("/ap-add", (req, res) => {
+app.post("/ap-add",  validateSession, (req, res) => {
   let data = {
     make: req.body.make,
     model: req.body.model,
@@ -397,7 +479,7 @@ app.post("/ap-add", (req, res) => {
   );
 });
 
-app.post("/ap-edit", (req, res) => {
+app.post("/ap-edit",  validateSession, (req, res) => {
   let id = req.query.id;
   let data = {
     make: req.body.make,
@@ -427,7 +509,7 @@ app.post("/ap-edit", (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/macbook", (req, res) => {
+app.get("/macbook",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM computers WHERE view = 'true' and type = 'mac'`,
     function (error, results, fields) {
@@ -443,7 +525,7 @@ app.get("/macbook", (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ipad", (req, res) => {
+app.get("/ipad",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM ipad WHERE view = 'true'`,
     function (error, results, fields) {
@@ -453,7 +535,7 @@ app.get("/ipad", (req, res) => {
   );
 });
 
-app.post("/ipad", (req, res) => {
+app.post("/ipad",  validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -479,7 +561,7 @@ app.post("/ipad", (req, res) => {
   );
 });
 
-app.put("/ipad", (req, res) => {
+app.put("/ipad",  validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -503,7 +585,7 @@ app.put("/ipad", (req, res) => {
   );
 });
 
-app.get("/ipad-model", (req, res) => {
+app.get("/ipad-model",  validateSession, (req, res) => {
   connection.query(
     `SELECT * FROM makes WHERE View = 'true' AND type = 'ipad'`,
     function (error, results, fields) {
@@ -514,7 +596,7 @@ app.get("/ipad-model", (req, res) => {
   );
 });
 
-app.get("/ipad-details", (req, res) => {
+app.get("/ipad-details",  validateSession, (req, res) => {
   console.log(req.query.id);
   connection.query(
     `SELECT * FROM ipad WHERE id = ?`,
@@ -527,7 +609,7 @@ app.get("/ipad-details", (req, res) => {
   );
 });
 
-app.get("/ipad-search", (req, res) => {
+app.get("/ipad-search",  validateSession, (req, res) => {
   const searchQuery = req.query.search;
   connection.query(
     `SELECT *
