@@ -6,6 +6,7 @@ menu.innerHTML = `
 <li class="mb-2"><a href="/docs" class="text-white hover:text-blue-400">Documentation</a></li>
 <li class="mb-2"><a href="/inventory" class="text-white hover:text-blue-400">Inventory</a></li>
 <li class="mb-2"><a href="/passwords" class="text-white hover:text-blue-400">Passwords</a></li>
+<li class="mb-2"><a href="/staff" class="text-white hover:text-blue-400">Staff Directory</a></li>
 <li class="mb-2"><a href="/settings" class="text-white hover:text-blue-400">Settings</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400" onclick="logout()">Logout</a></li>
 `

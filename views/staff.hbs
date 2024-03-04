@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 35%;
+        }
+
+        .h-70 {
+            height: 50%;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+   <script defer src=".././menu.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TC Admin - Staff</title>
+</head>
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="./img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Staff Directory</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick=""><i class="fa-solid fa-plus"></i> Add</button>
+            <input type="file" name="" id="upload" hidden>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <table class="w-full border-collapse border border-gray-800">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Name</th>
+                <th class="py-2 px-4 border">Building</th>
+                <th class="py-2 px-4 border">Room Number</th>
+            </tr>
+        </thead>
+        <tbody class="text-center" id="password-table">
+           
+        </tbody>
+    </table>
+</div>
+ 
+
+    <!-- Modal -->
+    <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
+        <div class="grid grid-cols-1 flex-grow">
+            <div class="col-span-1 bg-white p-8 rounded-l">
+                <form>
+                    <!-- Website/Service -->
+                    <div class="mb-4">
+                        <label for="modal-name" class="block text-gray-600 text-sm font-medium mb-2">Name</label>
+                        <input type="text" id="modal-name" name="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                    </div>
+                    <!-- URL -->
+                    <div class="mb-4">
+                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building</label>
+                        <input type="text" id="modal-building" name="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                    </div>
+
+                    <!-- Username/Email -->
+                    <div class="mb-4">
+                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room</label>
+                        <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                    </div>
+
+                    <div class="modal-btn mt-6">
+                    
+                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddPass() ">Add Password</button>
+                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditPass()">Save This Password</button>
+                 </div>
+
+                 <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+        </div>
+        
+    </div>
+</div>
+
+     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
+    
+    <script>
+        let staffID = 0
+        const dateString = new Date().toDateString();
+       let Name = document.getElementById('modal-name')
+       let Building = document.getElementById('modal-building')
+       let Room = document.getElementById('modal-room')
+        let importBTN = document.getElementById('import')
+
+
+        let upload = document.getElementById('upload')
+
+        importBTN.addEventListener('click', function() {
+            upload.click()
+        })
+       
+        function openModal(id, staffname, staffbuilding, staffroom) {
+            staffID = id
+            Name.value = staffname
+            Building.value = staffbuilding
+            Room.value = staffroom
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function AddStaffModal() {
+            document.getElementById('modal-add').classList.remove('hidden')
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function AddPass() {
+            let data = {
+                service : document.getElementById('modal-website').value,
+                url : document.getElementById('modal-url').value,
+                username : document.getElementById('modal-username').value,
+                password : document.getElementById('modal-password').value,
+                category : document.getElementById('network-cat').value,
+                updated : dateString,
+                view : 'True',
+                info : quill.root.innerHTML
+            }
+
+            fetch('/password',{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+  		    .then(response => response.json())
+            .then(data => {
+                    if(data.affectedRows == 1) {
+                        closeModal();
+                    } else {
+                        alert("Error: Password not added!!!");
+                    }
+                });
+        }
+
+        function EditPass() {
+           
+            let data = {
+                id : passid,
+                service : document.getElementById('modal-website').value,
+                url : document.getElementById('modal-url').value,
+                username : document.getElementById('modal-username').value,
+                password : document.getElementById('modal-password').value,
+                category : document.getElementById('network-cat').value,
+                updated : dateString,
+                view : 'True',
+                info : quill.root.innerHTML
+            }
+
+            fetch('/password-update',{
+                method: 'post',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json"},
+            })
+  		    .then(response => response.text())
+            .then(data => {
+                    alert(data);
+                    closeModal();
+                    getPasswords();
+                });
+        }
+
+        function closeModal() {
+            document.getElementById('modal-save').classList.add('hidden')
+            document.getElementById('modal-add').classList.add('hidden')
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        let getStaff = () => {
+            document.getElementById('password-table').innerHTML = '';
+            fetch('/staff-list')
+                .then(response => response.json())
+                .then(data => {
+                    {{!-- console.log(data) --}}
+                    data.forEach(obj => {
+                        let row = `
+                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.name}', '${obj.building}', '${obj.room}')">
+                                <td class="py-2 px-4 border">${obj.name}</td>
+                                <td class="py-2 px-4 border">${obj.building}</td>
+                                <td class="py-2 px-4 border">${obj.room}</td>
+                            </tr>`;
+                        document.getElementById('password-table').innerHTML += row;
+                    });
+                });
+        };
+
+        function textChanged() {
+            if(staffID !== 0) {
+                document.getElementById('modal-save').classList.remove('hidden')
+            }
+        }
+       
+        document.getElementById('modal-name').addEventListener('input', textChanged)
+        document.getElementById('modal-building').addEventListener('input', textChanged)
+        document.getElementById('modal-room').addEventListener('input', textChanged)
+
+        document.getElementById('search').addEventListener('input', function(){
+            if(document.getElementById('search').length < 1) {
+                getPasswords()
+            } else {
+                document.getElementById('password-table').innerHTML = '';
+                fetch(`/staff-search/?search=${document.getElementById('search').value}`,{method : 'get'})
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(obj => {
+                            let row = `
+                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                                    <td class="py-2 px-4 border">${obj.name}</td>
+                                    <td class="py-2 px-4 border">${obj.building}</td>
+                                    <td class="py-2 px-4 border">${obj.room}</td>
+                                </tr>`;
+                            document.getElementById('password-table').innerHTML += row;
+                        });
+                    });
+            }
+        })
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                lines.forEach(function(line) {
+                    console.log(line); 
+                    let data = {
+                        name : line.split(',')[0],  
+                        building : line.split(',')[1], 
+                        room : line.split(',')[2], 
+                       }
+
+                    fetch(`/staff-add`,{method: 'Post', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
+                        .then(response => response.json())
+                        .then(data => {
+                            getStaff()
+                        });
+                });
+            }
+            reader.readAsText(file);
+            getList(); // Assuming getList() is defined elsewhere
+        }); 
+
+        getStaff()
+    </script>
+
+</body>
+</html>

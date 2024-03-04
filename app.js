@@ -97,6 +97,10 @@ app.get("/server", (req, res) => {
   res.render("server");
 });
 
+app.get("/staff", (req, res) => {
+  res.render("staff");
+});
+
 app.get("/docs/:page",  validateSession, (req, res) => {
   let page = req.params.page;
   console.log(page);
@@ -234,6 +238,16 @@ app.get("/logout", validateSession,  (req, res) => {
     function (error, results, fields) {
       if (error) throw error;
       res.send('logged out')
+    }
+  );
+});
+
+app.get("/login-check", (req, res) => {
+  const username = req.cookies.username;
+  const sessionID = req.cookies.session_id;
+  connection.query(`SELECT * FROM users WHERE username = ? AND session = ?`, [username, sessionID],function (error, results, fields) {
+      if (error) throw error;
+      res.send('Pass')
     }
   );
 });
@@ -641,6 +655,68 @@ app.get("/ipad-search",  validateSession, (req, res) => {
     }
   );
 });
+
+
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+// ********************************************  Password Inventory API Calls  ********************************************
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+
+app.get("/staff-list", validateSession,  (req, res) => {
+  connection.query(
+    `SELECT * FROM staff WHERE view = 'true'`,
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    }
+  );
+});
+
+app.post("/staff-add",  validateSession, (req, res) => {
+  let data = {
+    name: req.body.name,
+    room: req.body.room,
+    building: req.body.building,
+    view: "true",
+  };
+  connection.query(
+    `INSERT INTO staff SET ?`,
+    [data],
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    }
+  );
+});
+
+
+
+
+
+
+
+app.get("/staff-search",  validateSession, (req, res) => {
+  const searchQuery = req.query.search;
+  connection.query(
+    `SELECT *
+                    FROM staff 
+                    WHERE view = 'true' 
+                    AND (name LIKE ? OR building LIKE ? OR room LIKE ? )`,
+    [
+      `%${searchQuery}%`,
+      `%${searchQuery}%`,
+      `%${searchQuery}%`,
+    ],
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    }
+  );
+});
+
+
+
 
 const server = app.listen(port, () => {
   console.log("listening at http://localhost");

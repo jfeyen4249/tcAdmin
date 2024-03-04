@@ -2,20 +2,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Windows Desktop Menu</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
+    <title>TC Admin - Login</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet"/>
     <link href="./main.css" rel="stylesheet" />
+    {{!-- <script>
+      fetch(`/login-check`) 
+          .then(response => response.text()) 
+          .then(data =>{
+              if(data == 'Pass') {
+                 window.location.href = '/inventory'
+              }else if(data == 'fail'){
+                return
+              }
+           });
+    </script> --}}
   </head>
   <body class="bg-gray-900">
 
     <!-- Page Content -->
     <div
-      class="container mx-auto p-8 mt-16 bg-gray-500 rounded-lg shadow-md text-center"
-      id="app"
-    >
+      class="container mx-auto p-8 mt-16 bg-gray-500 rounded-lg shadow-md text-center" id="app">
 
       <img src="./img/tc-logo.png" class="mb-8 mt-4 login-logo" alt="" />
 
@@ -62,6 +68,8 @@
               }
            });
           }
+
+      
 
     </script>
   </body>
