@@ -32,10 +32,6 @@ function decrypt(text) {
   return decrypted.toString();
 }
 
-// console.log(encrypt('xH7rRue5'))
-
-// const dateString = new Date().toDateString();
-// console.log(dateString);
 
 const app = express();
 const port = 80;
