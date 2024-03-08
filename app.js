@@ -7,6 +7,10 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 dotenv.config({ path: "./.env" });
+const speakeasy = require('speakeasy');
+const moment = require('moment');
+
+
 
 const crypto = require("crypto");
 
@@ -31,6 +35,35 @@ function decrypt(text) {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 }
+
+function generateTimeBasedCode(secret) {
+  return speakeasy.totp({
+      secret,
+      encoding: 'base32', // Make sure to specify the encoding
+  });
+}
+
+
+// Function to calculate the remaining time until the current time-based code expires
+function calculateRemainingTime(secret) {
+  const remainingSeconds = speakeasy.totp.verifyDelta({
+      secret,
+      encoding: 'ascii',
+      token: generateTimeBasedCode(secret),
+      window: 1, // Set window to 1 to ensure accuracy
+  });
+
+  // If remainingSeconds is -1, it means the current code has expired
+  // We return 0 in that case to indicate no remaining time
+  if (remainingSeconds === -1) {
+      return 0;
+  }
+
+  // Otherwise, calculate the remaining time until the next code generation
+  const timeRemaining = 30 - (moment().unix() % 30);
+  return timeRemaining;
+}
+
 
 
 const app = express();
@@ -95,6 +128,10 @@ app.get("/server", (req, res) => {
 
 app.get("/staff", (req, res) => {
   res.render("staff");
+});
+
+app.get("/time", (req, res) => {
+  res.render("time");
 });
 
 app.get("/docs/:page",  validateSession, (req, res) => {
@@ -248,6 +285,9 @@ app.get("/login-check", (req, res) => {
   );
 });
 
+
+
+
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 // ********************************************  Password Inventory API Calls  ********************************************
@@ -313,6 +353,7 @@ app.post("/password",  validateSession, (req, res) => {
     url: req.body.url,
     username: req.body.username,
     password: encrypt(req.body.password),
+    otp : req.body.otp.replace(/\s/g, ""),
     category: req.body.category,
     updated: req.body.updated,
     view: "True",
@@ -398,6 +439,47 @@ app.get("/password-cat",  validateSession, (req, res) => {
     }
   );
 });
+
+app.get('/otp', (req, res) => {
+  try {
+    connection.query(
+      `SELECT otp FROM passwords WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+        if (error) {
+          console.error("Error retrieving OTP from the database:", error);
+          return res.status(500).send("Error retrieving OTP from the database");
+        }
+
+        if(results[0].otp == "none") {
+          const data = {
+            code: "none",
+            remainingTime: 'none'
+          };
+          console.log(data)
+          res.json(data)
+        } else {
+          if (results.length === 0) {
+            console.error("No OTP found for the provided ID:", req.query.id);
+            return res.status(404).send("OTP not found");
+          }
+          const secret = results[0].otp;
+          const timeBasedCode = generateTimeBasedCode(secret);
+          const remainingTime = calculateRemainingTime(secret);
+          const data = {
+            code: timeBasedCode,
+            remainingTime: remainingTime
+          };
+          res.json(data);
+        }
+      }
+    );
+  } catch (error) {
+    
+  }
+});
+
+
+
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
