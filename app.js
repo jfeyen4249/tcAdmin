@@ -296,7 +296,7 @@ app.get("/login-check", (req, res) => {
 
 app.get("/password-list", validateSession,  (req, res) => {
   connection.query(
-    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true'`,
+    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
     function (error, results, fields) {
       if (error) throw error;
       res.send(results);
