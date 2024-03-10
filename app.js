@@ -106,7 +106,7 @@ function validateSession(req, res, next) {
       }
     );
   } else {
-    res.redirect("/inventory");
+    res.redirect("/");
   }
 }
 
