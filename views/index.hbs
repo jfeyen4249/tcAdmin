@@ -1,117 +1,199 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 75%;
+        }
+
+        .h-70 {
+            height: 75%;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+        .w-half {
+            width: 50%;
+        }
+
+        .h-half {
+            height: 400px;
+        }
+
+        .chart-title {
+            font-weight: 600;
+            font-size: 30px;
+            text-decoration: underline;
+            margin-bottom: 5px;
+        }
+
+        .chart-height {
+            height: 600px;
+        }
+
+        .move {
+            margin-left: -30px;
+        }
+
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <link rel="manifest" href="../fav/site.webmanifest">
+    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Windows Desktop Menu</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.15/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+   <script defer src=".././menu.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TC Admin - Dashboard</title>
 </head>
-<body class="bg-gray-200">
-    <!-- Windows Desktop Menu -->
-    <div class="bg-blue-600 p-4 shadow-md">
-        <div class="container mx-auto">
-            <ul class="flex space-x-4 text-white">
-                <li class="relative">
-                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('fileSubMenu')">Dashboard</button>
-                    <!-- Submenu -->
-                    <ul id="fileSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2 w-15">
-                        <li class="px-4 py-2 hover:bg-blue-700 ">Status</li>
-                    </ul>
-                </li>
-                <li class="relative">
-                    <button class="py-2 px-8 hover:bg-blue-700" onclick="toggleSubMenu('editSubMenu')">Configuations</button>
-                    <!-- Submenu -->
-                    <ul id="editSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
-                        <li class="px-4 py-2 hover:bg-blue-700">AP's</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Firewall</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Switches</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Servers</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Smartboards</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Printers</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Phones</li>
-                       
-                    </ul>
-                </li>
-                <li class="relative">
-                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('viewSubMenu')">Inventory</button>
-                    <!-- Submenu -->
-                    <ul id="viewSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
-                        <li class="px-4 py-2 hover:bg-blue-700">View</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Add</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Edit</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Delete</li>
-                    </ul>
-                </li>
-                <li class="relative">
-                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('helpSubMenu')">Passwords</button>
-                    <!-- Submenu -->
-                    <ul id="helpSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
-                        <li class="px-4 py-2 hover:bg-blue-700">View</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Add</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Edit</li>
-                    </ul>
-                </li>
+<body class="bg-slate-800 h-screen flex">
 
-                <li class="relative">
-                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('chromeSubMenu')">Chromebook Repair</button>
-                    <!-- Submenu -->
-                    <ul id="chromeSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
-                        <li class="px-4 py-2 hover:bg-blue-700">Add an RMA</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Status of Repairs</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Chromebook History</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Status of Repairs</li>
-                    </ul>
-                </li>
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
 
-                <li class="relative ml-auto"> <!-- Add ml-auto to move the last button to the right -->
-                    <button class="py-2 px-4 hover:bg-blue-700" onclick="toggleSubMenu('tcSubMenu')">
-                        <img src="./img/tc-logo-menu.png" class="" alt="">
-                    </button>
-                    <!-- Submenu -->
-                    <ul id="tcSubMenu" class="hidden absolute left-0 mt-8 bg-blue-600 border border-blue-700 rounded-lg py-2">
-                        <li class="px-4 py-2 hover:bg-blue-700">Settings</li>
-                        <li class="px-4 py-2 hover:bg-blue-700">Logout</li>
-                    </ul>
-                </li>
-            </ul>
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full min-h-full bg-white p-8">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
 
-
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                {{!-- <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"> --}}
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
     </div>
 
-    <!-- Page Content -->
-    <div class="container mx-auto p-8 mt-8 bg-white rounded-lg shadow-md" id="app">
-        <h1 class="text-2xl font-semibold">Welcome to your Windows Desktop Program</h1>
-        <p>Your content goes here.</p>
+    <div class="container mx-auto p-4 mt-8 bg-white min-h-full" id="app">
+        <!-- Left half -->
+        <div class="w-half h-half float-left border rounded-lg p-8 move">
+            <table class="w-full border-collapse border rounded-md border-gray-800">
+                <h1 class="text-center chart-title">Chromebook Awaiting Repair</h1>
+                <canvas id="chromebookChart1" class="w-full h-full mb-8"></canvas>
+            </table>
+        </div>
+
+        <!-- Right half -->
+        <div class="w-half h-half float-right border rounded-lg p-12">
+            <table class="w-full border-collapse border rounded-md border-gray-800">
+                <h1 class="text-center chart-title">Chromebook Out Repairs</h1>
+                <canvas id="chromebookChart2" class="w-full h-full mb-8"></canvas>
+            </table>
+        </div>
+        <div class="clearfix"></div> <!-- Add clearfix to clear floats -->
     </div>
+ 
 
     <!-- JavaScript to toggle submenus and close them on outside click -->
     <script>
-        function toggleSubMenu(subMenuId) {
-            const submenu = document.getElementById(subMenuId);
-            if (submenu) {
-                submenu.classList.toggle('hidden');
-            }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Fetch data for Chromebook repairs
+            const awaitingPickupCount = 10; // Replace with actual data fetching
+            const outForRepairCount = 5; // Replace with actual data fetching
 
-            // Close other open submenus
-            const submenus = document.querySelectorAll('.absolute');
-            submenus.forEach(submenuItem => {
-                if (submenuItem.id !== subMenuId) {
-                    submenuItem.classList.add('hidden');
+            // Create doughnut chart
+            var ctx1 = document.getElementById('chromebookChart1').getContext('2d');
+            var chromebookChart1 = new Chart(ctx1, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
+                    datasets: [{
+                        label: 'Chromebook Repairs',
+                        data: ['5', '1', '4', '14', '5'],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)', 
+                            'rgba(54, 162, 235, 0.5)', 
+                            'rgb(60, 179, 113)',
+                            'rgb(255, 165, 0)',
+                            'rgb(238, 130, 238)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgb(60, 179, 113)',
+                            'rgb(255, 165, 0)',
+                            'rgb(238, 130, 238)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
             });
-        }
 
-        const app = document.getElementById('app')
-         app.addEventListener('click', function (event) {
-             const submenus = document.querySelectorAll('.absolute');
-            submenus.forEach(submenuItem => {
-                if (submenuItem.id !== subMenuId) {
-                    submenuItem.classList.add('hidden');
-                    
+            // Create second doughnut chart
+            var ctx2 = document.getElementById('chromebookChart2').getContext('2d');
+            var chromebookChart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
+                    datasets: [{
+                        label: 'Chromebook Repairs',
+                        data: ['3', '7', '2', '9', '4'],
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.5)', 
+                            'rgba(54, 162, 235, 0.5)', 
+                            'rgb(60, 179, 113)',
+                            'rgb(255, 165, 0)',
+                            'rgb(238, 130, 238)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgb(60, 179, 113)',
+                            'rgb(255, 165, 0)',
+                            'rgb(238, 130, 238)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
                 }
             });
-         });
+        });
+
+        
     </script>
 </body>
 </html>

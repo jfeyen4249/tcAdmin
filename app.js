@@ -96,17 +96,17 @@ function validateSession(req, res, next) {
       (err, results) => {
         if (err) {
           console.error(err);
-          res.redirect("/");
+          res.redirect("/login");
         } else if (results.length === 1) {
           // If the session is valid, continue to the next middleware or route handler
           next();
         } else {
-          res.redirect("/");
+          res.redirect("/login");
         }
       }
     );
   } else {
-    res.redirect("/");
+    res.redirect("/inventory");
   }
 }
 
@@ -114,7 +114,11 @@ app.get("/scan", (req, res) => {
   res.render("scan");
 });
 
-app.get("/", (req, res) => {
+app.get("/",validateSession, (req, res) => {
+  res.render("index");
+});
+
+app.get("/login", (req, res) => {
   res.render("login");
 });
 
@@ -477,9 +481,6 @@ app.get('/otp', (req, res) => {
     
   }
 });
-
-
-
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
