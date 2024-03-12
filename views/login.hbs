@@ -55,7 +55,7 @@
       
       function login() { 
         let data = {username : user.value, password : pass.value} 
-        fetch(`/login`,{
+        fetch(`/connection/login`,{
           method:'Post', 
           body : JSON.stringify(data), 
           headers: { "Content-Type": "application/json"},}) 
