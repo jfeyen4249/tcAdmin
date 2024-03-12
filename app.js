@@ -10,12 +10,14 @@ dotenv.config({ path: "./.env" });
 const speakeasy = require('speakeasy');
 const moment = require('moment');
 
+
 //Routes
 //const user = require('./routes/user.js');
 const servers = require('./routes/servers.js');
 const inventory = require('./routes/inventory.js');
 const serverConnection = require('./routes/connection.js');
 //End of Routes
+
 
 const crypto = require("crypto");
 
@@ -39,6 +41,35 @@ function decrypt(text) {
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
+}
+
+
+function generateTimeBasedCode(secret) {
+  return speakeasy.totp({
+      secret,
+      encoding: 'base32', // Make sure to specify the encoding
+  });
+}
+
+
+// Function to calculate the remaining time until the current time-based code expires
+function calculateRemainingTime(secret) {
+  const remainingSeconds = speakeasy.totp.verifyDelta({
+      secret,
+      encoding: 'ascii',
+      token: generateTimeBasedCode(secret),
+      window: 1, // Set window to 1 to ensure accuracy
+  });
+
+  // If remainingSeconds is -1, it means the current code has expired
+  // We return 0 in that case to indicate no remaining time
+  if (remainingSeconds === -1) {
+      return 0;
+  }
+
+  // Otherwise, calculate the remaining time until the next code generation
+  const timeRemaining = 30 - (moment().unix() % 30);
+  return timeRemaining;
 }
 
 const app = express();
@@ -71,12 +102,12 @@ function validateSession(req, res, next) {
       (err, results) => {
         if (err) {
           console.error(err);
-          res.redirect("/");
+          res.redirect("/login");
         } else if (results.length === 1) {
           // If the session is valid, continue to the next middleware or route handler
           next();
         } else {
-          res.redirect("/");
+          res.redirect("/login");
         }
       }
     );
@@ -85,11 +116,21 @@ function validateSession(req, res, next) {
   }
 }
 
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+// ********************************************         Page Rendering         ********************************************
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+
 app.get("/scan", (req, res) => {
   res.render("scan");
 });
 
-app.get("/", (req, res) => {
+app.get("/",validateSession, (req, res) => {
+  res.render("index");
+});
+
+app.get("/login", (req, res) => {
   res.render("login");
 });
 
@@ -105,6 +146,14 @@ app.get("/staff", (req, res) => {
   res.render("staff");
 });
 
+app.get("/time", (req, res) => {
+  res.render("time");
+});
+
+app.get("/docs", (req, res) => {
+  res.render("docs");
+});
+
 app.get("/docs/:page",  validateSession, (req, res) => {
   let page = req.params.page;
   console.log(page);
@@ -113,16 +162,16 @@ app.get("/docs/:page",  validateSession, (req, res) => {
 
 app.use("/inventory", validateSession, inventory);
 
-app.get("/epass", (req, res) => {
-  let newpassword = encrypt(req.query.password);
-  res.send(newpassword.toString());
-});
+// app.get("/epass", (req, res) => {
+//   let newpassword = encrypt(req.query.password);
+//   res.send(newpassword.toString());
+// });
 
-app.get("/dpass", (req, res) => {
-  console.log(req.body.password);
-  let newpassword = decrypt(req.body.password);
-  res.send(newpassword);
-});
+// app.get("/dpass", (req, res) => {
+//   console.log(req.body.password);
+//   let newpassword = decrypt(req.body.password);
+//   res.send(newpassword);
+// });
 
 // Data API Calls
 
@@ -208,6 +257,9 @@ app.use("/connection", serverConnection);
 //   );
 // });
 
+
+
+
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 // ********************************************  Password Inventory API Calls  ********************************************
@@ -216,7 +268,7 @@ app.use("/connection", serverConnection);
 
 app.get("/password-list", validateSession,  (req, res) => {
   connection.query(
-    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true'`,
+    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
     function (error, results, fields) {
       if (error) throw error;
       res.send(results);
@@ -273,6 +325,7 @@ app.post("/password",  validateSession, (req, res) => {
     url: req.body.url,
     username: req.body.username,
     password: encrypt(req.body.password),
+    otp : req.body.otp.replace(/\s/g, ""),
     category: req.body.category,
     updated: req.body.updated,
     view: "True",
@@ -356,6 +409,44 @@ app.post("/password-update",  validateSession, (req, res) => {
 //     }
 //   );
 // });
+
+app.get('/otp', (req, res) => {
+  try {
+    connection.query(
+      `SELECT otp FROM passwords WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+        if (error) {
+          console.error("Error retrieving OTP from the database:", error);
+          return res.status(500).send("Error retrieving OTP from the database");
+        }
+
+        if(results[0].otp == "none") {
+          const data = {
+            code: "none",
+            remainingTime: 'none'
+          };
+          console.log(data)
+          res.json(data)
+        } else {
+          if (results.length === 0) {
+            console.error("No OTP found for the provided ID:", req.query.id);
+            return res.status(404).send("OTP not found");
+          }
+          const secret = results[0].otp;
+          const timeBasedCode = generateTimeBasedCode(secret);
+          const remainingTime = calculateRemainingTime(secret);
+          const data = {
+            code: timeBasedCode,
+            remainingTime: remainingTime
+          };
+          res.json(data);
+        }
+      }
+    );
+  } catch (error) {
+    
+  }
+});
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
