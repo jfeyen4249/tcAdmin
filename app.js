@@ -11,6 +11,13 @@ const speakeasy = require('speakeasy');
 const moment = require('moment');
 
 
+//Routes
+//const user = require('./routes/user.js');
+const servers = require('./routes/servers.js');
+const inventory = require('./routes/inventory.js');
+const serverConnection = require('./routes/connection.js');
+//End of Routes
+
 
 const crypto = require("crypto");
 
@@ -35,6 +42,7 @@ function decrypt(text) {
   decrypted = Buffer.concat([decrypted, decipher.final()]);
   return decrypted.toString();
 }
+
 
 function generateTimeBasedCode(secret) {
   return speakeasy.totp({
@@ -63,8 +71,6 @@ function calculateRemainingTime(secret) {
   const timeRemaining = 30 - (moment().unix() % 30);
   return timeRemaining;
 }
-
-
 
 const app = express();
 const port = 80;
@@ -154,21 +160,7 @@ app.get("/docs/:page",  validateSession, (req, res) => {
   res.render("docs");
 });
 
-app.get("/inventory", validateSession,  (req, res) => {
-  res.render("inventory");
-});
-
-app.get("/inventory/wireless",  validateSession, (req, res) => {
-  res.render("wireless");
-});
-
-app.get("/inventory/macbook", validateSession,  (req, res) => {
-  res.render("macbook");
-});
-
-app.get("/inventory/ipad", validateSession,  (req, res) => {
-  res.render("ipad");
-});
+app.use("/inventory", validateSession, inventory);
 
 // app.get("/epass", (req, res) => {
 //   let newpassword = encrypt(req.query.password);
@@ -183,15 +175,7 @@ app.get("/inventory/ipad", validateSession,  (req, res) => {
 
 // Data API Calls
 
-app.get("/servers", validateSession,  (req, res) => {
-  connection.query(
-    `SELECT * FROM server_info`,
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
+app.use("/servers", validateSession, servers);
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
@@ -199,105 +183,79 @@ app.get("/servers", validateSession,  (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.post("/user", async (req, res) => {
-  const salt = await bcrypt.genSalt();
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-  connection.query(
-    `SELECT username FROM users WHERE username = ?`,
-    [req.body.username],
-    (err, results) => {
-      if (err) {
-        console.error(err);
-      } else if (results.length > 0) {
-        res.send("This email is already in use!");
-      } else {
-        connection.query(
-          `INSERT INTO users SET username = ?, password = ?, name = ?, phone = ?`,
-          [req.body.username, hashedPassword, req.body.name, req.body.phone],
-          (err, results) => {
-            if (err) {
-              console.error(err);
-            } else {
-              res.send("Your account has been created and pending approval!");
-            }
-          }
-        );
-      }
-    }
-  );
-});
+app.use("/connection", serverConnection);
 
-app.post("/login", async (req, res) => {
-  const { username, password } = req.body;
-  connection.query(
-    "SELECT password FROM users WHERE username = ? AND status = ?",
-    [username, "Active"],
-    (err, results) => {
-      console.log(results);
+// app.post("/login", async (req, res) => {
+//   const { username, password } = req.body;
+//   connection.query(
+//     "SELECT password FROM users WHERE username = ? AND status = ?",
+//     [username, "Active"],
+//     (err, results) => {
+//       console.log(results);
 
-      bcrypt.compare(password, results[0].password, function (err, isMatch) {
-        if (err) {
-          throw err;
-        } else if (!isMatch) {
-          res.send("Incorrect username or password!");
-          // console.log("fail")
-        } else {
-          const sessionID = uuidv4();
-          connection.query(
-            "UPDATE users SET session = ? WHERE username = ?",
-            [sessionID, username],
-            (err) => {
-              if (err) {
-                console.error(err);
-              } else {
-                const currentDate = new Date();
-                // Add one year
-                currentDate.setFullYear(currentDate.getFullYear() + 1);
-                // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
-                res.cookie("session_id", sessionID, {
-                  maxAge: currentDate,
-                  httpOnly: true,
-                  secure: false,
-                  sameSite: "strict",
-                });
-                res.cookie("username", username, {
-                  maxAge: currentDate,
-                  httpOnly: true,
-                  secure: true,
-                  sameSite: "none",
-                });
-                //console.log('Pass')
-                res.send("Pass");
-              }
-            }
-          );
-        }
-      });
-    }
-  );
-});
+//       bcrypt.compare(password, results[0].password, function (err, isMatch) {
+//         if (err) {
+//           throw err;
+//         } else if (!isMatch) {
+//           res.send("Incorrect username or password!");
+//           // console.log("fail")
+//         } else {
+//           const sessionID = uuidv4();
+//           connection.query(
+//             "UPDATE users SET session = ? WHERE username = ?",
+//             [sessionID, username],
+//             (err) => {
+//               if (err) {
+//                 console.error(err);
+//               } else {
+//                 const currentDate = new Date();
+//                 // Add one year
+//                 currentDate.setFullYear(currentDate.getFullYear() + 1);
+//                 // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
+//                 res.cookie("session_id", sessionID, {
+//                   maxAge: currentDate,
+//                   httpOnly: true,
+//                   secure: false,
+//                   sameSite: "strict",
+//                 });
+//                 res.cookie("username", username, {
+//                   maxAge: currentDate,
+//                   httpOnly: true,
+//                   secure: true,
+//                   sameSite: "none",
+//                 });
+//                 //console.log('Pass')
+//                 res.send("Pass");
+//               }
+//             }
+//           );
+//         }
+//       });
+//     }
+//   );
+// });
 
-app.get("/logout", validateSession,  (req, res) => {
-  const username = req.cookies.username;
-  connection.query(
-    `UPDATE users SET session = '' WHERE username = ?`,
-    [username],
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send('logged out')
-    }
-  );
-});
+// app.get("/logout", validateSession,  (req, res) => {
+//   const username = req.cookies.username;
+//   connection.query(
+//     `UPDATE users SET session = '' WHERE username = ?`,
+//     [username],
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       res.send('logged out')
+//     }
+//   );
+// });
 
-app.get("/login-check", (req, res) => {
-  const username = req.cookies.username;
-  const sessionID = req.cookies.session_id;
-  connection.query(`SELECT * FROM users WHERE username = ? AND session = ?`, [username, sessionID],function (error, results, fields) {
-      if (error) throw error;
-      res.send('Pass')
-    }
-  );
-});
+// app.get("/login-check", (req, res) => {
+//   const username = req.cookies.username;
+//   const sessionID = req.cookies.session_id;
+//   connection.query(`SELECT * FROM users WHERE username = ? AND session = ?`, [username, sessionID],function (error, results, fields) {
+//       if (error) throw error;
+//       res.send('Pass')
+//     }
+//   );
+// });
 
 
 
@@ -440,19 +398,17 @@ app.post("/password-update",  validateSession, (req, res) => {
       }
     }
   );
-
-  //
 });
 
-app.get("/password-cat",  validateSession, (req, res) => {
-  connection.query(
-    `SELECT category FROM password_cat ORDER BY category ASC`,
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
+// app.get("/password-cat",  validateSession, (req, res) => {
+//   connection.query(
+//     `SELECT category FROM password_cat ORDER BY category ASC`,
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       res.send(results);
+//     }
+//   );
+// });
 
 app.get('/otp', (req, res) => {
   try {

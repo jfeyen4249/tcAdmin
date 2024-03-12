@@ -315,7 +315,7 @@
                 getPasswords()
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/password-list/?search=${document.getElementById('search').value}`,{method : 'put'})
+                fetch(`/inventory/password-list/?search=${document.getElementById('search').value}`,{method : 'put'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(obj => {
