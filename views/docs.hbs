@@ -1,12 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <style>
+        .selected {
+            background-color: darkgrey;
+        }
+
+        .btn {
+            margin-left: -35px;
+        }
+    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src=".././menu.js"></script>
-    <title>Password Manager</title>
+    <title>Docmentation</title>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -19,91 +29,64 @@
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 p-8">
-        <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 float-right mr-10 mt-8"><i class="fa-solid fa-plus"></i> Add New Password</button>
-        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
-            <h1 class="text-2xl font-bold mb-4">Password Manager Passwords</h1>
-
-            <!-- Table -->
-            <table class="w-full border-collapse border border-gray-800">
-                <thead>
-                    <tr class="bg-gray-800 text-white">
-                        <th class="py-2 px-4 border">Service</th>
-                        <th class="py-2 px-4 border">URL</th>
-                        <th class="py-2 px-4 border">Username</th>
-                        <th class="py-2 px-4 border">Category</th>
-                        <th class="py-2 px-4 border">Last Updated</th>
-                    </tr>
-                </thead>
-                <tbody class="text-center">
-                    <tr class="hover:bg-blue-400" onclick="openModal('Cisco Switch', 'root', '', '2024-02-05', 1)">
-                        <td class="py-2 px-4 border">Cisco Switch</td>
-                        <td class="py-2 px-4 border"><a href="" target="_blank"></a></td>
-                        <td class="py-2 px-4 border">root</td>
-                        <td class="py-2 px-4 border">Networking</td>
-                        <td class="py-2 px-4 border">Jan 20, 2017</td>
-                    </tr>
-
-                    
-                    <!-- Add more rows as needed -->
-                </tbody>
-            </table>
+    
+            
+<div class="flex-1 p-8">
+    <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-bold">IT Documentation</h1>
+            <div class="flex items-center">
+                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4"><i class="fa-solid fa-plus"></i> New Doc</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md ml-4"><i class="fa-solid fa-trash"></i> Delete Doc</button>
+                <button class="bg-yellow-500 text-white px-4 py-2 rounded-md ml-4"><i class="fa-regular fa-pen-to-square"></i> Edit Doc</button>
+            </div>
         </div>
+
+        <!-- Table -->
+        <table class="w-full border-collapse border border-gray-800" id="docs-table">
+            <thead>
+                <tr class="bg-gray-800 text-white">
+                    <th class="py-2 px-4 border">Document</th>
+                    <th class="py-2 px-4 border">Category</th>
+                    <th class="py-2 px-4 border">Last Updated</th>
+                </tr>
+            </thead>
+            <tbody class="text-center">
+                <tr class="" onclick="docSelect('1')"  ondblclick="openModal('Cisco Switch', 'root', '', '2024-02-05', 1)">
+                    <td class="py-2 px-4 border">Cisco Switch</td>
+                    <td class="py-2 px-4 border">Networking</td>
+                    <td class="py-2 px-4 border">Jan 20, 2017</td>
+                </tr>
+                <tr class="" onclick="docSelect('2')"   ondblclick="openModal('Cisco Switch', 'root', '', '2024-02-05', 1)">
+                    <td class="py-2 px-4 border">Informacast </td>
+                    <td class="py-2 px-4 border">Networking</td>
+                    <td class="py-2 px-4 border">Jan 20, 2017</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
     </div>
+</div>
 
-    <!-- Modal -->
-    <div id="modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="w-1/2 mx-auto mt-20 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4">Edit Password</h2>
-            <form>
-                <!-- Website/Service -->
-                <div class="mb-4">
-                    <label for="modal-website" class="block text-gray-600 text-sm font-medium mb-2">Website/Service</label>
-                    <input type="text" id="modal-website" name="modal-website" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
-                <!-- URL -->
-                <div class="mb-4">
-                    <label for="modal-url" class="block text-gray-600 text-sm font-medium mb-2">URL</label>
-                    <input type="text" id="modal-url" name="modal-url" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
-
-                <!-- Username/Email -->
-                <div class="mb-4">
-                    <label for="modal-username" class="block text-gray-600 text-sm font-medium mb-2">Username/Email</label>
-                    <input type="text" id="modal-username" name="modal-username" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
-
-                <!-- Password -->
-                <div class="mb-4">
-                    <label for="modal-password" class="block text-gray-600 text-sm font-medium mb-2">Password</label>
-                    <div class="relative">
-                        <input type="password" id="modal-password" name="modal-password" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                        <button type="button" class="absolute top-1/2 right-2 transform -translate-y-1/2" onclick="togglePasswordVisibility(event)">
-                            <i id="modal-eye-icon" class="fas fa-eye"></i>
-                        </button>
-                        <button type="button" class="absolute top-1/2 right-8 transform -translate-y-1/2" onclick="copyToClipboard(event)">
-                            <i class="far fa-copy"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Last Updated -->
-                <div class="mb-6">
-                    <label for="modal-last-updated" class="block text-gray-600 text-sm font-medium mb-2">Last Updated</label>
-                    <input type="text" id="modal-last-updated" name="modal-last-updated" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
-
-                <!-- Save Button -->
-                <button type="button" onclick="closeModal()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Save Password</button>
-                <button type="button" onclick="closeModal()" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-            </form>
-        </div>
+<!-- Modal -->
+<div id="modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" ondblclick="event.stopPropagation()">
+    <div class="w-1/2 mx-auto mt-20 bg-white p-8 rounded shadow-md">
+        <h2 class="text-2xl font-bold mb-4">Edit Password</h2>
+        <form>
+            <!-- Form fields -->
+        </form>
     </div>
+</div>
+
 
     <script>
+        var table = document.getElementById("docs-table");
+        var rows = table.getElementsByTagName("tr");
+
 
         const password = ['P@$$word1', 'password2.!', 'PaSSword3$!@', 'password4', 'PASSWORD5!']
-        let passID = ''
+        let docID = ''
         function openModal(website, username, url, lastUpdated, id) {
             document.getElementById('modal-website').value = website;
             document.getElementById('modal-username').value = username;
@@ -111,6 +94,11 @@
             document.getElementById('modal-last-updated').value = lastUpdated;
             passID = id
             document.getElementById('modal').style.display = 'block';
+            
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].classList.remove("bg-blue-500");
+            }
+            
         }
 
         function closeModal() {
@@ -124,44 +112,34 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        function togglePasswordVisibility(event) {
-            event.stopPropagation();
-            var passwordInput = document.getElementById('modal-password');
-            var eyeIcon = document.getElementById('modal-eye-icon');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.classList.remove('fas', 'fa-eye');
-                eyeIcon.classList.add('fas', 'fa-eye-slash');
-                passwordInput.value = password[passID - 1]
-                clearPassword()
-            } else {
-                passwordInput.type = 'password';
-                eyeIcon.classList.remove('fas', 'fa-eye-slash');
-                eyeIcon.classList.add('fas', 'fa-eye');
+        document.addEventListener("DOMContentLoaded", function() {
+        var table = document.getElementById("docs-table");
+        var rows = table.getElementsByTagName("tr");
+
+        // Function to remove the 'selected' class from all rows
+        function clearSelection() {
+            for (var i = 0; i < rows.length; i++) {
+                rows[i].classList.remove("bg-blue-500");
             }
         }
 
-        function copyToClipboard(event) {
-            event.stopPropagation();
-            var passwordInput = document.getElementById('modal-password');
-            passwordInput.select();
-            document.execCommand('copy');
-        } 
-
-        function clearPassword() {
-            setTimeout(() => {
-                var passwordInput = document.getElementById('modal-password');
-                var eyeIcon = document.getElementById('modal-eye-icon');
-                    passwordInput.type = 'password';
-                    eyeIcon.classList.remove('fas', 'fa-eye-slash');
-                    eyeIcon.classList.add('fas', 'fa-eye');
-                }, 5000);
+        // Add click event listener to table rows
+        for (var i = 0; i < rows.length; i++) {
+            rows[i].addEventListener("click", function() {
+                // Clear previous selections
+                clearSelection();
+                // Add 'selected' class to the clicked row
+                this.classList.add("bg-blue-500");
+            });
+        }
+    });
+        
+        function docSelect(id) {
+            docID = id
+            alert(docID)
         }
 
-        function openLink(event, url) {
-            event.stopPropagation();
-            window.open(url, '_blank');
-        }
+       
     </script>
 
 </body>

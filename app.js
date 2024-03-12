@@ -110,6 +110,12 @@ function validateSession(req, res, next) {
   }
 }
 
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+// ********************************************         Page Rendering         ********************************************
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+
 app.get("/scan", (req, res) => {
   res.render("scan");
 });
@@ -138,6 +144,10 @@ app.get("/time", (req, res) => {
   res.render("time");
 });
 
+app.get("/docs", (req, res) => {
+  res.render("docs");
+});
+
 app.get("/docs/:page",  validateSession, (req, res) => {
   let page = req.params.page;
   console.log(page);
@@ -160,16 +170,16 @@ app.get("/inventory/ipad", validateSession,  (req, res) => {
   res.render("ipad");
 });
 
-app.get("/epass", (req, res) => {
-  let newpassword = encrypt(req.query.password);
-  res.send(newpassword.toString());
-});
+// app.get("/epass", (req, res) => {
+//   let newpassword = encrypt(req.query.password);
+//   res.send(newpassword.toString());
+// });
 
-app.get("/dpass", (req, res) => {
-  console.log(req.body.password);
-  let newpassword = decrypt(req.body.password);
-  res.send(newpassword);
-});
+// app.get("/dpass", (req, res) => {
+//   console.log(req.body.password);
+//   let newpassword = decrypt(req.body.password);
+//   res.send(newpassword);
+// });
 
 // Data API Calls
 
