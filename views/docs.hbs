@@ -202,7 +202,7 @@
                 });
         }
 
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("click", function() {
             // Function to remove the 'selected' class from all rows
             function clearSelection() {
                 for (var i = 0; i < rows.length; i++) {
@@ -227,6 +227,8 @@
             editModalBTN.style.display = 'none'
             docTitle.value = ''
             quill.root.innerHTML = ""
+            docName = ''
+            docID = 0
         }
         
         function docSelect(id) {
@@ -348,10 +350,6 @@
                 getDocs()
             }
         }
-
-
-
-
 
        getDocs()
     </script>
