@@ -5,7 +5,7 @@ const speakeasy = require('speakeasy');
 const moment = require('moment');
 
 const database = require("./utils/database.js");
-const sessions = require("./utils/session.js");
+const session = require("./utils/session.js");
 const encryption = require("./utils/encryption.js");
 
 //Routes
@@ -63,7 +63,7 @@ app.get("/scan", (req, res) => {
   res.render("scan");
 });
 
-app.get("/", sessions.validateSession, (req, res) => {
+app.get("/", session.validateSession, (req, res) => {
   res.render("index");
 });
 
@@ -71,7 +71,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.get("/passwords", sessions.validateSession, (req, res) => {
+app.get("/passwords", session.validateSession, (req, res) => {
   res.render("passwords");
 });
 
@@ -91,13 +91,13 @@ app.get("/docs", (req, res) => {
   res.render("docs");
 });
 
-app.get("/docs/:page",  sessions.validateSession, (req, res) => {
+app.get("/docs/:page",  session.validateSession, (req, res) => {
   let page = req.params.page;
   console.log(page);
   res.render("docs");
 });
 
-app.use("/inventory", sessions.validateSession, inventory);
+app.use("/inventory", session.validateSession, inventory);
 
 // app.get("/epass", (req, res) => {
 //   let newpassword = encryption.encrypt(req.query.password);
@@ -112,7 +112,7 @@ app.use("/inventory", sessions.validateSession, inventory);
 
 // Data API Calls
 
-app.use("/servers", sessions.validateSession, servers);
+app.use("/servers", session.validateSession, servers);
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
@@ -203,7 +203,7 @@ app.use("/connection", serverConnection);
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/password-list", sessions.validateSession,  (req, res) => {
+app.get("/password-list", session.validateSession,  (req, res) => {
   database.query(
     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
     function (error, results, fields) {
@@ -213,7 +213,7 @@ app.get("/password-list", sessions.validateSession,  (req, res) => {
   );
 });
 
-app.post("/password-list", sessions.validateSession,  (req, res) => {
+app.post("/password-list", session.validateSession,  (req, res) => {
   database.query(
     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
     [req.query.id],
@@ -224,7 +224,7 @@ app.post("/password-list", sessions.validateSession,  (req, res) => {
   );
 });
 
-app.put("/password-list", sessions.validateSession,  (req, res) => {
+app.put("/password-list", session.validateSession,  (req, res) => {
   const searchQuery = req.query.search;
   database.query(
     `SELECT id, info, service, updated, url, username, category 
@@ -245,7 +245,7 @@ app.put("/password-list", sessions.validateSession,  (req, res) => {
   );
 });
 
-app.get("/password", sessions.validateSession,  (req, res) => {
+app.get("/password", session.validateSession,  (req, res) => {
   database.query(
     `SELECT password FROM passwords WHERE view = 'true' and id = ?`,
     [req.query.id],
@@ -256,7 +256,7 @@ app.get("/password", sessions.validateSession,  (req, res) => {
   );
 });
 
-app.post("/password",  sessions.validateSession, (req, res) => {
+app.post("/password",  session.validateSession, (req, res) => {
   let data = {
     service: req.body.service,
     url: req.body.url,
@@ -279,7 +279,7 @@ app.post("/password",  sessions.validateSession, (req, res) => {
   );
 });
 
-app.post("/password-update", sessions.validateSession, (req, res) => {
+app.post("/password-update", session.validateSession, (req, res) => {
   database.query(
     `SELECT password FROM passwords WHERE id = ?`,
     [req.body.id],
@@ -391,7 +391,7 @@ app.get('/otp', (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ap", sessions.validateSession, (req, res) => {
+app.get("/ap", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM ap WHERE view = 'true' ORDER By Name ASC`,
     function (error, results, fields) {
@@ -401,7 +401,7 @@ app.get("/ap", sessions.validateSession, (req, res) => {
   );
 });
 
-app.put("/ap", sessions.validateSession, (req, res) => {
+app.put("/ap", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
   database.query(
     `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC`,
@@ -421,7 +421,7 @@ app.put("/ap", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/apmakes", sessions.validateSession, (req, res) => {
+app.get("/apmakes", session.validateSession, (req, res) => {
   database.query(
     `SELECT make FROM makes WHERE view = 'true' AND type = 'AP' GROUP BY make ORDER BY make ASC;`,
     function (error, results, fields) {
@@ -431,7 +431,7 @@ app.get("/apmakes", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/buildings", sessions.validateSession, (req, res) => {
+app.get("/buildings", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM buildings WHERE view = 'true' ORDER BY name ASC;`,
     function (error, results, fields) {
@@ -441,7 +441,7 @@ app.get("/buildings", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/model", sessions.validateSession, (req, res) => {
+app.get("/model", session.validateSession, (req, res) => {
   database.query(
     `SELECT model FROM makes WHERE make = ? AND view = 'true' ORDER BY make ASC;`,
     [req.query.make],
@@ -452,7 +452,7 @@ app.get("/model", sessions.validateSession, (req, res) => {
   );
 });
 
-app.post("/ap", sessions.validateSession, (req, res) => {
+app.post("/ap", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM ap WHERE view = 'true' AND id = ?`,
     [req.query.id],
@@ -463,7 +463,7 @@ app.post("/ap", sessions.validateSession, (req, res) => {
   );
 });
 
-app.post("/ap-add", sessions.validateSession, (req, res) => {
+app.post("/ap-add", session.validateSession, (req, res) => {
   let data = {
     make: req.body.make,
     model: req.body.model,
@@ -486,7 +486,7 @@ app.post("/ap-add", sessions.validateSession, (req, res) => {
   );
 });
 
-app.post("/ap-edit", sessions.validateSession, (req, res) => {
+app.post("/ap-edit", session.validateSession, (req, res) => {
   let id = req.query.id;
   let data = {
     make: req.body.make,
@@ -516,7 +516,7 @@ app.post("/ap-edit", sessions.validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/macbook", sessions.validateSession, (req, res) => {
+app.get("/macbook", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM computers WHERE view = 'true' and type = 'mac'`,
     function (error, results, fields) {
@@ -532,7 +532,7 @@ app.get("/macbook", sessions.validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ipad", sessions.validateSession, (req, res) => {
+app.get("/ipad", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM ipad WHERE view = 'true'`,
     function (error, results, fields) {
@@ -542,7 +542,7 @@ app.get("/ipad", sessions.validateSession, (req, res) => {
   );
 });
 
-app.post("/ipad", sessions.validateSession, (req, res) => {
+app.post("/ipad", session.validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -568,7 +568,7 @@ app.post("/ipad", sessions.validateSession, (req, res) => {
   );
 });
 
-app.put("/ipad", sessions.validateSession, (req, res) => {
+app.put("/ipad", session.validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -592,7 +592,7 @@ app.put("/ipad", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-model", sessions.validateSession, (req, res) => {
+app.get("/ipad-model", session.validateSession, (req, res) => {
   database.query(
     `SELECT * FROM makes WHERE View = 'true' AND type = 'ipad'`,
     function (error, results, fields) {
@@ -603,7 +603,7 @@ app.get("/ipad-model", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-details", sessions.validateSession, (req, res) => {
+app.get("/ipad-details", session.validateSession, (req, res) => {
   console.log(req.query.id);
   database.query(
     `SELECT * FROM ipad WHERE id = ?`,
@@ -616,7 +616,7 @@ app.get("/ipad-details", sessions.validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-search", sessions.validateSession, (req, res) => {
+app.get("/ipad-search", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
   database.query(
     `SELECT *
@@ -645,7 +645,7 @@ app.get("/ipad-search", sessions.validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/staff-list", sessions.validateSession,  (req, res) => {
+app.get("/staff-list", session.validateSession,  (req, res) => {
   database.query(
     `SELECT * FROM staff WHERE view = 'true'`,
     function (error, results, fields) {
@@ -655,7 +655,7 @@ app.get("/staff-list", sessions.validateSession,  (req, res) => {
   );
 });
 
-app.post("/staff-add", sessions.validateSession, (req, res) => {
+app.post("/staff-add", session.validateSession, (req, res) => {
   let data = {
     name: req.body.name,
     room: req.body.room,
@@ -678,7 +678,7 @@ app.post("/staff-add", sessions.validateSession, (req, res) => {
 
 
 
-app.get("/staff-search", sessions.validateSession, (req, res) => {
+app.get("/staff-search", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
   database.query(
     `SELECT *
