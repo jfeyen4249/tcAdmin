@@ -1,26 +1,18 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
-const mysql = require("mysql2");
 const crypto = require("crypto");
-const dotenv = require("dotenv");
 
-dotenv.config({ path: "./.env" });
+const database = require("../utils/database.js");
+const session = require("../utils/session.js");
 
 const router = express.Router();
-
-const connection = mysql.createPool({
-    host: process.env.db_host,
-    user: process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db_database,
-  });
 
 router.get("/");
 
 router.post("/", async (req, res) => {
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
-    connection.query(
+    database.query(
       `SELECT username FROM users WHERE username = ?`,
       [req.body.username],
       (err, results) => {
