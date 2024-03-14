@@ -1,14 +1,14 @@
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const mysql = require("mysql2");
-const path = require("path"); // Import path module
-const fs = require("fs"); // Import fs module
-const dotenv = require("dotenv");
-const bcrypt = require("bcryptjs");
-const { v4: uuidv4 } = require("uuid");
-dotenv.config({ path: "./.env" });
+
+const path = require("path");
+const speakeasy = require('speakeasy');
+const moment = require('moment');
 
 
+const database = require("./utils/database.js");
+const session = require("./utils/session.js");
+const encryption = require("./utils/encryption.js");
 
 //Routes
 //const user = require('./routes/user.js');
@@ -21,47 +21,23 @@ const docs = require('./routes/docs.js');
 //End of Routes
 
 
-const crypto = require("crypto");
 
-// Encryption function
-function encrypt(text) {
-  const iv = crypto.randomBytes(16);
-  const keyBuffer = Buffer.from(process.env.key, "hex");
-  const cipher = crypto.createCipheriv("aes-256-cbc", keyBuffer, iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return iv.toString("hex") + ":" + encrypted.toString("hex");
+function generateTimeBasedCode(secret) {
+  return speakeasy.totp({
+      secret,
+      encoding: 'base32', // Make sure to specify the encoding
+  });
 }
 
-// Decryption function
-function decrypt(text) {
-  const parts = text.split(":");
-  const iv = Buffer.from(parts.shift(), "hex");
-  const encryptedText = Buffer.from(parts.join(":"), "hex");
-  const keyBuffer = Buffer.from(process.env.key, "hex");
-  const decipher = crypto.createDecipheriv("aes-256-cbc", keyBuffer, iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
-}
+// Function to calculate the remaining time until the current time-based code expires
+function calculateRemainingTime(secret) {
+  const remainingSeconds = speakeasy.totp.verifyDelta({
+      secret,
+      encoding: 'ascii',
+      token: generateTimeBasedCode(secret),
+      window: 1, // Set window to 1 to ensure accuracy
+  });
 
-
-// function generateTimeBasedCode(secret) {
-//   return speakeasy.totp({
-//       secret,
-//       encoding: 'base32', // Make sure to specify the encoding
-//   });
-// }
-
-
-// // Function to calculate the remaining time until the current time-based code expires
-// function calculateRemainingTime(secret) {
-//   const remainingSeconds = speakeasy.totp.verifyDelta({
-//       secret,
-//       encoding: 'ascii',
-//       token: generateTimeBasedCode(secret),
-//       window: 1, // Set window to 1 to ensure accuracy
-//   });
 
 //   // If remainingSeconds is -1, it means the current code has expired
 //   // We return 0 in that case to indicate no remaining time
@@ -77,46 +53,12 @@ function decrypt(text) {
 const app = express();
 const port = 80;
 
-// Create a MySQL connection pool for your application database
-const connection = mysql.createPool({
-  host: process.env.db_host,
-  user: process.env.db_user,
-  password: process.env.db_password,
-  database: process.env.db_database,
-});
-
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.json());
 app.set("view engine", "hbs");
 app.use(express.static(path.join(__dirname, "./public")));
-
-function validateSession(req, res, next) {
-  const sessionID = req.cookies.session_id;
-  const username = req.cookies.username;
-
-  if (sessionID) {
-    // Check if the session ID exists in the user table
-    connection.query(
-      "SELECT * FROM users WHERE session = ? AND username = ?",
-      [sessionID, username],
-      (err, results) => {
-        if (err) {
-          console.error(err);
-          res.redirect("/login");
-        } else if (results.length === 1) {
-          // If the session is valid, continue to the next middleware or route handler
-          next();
-        } else {
-          res.redirect("/login");
-        }
-      }
-    );
-  } else {
-    res.redirect("/");
-  }
-}
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
@@ -128,7 +70,7 @@ app.get("/scan", (req, res) => {
   res.render("scan");
 });
 
-app.get("/",validateSession, (req, res) => {
+app.get("/", session.validateSession, (req, res) => {
   res.render("index");
 });
 
@@ -136,7 +78,7 @@ app.get("/login", (req, res) => {
   res.render("login");
 });
 
-app.get("/passwords", validateSession, (req, res) => {
+app.get("/passwords", session.validateSession, (req, res) => {
   res.render("passwords");
 });
 
@@ -156,24 +98,28 @@ app.get("/docs", (req, res) => {
   res.render("docs");
 });
 
+
+
+
 app.use("/inventory", validateSession, inventory);
 app.use("/wifi", validateSession, wifi);
 app.use("/docs", validateSession, docs);
 
+
 // app.get("/epass", (req, res) => {
-//   let newpassword = encrypt(req.query.password);
+//   let newpassword = encryption.encrypt(req.query.password);
 //   res.send(newpassword.toString());
 // });
 
 // app.get("/dpass", (req, res) => {
 //   console.log(req.body.password);
-//   let newpassword = decrypt(req.body.password);
+//   let newpassword = encryption.decrypt(req.body.password);
 //   res.send(newpassword);
 // });
 
 // Data API Calls
 
-app.use("/servers", validateSession, servers);
+app.use("/servers", session.validateSession, servers);
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
@@ -185,7 +131,7 @@ app.use("/connection", serverConnection);
 
 // app.post("/login", async (req, res) => {
 //   const { username, password } = req.body;
-//   connection.query(
+//   database.query(
 //     "SELECT password FROM users WHERE username = ? AND status = ?",
 //     [username, "Active"],
 //     (err, results) => {
@@ -199,7 +145,7 @@ app.use("/connection", serverConnection);
 //           // console.log("fail")
 //         } else {
 //           const sessionID = uuidv4();
-//           connection.query(
+//           database.query(
 //             "UPDATE users SET session = ? WHERE username = ?",
 //             [sessionID, username],
 //             (err) => {
@@ -233,9 +179,9 @@ app.use("/connection", serverConnection);
 //   );
 // });
 
-// app.get("/logout", validateSession,  (req, res) => {
+// app.get("/logout", sessions.validateSession,  (req, res) => {
 //   const username = req.cookies.username;
-//   connection.query(
+//   database.query(
 //     `UPDATE users SET session = '' WHERE username = ?`,
 //     [username],
 //     function (error, results, fields) {
@@ -248,7 +194,7 @@ app.use("/connection", serverConnection);
 // app.get("/login-check", (req, res) => {
 //   const username = req.cookies.username;
 //   const sessionID = req.cookies.session_id;
-//   connection.query(`SELECT * FROM users WHERE username = ? AND session = ?`, [username, sessionID],function (error, results, fields) {
+//   database.query(`SELECT * FROM users WHERE username = ? AND session = ?`, [username, sessionID],function (error, results, fields) {
 //       if (error) throw error;
 //       res.send('Pass')
 //     }
@@ -263,6 +209,7 @@ app.use("/connection", serverConnection);
 // ********************************************  Password Inventory API Calls  ********************************************
 // ************************************************************************************************************************
 // ************************************************************************************************************************
+
 
 app.use("/passwords", passwords);
 
@@ -333,7 +280,7 @@ app.use("/passwords", passwords);
 //   };
 //   connection.query(
 //     `INSERT INTO passwords SET ?`,
-//     [data],
+
 //     function (error, results, fields) {
 //       if (error) throw error;
 //       console.log(results);
@@ -342,12 +289,7 @@ app.use("/passwords", passwords);
 //   );
 // });
 
-// app.post("/password-update",  validateSession, (req, res) => {
-//   connection.query(
-//     `SELECT password FROM passwords WHERE id = ?`,
-//     [req.body.id],
-//     function (error, results, fields) {
-//       if (error) throw error;
+
 
 //       if (
 //         req.body.password === decrypt(results[0].password) ||
@@ -454,8 +396,8 @@ app.use("/passwords", passwords);
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ap",  validateSession, (req, res) => {
-  connection.query(
+app.get("/ap", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM ap WHERE view = 'true' ORDER By Name ASC`,
     function (error, results, fields) {
       if (error) throw error;
@@ -464,9 +406,9 @@ app.get("/ap",  validateSession, (req, res) => {
   );
 });
 
-app.put("/ap",  validateSession, (req, res) => {
+app.put("/ap", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
-  connection.query(
+  database.query(
     `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC`,
     [
       `%${searchQuery}%`,
@@ -484,8 +426,8 @@ app.put("/ap",  validateSession, (req, res) => {
   );
 });
 
-app.get("/apmakes",  validateSession, (req, res) => {
-  connection.query(
+app.get("/apmakes", session.validateSession, (req, res) => {
+  database.query(
     `SELECT make FROM makes WHERE view = 'true' AND type = 'AP' GROUP BY make ORDER BY make ASC;`,
     function (error, results, fields) {
       if (error) throw error;
@@ -494,8 +436,8 @@ app.get("/apmakes",  validateSession, (req, res) => {
   );
 });
 
-app.get("/buildings",  validateSession, (req, res) => {
-  connection.query(
+app.get("/buildings", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM buildings WHERE view = 'true' ORDER BY name ASC;`,
     function (error, results, fields) {
       if (error) throw error;
@@ -504,8 +446,8 @@ app.get("/buildings",  validateSession, (req, res) => {
   );
 });
 
-app.get("/model",  validateSession, (req, res) => {
-  connection.query(
+app.get("/model", session.validateSession, (req, res) => {
+  database.query(
     `SELECT model FROM makes WHERE make = ? AND view = 'true' ORDER BY make ASC;`,
     [req.query.make],
     function (error, results, fields) {
@@ -515,8 +457,8 @@ app.get("/model",  validateSession, (req, res) => {
   );
 });
 
-app.post("/ap",  validateSession, (req, res) => {
-  connection.query(
+app.post("/ap", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM ap WHERE view = 'true' AND id = ?`,
     [req.query.id],
     function (error, results, fields) {
@@ -526,7 +468,7 @@ app.post("/ap",  validateSession, (req, res) => {
   );
 });
 
-app.post("/ap-add",  validateSession, (req, res) => {
+app.post("/ap-add", session.validateSession, (req, res) => {
   let data = {
     make: req.body.make,
     model: req.body.model,
@@ -539,7 +481,7 @@ app.post("/ap-add",  validateSession, (req, res) => {
     installed: req.body.installed,
     view: "true",
   };
-  connection.query(
+  database.query(
     `INSERT INTO ap SET ?`,
     [data],
     function (error, results, fields) {
@@ -549,7 +491,7 @@ app.post("/ap-add",  validateSession, (req, res) => {
   );
 });
 
-app.post("/ap-edit",  validateSession, (req, res) => {
+app.post("/ap-edit", session.validateSession, (req, res) => {
   let id = req.query.id;
   let data = {
     make: req.body.make,
@@ -563,7 +505,7 @@ app.post("/ap-edit",  validateSession, (req, res) => {
     installed: req.body.installed,
     view: "true",
   };
-  connection.query(
+  database.query(
     `UPDATE ap SET ? WHERE id = ?`,
     [data, id],
     function (error, results, fields) {
@@ -579,8 +521,8 @@ app.post("/ap-edit",  validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/macbook",  validateSession, (req, res) => {
-  connection.query(
+app.get("/macbook", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM computers WHERE view = 'true' and type = 'mac'`,
     function (error, results, fields) {
       if (error) throw error;
@@ -595,8 +537,8 @@ app.get("/macbook",  validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/ipad",  validateSession, (req, res) => {
-  connection.query(
+app.get("/ipad", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM ipad WHERE view = 'true'`,
     function (error, results, fields) {
       if (error) throw error;
@@ -605,7 +547,7 @@ app.get("/ipad",  validateSession, (req, res) => {
   );
 });
 
-app.post("/ipad",  validateSession, (req, res) => {
+app.post("/ipad", session.validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -620,7 +562,7 @@ app.post("/ipad",  validateSession, (req, res) => {
   };
 
   console.log(data);
-  connection.query(
+  database.query(
     `INSERT INTO ipad Set ?`,
     [data],
     function (error, results, fields) {
@@ -631,7 +573,7 @@ app.post("/ipad",  validateSession, (req, res) => {
   );
 });
 
-app.put("/ipad",  validateSession, (req, res) => {
+app.put("/ipad", session.validateSession, (req, res) => {
   let data = {
     model: req.body.model,
     sn: req.body.sn,
@@ -644,7 +586,7 @@ app.put("/ipad",  validateSession, (req, res) => {
   };
 
   console.log(data);
-  connection.query(
+  database.query(
     `UPDATE ipad Set ? WHERE id = ?`,
     [data, req.query.id],
     function (error, results, fields) {
@@ -655,8 +597,8 @@ app.put("/ipad",  validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-model",  validateSession, (req, res) => {
-  connection.query(
+app.get("/ipad-model", session.validateSession, (req, res) => {
+  database.query(
     `SELECT * FROM makes WHERE View = 'true' AND type = 'ipad'`,
     function (error, results, fields) {
       if (error) throw error;
@@ -666,9 +608,9 @@ app.get("/ipad-model",  validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-details",  validateSession, (req, res) => {
+app.get("/ipad-details", session.validateSession, (req, res) => {
   console.log(req.query.id);
-  connection.query(
+  database.query(
     `SELECT * FROM ipad WHERE id = ?`,
     [req.query.id],
     function (error, results, fields) {
@@ -679,9 +621,9 @@ app.get("/ipad-details",  validateSession, (req, res) => {
   );
 });
 
-app.get("/ipad-search",  validateSession, (req, res) => {
+app.get("/ipad-search", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
-  connection.query(
+  database.query(
     `SELECT *
                     FROM ipad 
                     WHERE view = 'true' 
@@ -708,8 +650,8 @@ app.get("/ipad-search",  validateSession, (req, res) => {
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/staff-list", validateSession,  (req, res) => {
-  connection.query(
+app.get("/staff-list", session.validateSession,  (req, res) => {
+  database.query(
     `SELECT * FROM staff WHERE view = 'true'`,
     function (error, results, fields) {
       if (error) throw error;
@@ -718,14 +660,14 @@ app.get("/staff-list", validateSession,  (req, res) => {
   );
 });
 
-app.post("/staff-add",  validateSession, (req, res) => {
+app.post("/staff-add", session.validateSession, (req, res) => {
   let data = {
     name: req.body.name,
     room: req.body.room,
     building: req.body.building,
     view: "true",
   };
-  connection.query(
+  database.query(
     `INSERT INTO staff SET ?`,
     [data],
     function (error, results, fields) {
@@ -741,9 +683,9 @@ app.post("/staff-add",  validateSession, (req, res) => {
 
 
 
-app.get("/staff-search",  validateSession, (req, res) => {
+app.get("/staff-search", session.validateSession, (req, res) => {
   const searchQuery = req.query.search;
-  connection.query(
+  database.query(
     `SELECT *
                     FROM staff 
                     WHERE view = 'true' 
