@@ -7,8 +7,7 @@ const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
 const { v4: uuidv4 } = require("uuid");
 dotenv.config({ path: "./.env" });
-const speakeasy = require('speakeasy');
-const moment = require('moment');
+
 
 
 //Routes
@@ -16,6 +15,9 @@ const moment = require('moment');
 const servers = require('./routes/servers.js');
 const inventory = require('./routes/inventory.js');
 const serverConnection = require('./routes/connection.js');
+const wifi = require('./routes/wifi.js');
+const passwords = require('./routes/passwords.js');
+const docs = require('./routes/docs.js');
 //End of Routes
 
 
@@ -44,33 +46,33 @@ function decrypt(text) {
 }
 
 
-function generateTimeBasedCode(secret) {
-  return speakeasy.totp({
-      secret,
-      encoding: 'base32', // Make sure to specify the encoding
-  });
-}
+// function generateTimeBasedCode(secret) {
+//   return speakeasy.totp({
+//       secret,
+//       encoding: 'base32', // Make sure to specify the encoding
+//   });
+// }
 
 
-// Function to calculate the remaining time until the current time-based code expires
-function calculateRemainingTime(secret) {
-  const remainingSeconds = speakeasy.totp.verifyDelta({
-      secret,
-      encoding: 'ascii',
-      token: generateTimeBasedCode(secret),
-      window: 1, // Set window to 1 to ensure accuracy
-  });
+// // Function to calculate the remaining time until the current time-based code expires
+// function calculateRemainingTime(secret) {
+//   const remainingSeconds = speakeasy.totp.verifyDelta({
+//       secret,
+//       encoding: 'ascii',
+//       token: generateTimeBasedCode(secret),
+//       window: 1, // Set window to 1 to ensure accuracy
+//   });
 
-  // If remainingSeconds is -1, it means the current code has expired
-  // We return 0 in that case to indicate no remaining time
-  if (remainingSeconds === -1) {
-      return 0;
-  }
+//   // If remainingSeconds is -1, it means the current code has expired
+//   // We return 0 in that case to indicate no remaining time
+//   if (remainingSeconds === -1) {
+//       return 0;
+//   }
 
-  // Otherwise, calculate the remaining time until the next code generation
-  const timeRemaining = 30 - (moment().unix() % 30);
-  return timeRemaining;
-}
+//   // Otherwise, calculate the remaining time until the next code generation
+//   const timeRemaining = 30 - (moment().unix() % 30);
+//   return timeRemaining;
+// }
 
 const app = express();
 const port = 80;
@@ -154,13 +156,9 @@ app.get("/docs", (req, res) => {
   res.render("docs");
 });
 
-app.get("/docs/:page",  validateSession, (req, res) => {
-  let page = req.params.page;
-  console.log(page);
-  res.render("docs");
-});
-
 app.use("/inventory", validateSession, inventory);
+app.use("/wifi", validateSession, wifi);
+app.use("/docs", validateSession, docs);
 
 // app.get("/epass", (req, res) => {
 //   let newpassword = encrypt(req.query.password);
@@ -266,143 +264,11 @@ app.use("/connection", serverConnection);
 // ************************************************************************************************************************
 // ************************************************************************************************************************
 
-app.get("/password-list", validateSession,  (req, res) => {
-  connection.query(
-    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
+app.use("/passwords", passwords);
 
-app.post("/password-list", validateSession,  (req, res) => {
-  connection.query(
-    `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
-    [req.query.id],
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
-
-app.put("/password-list", validateSession,  (req, res) => {
-  const searchQuery = req.query.search;
-  connection.query(
-    `SELECT id, info, service, updated, url, username, category 
-                      FROM passwords 
-                      WHERE view = 'true' 
-                      AND (info LIKE ? OR service LIKE ? OR url LIKE ? OR username LIKE ? OR category LIKE ?)`,
-    [
-      `%${searchQuery}%`,
-      `%${searchQuery}%`,
-      `%${searchQuery}%`,
-      `%${searchQuery}%`,
-      `%${searchQuery}%`,
-    ],
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
-
-app.get("/password", validateSession,  (req, res) => {
-  connection.query(
-    `SELECT password FROM passwords WHERE view = 'true' and id = ?`,
-    [req.query.id],
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(decrypt(results[0].password));
-    }
-  );
-});
-
-app.post("/password",  validateSession, (req, res) => {
-  let data = {
-    service: req.body.service,
-    url: req.body.url,
-    username: req.body.username,
-    password: encrypt(req.body.password),
-    otp : req.body.otp.replace(/\s/g, ""),
-    category: req.body.category,
-    updated: req.body.updated,
-    view: "True",
-    info: req.body.info,
-  };
-  connection.query(
-    `INSERT INTO passwords SET ?`,
-    [data],
-    function (error, results, fields) {
-      if (error) throw error;
-      console.log(results);
-      res.send(results);
-    }
-  );
-});
-
-app.post("/password-update",  validateSession, (req, res) => {
-  connection.query(
-    `SELECT password FROM passwords WHERE id = ?`,
-    [req.body.id],
-    function (error, results, fields) {
-      if (error) throw error;
-
-      if (
-        req.body.password === decrypt(results[0].password) ||
-        req.body.password.length == 0
-      ) {
-        let data = {
-          service: req.body.service,
-          url: req.body.url,
-          username: req.body.username,
-          category: req.body.category,
-          updated: req.body.updated,
-          view: "True",
-          info: req.body.info,
-        };
-        connection.query(
-          `UPDATE passwords SET ? WHERE id = ?`,
-          [data, req.body.id],
-          function (error, results, fields) {
-            if (error) throw error;
-            //console.log(results)
-            res.send("Updated");
-          }
-        );
-        return;
-      }
-
-      if (req.body.password !== decrypt(results[0].password)) {
-        let data = {
-          service: req.body.service,
-          url: req.body.url,
-          username: req.body.username,
-          password: encrypt(req.body.password),
-          category: req.body.category,
-          updated: req.body.updated,
-          view: "True",
-          info: req.body.info,
-        };
-        connection.query(
-          `UPDATE passwords SET ? WHERE id = ?`,
-          [data, req.body.id],
-          function (error, results, fields) {
-            if (error) throw error;
-            //console.log(results)
-            res.send(results);
-          }
-        );
-        return;
-      }
-    }
-  );
-});
-
-// app.get("/password-cat",  validateSession, (req, res) => {
+// app.get("/password-list", validateSession,  (req, res) => {
 //   connection.query(
-//     `SELECT category FROM password_cat ORDER BY category ASC`,
+//     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
 //     function (error, results, fields) {
 //       if (error) throw error;
 //       res.send(results);
@@ -410,43 +276,177 @@ app.post("/password-update",  validateSession, (req, res) => {
 //   );
 // });
 
-app.get('/otp', (req, res) => {
-  try {
-    connection.query(
-      `SELECT otp FROM passwords WHERE id = ?`, [req.query.id],
-      function (error, results, fields) {
-        if (error) {
-          console.error("Error retrieving OTP from the database:", error);
-          return res.status(500).send("Error retrieving OTP from the database");
-        }
+// app.post("/password-list", validateSession,  (req, res) => {
+//   connection.query(
+//     `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
+//     [req.query.id],
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       res.send(results);
+//     }
+//   );
+// });
 
-        if(results[0].otp == "none") {
-          const data = {
-            code: "none",
-            remainingTime: 'none'
-          };
-          console.log(data)
-          res.json(data)
-        } else {
-          if (results.length === 0) {
-            console.error("No OTP found for the provided ID:", req.query.id);
-            return res.status(404).send("OTP not found");
-          }
-          const secret = results[0].otp;
-          const timeBasedCode = generateTimeBasedCode(secret);
-          const remainingTime = calculateRemainingTime(secret);
-          const data = {
-            code: timeBasedCode,
-            remainingTime: remainingTime
-          };
-          res.json(data);
-        }
-      }
-    );
-  } catch (error) {
+// app.put("/password-list", validateSession,  (req, res) => {
+//   const searchQuery = req.query.search;
+//   connection.query(
+//     `SELECT id, info, service, updated, url, username, category 
+//                       FROM passwords 
+//                       WHERE view = 'true' 
+//                       AND (info LIKE ? OR service LIKE ? OR url LIKE ? OR username LIKE ? OR category LIKE ?)`,
+//     [
+//       `%${searchQuery}%`,
+//       `%${searchQuery}%`,
+//       `%${searchQuery}%`,
+//       `%${searchQuery}%`,
+//       `%${searchQuery}%`,
+//     ],
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       res.send(results);
+//     }
+//   );
+// });
+
+// app.get("/password", validateSession,  (req, res) => {
+//   connection.query(
+//     `SELECT password FROM passwords WHERE view = 'true' and id = ?`,
+//     [req.query.id],
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       res.send(decrypt(results[0].password));
+//     }
+//   );
+// });
+
+// app.post("/password",  validateSession, (req, res) => {
+//   let data = {
+//     service: req.body.service,
+//     url: req.body.url,
+//     username: req.body.username,
+//     password: encrypt(req.body.password),
+//     otp : req.body.otp.replace(/\s/g, ""),
+//     category: req.body.category,
+//     updated: req.body.updated,
+//     view: "True",
+//     info: req.body.info,
+//   };
+//   connection.query(
+//     `INSERT INTO passwords SET ?`,
+//     [data],
+//     function (error, results, fields) {
+//       if (error) throw error;
+//       console.log(results);
+//       res.send(results);
+//     }
+//   );
+// });
+
+// app.post("/password-update",  validateSession, (req, res) => {
+//   connection.query(
+//     `SELECT password FROM passwords WHERE id = ?`,
+//     [req.body.id],
+//     function (error, results, fields) {
+//       if (error) throw error;
+
+//       if (
+//         req.body.password === decrypt(results[0].password) ||
+//         req.body.password.length == 0
+//       ) {
+//         let data = {
+//           service: req.body.service,
+//           url: req.body.url,
+//           username: req.body.username,
+//           category: req.body.category,
+//           updated: req.body.updated,
+//           view: "True",
+//           info: req.body.info,
+//         };
+//         connection.query(
+//           `UPDATE passwords SET ? WHERE id = ?`,
+//           [data, req.body.id],
+//           function (error, results, fields) {
+//             if (error) throw error;
+//             //console.log(results)
+//             res.send("Updated");
+//           }
+//         );
+//         return;
+//       }
+
+//       if (req.body.password !== decrypt(results[0].password)) {
+//         let data = {
+//           service: req.body.service,
+//           url: req.body.url,
+//           username: req.body.username,
+//           password: encrypt(req.body.password),
+//           category: req.body.category,
+//           updated: req.body.updated,
+//           view: "True",
+//           info: req.body.info,
+//         };
+//         connection.query(
+//           `UPDATE passwords SET ? WHERE id = ?`,
+//           [data, req.body.id],
+//           function (error, results, fields) {
+//             if (error) throw error;
+//             //console.log(results)
+//             res.send(results);
+//           }
+//         );
+//         return;
+//       }
+//     }
+//   );
+// });
+
+// // app.get("/password-cat",  validateSession, (req, res) => {
+// //   connection.query(
+// //     `SELECT category FROM password_cat ORDER BY category ASC`,
+// //     function (error, results, fields) {
+// //       if (error) throw error;
+// //       res.send(results);
+// //     }
+// //   );
+// // });
+
+// app.get('/otp', (req, res) => {
+//   try {
+//     connection.query(
+//       `SELECT otp FROM passwords WHERE id = ?`, [req.query.id],
+//       function (error, results, fields) {
+//         if (error) {
+//           console.error("Error retrieving OTP from the database:", error);
+//           return res.status(500).send("Error retrieving OTP from the database");
+//         }
+
+//         if(results[0].otp == "none") {
+//           const data = {
+//             code: "none",
+//             remainingTime: 'none'
+//           };
+//           console.log(data)
+//           res.json(data)
+//         } else {
+//           if (results.length === 0) {
+//             console.error("No OTP found for the provided ID:", req.query.id);
+//             return res.status(404).send("OTP not found");
+//           }
+//           const secret = results[0].otp;
+//           const timeBasedCode = generateTimeBasedCode(secret);
+//           const remainingTime = calculateRemainingTime(secret);
+//           const data = {
+//             code: timeBasedCode,
+//             remainingTime: remainingTime
+//           };
+//           res.json(data);
+//         }
+//       }
+//     );
+//   } catch (error) {
     
-  }
-});
+//   }
+// });
 
 // ************************************************************************************************************************
 // ************************************************************************************************************************
