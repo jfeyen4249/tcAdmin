@@ -8,8 +8,14 @@
         }
 
         .h-70 {
-            height: 75%;
+            height: 20%;
         }
+
+        .add-h {
+            height: 50%;
+        }
+
+
         #modal {
             align-items: center;
             justify-content: center;
@@ -31,6 +37,9 @@
             margin-bottom: 10px;
         }
 
+        .hidden {
+            display: none;
+        }
     </style>
 
     <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
@@ -45,7 +54,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-   <script defer src=".././menu.js"></script>
+     <script defer src=".././menu.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Wifi Passwords</title>
 </head>
@@ -74,26 +83,16 @@
             </div>
             
             <!-- Add New Password Button -->
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="addModalOpen()"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
     </div>
 
     <!-- Table -->
-    <table class="w-full border-collapse border border-gray-800">
-        <thead>
-            <tr class="bg-gray-800 text-white">
-                <th class="py-2 px-4 border">Processor</th>
-                <th class="py-2 px-4 border">RAM</th>
-                <th class="py-2 px-4 border">HDD</th>
-                <th class="py-2 px-4 border">Mac Address</th>
-                <th class="py-2 px-4 border">SN</th>
-                <th class="py-2 px-4 border">Building</th>
-                <th class="py-2 px-4 border">Room</th>
-            </tr>
-        </thead>
-        <tbody class="text-center" id="password-table">
-           
-        </tbody>
+    <table class="w-full border-collapse border border-gray-800" >
+        
+        <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center" id="wifi-grid">
+                
+            </div>
     </table>
 </div>
  
@@ -101,85 +100,48 @@
     <!-- Modal -->
     <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
     <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
-        <div class="grid grid-cols-2 flex-grow">
-            <div class="col-span-1 bg-white p-8 rounded-l">
-                <form>
-                    <!-- Website/Service -->
-                    <div class="mb-4">
-                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">AP Make</label>
-                        <select name="modal-make" id="modal-make" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
-                    </div>
-                    <!-- URL -->
-                    <div class="mb-4">
-                       <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">AP Model</label>
-                        <select name="modal-model" id="modal-model" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                    </div>
-
-                    <!-- Username/Email -->
-                    <div class="mb-4">
-                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
-                        <input type="text" id="modal-mac" name="modal-mac" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
-
-                    <!-- Password -->
-                    <div class="mb-4">
-                        <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
-                        <input type="text" id="modal-sn" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
-
-                    <!-- Last Updated -->
-                    <div class="mb-6">
-                        <label for="modal-installed" class="block text-gray-600 text-sm font-medium mb-2">Date Installed</label>
-                        <input type="text" id="modal-installed" name="modal-installed" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-
-                        <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Tag</label>
-                        <input type="text" id="modal-tag" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-   
-                        </select>
-                    </div>
-
-                    <!-- Information -->
-                    <div class="mb-4">
-                        </div>
-
-                    <!-- Save Button -->
-                    {{!-- <button type="button" id="addPassword" onclick="AddPass();" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mb-4 hidden">Add Password</button>
-                    <button type="button" id="close" onclick="closeModal()" class="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-                </form> --}}
-            </div>
-            <div class="col-span-1 p-4 mb-4 rounded-r">
-            
-                
-                {{!-- <div id="editor" class="w-full max-h-96 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
-
-                    <p>Hello World!</p>
-                    <p>Some initial <strong>bold</strong> text</p>
-                    <p><br></p> 
-
-                </div> --}}
+        <div class="grid grid-cols-1 flex-grow">
+            <div id="showpass">
+                <div class="col-span-1 bg-white p-8 rounded-l text-center">
+                <h1 class="text-center text-4xl" id="wifi-ssid"></h1>
+                <hr><br>
+                <h3 id="wifi-pass" class="text-red-500 text-3xl"></h3><br>
                     
-                <div class="mb-4 mt-3">
-                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
-                        <select name="modal-building" id="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
+                    <div class="text-center">
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4 w-half" onclick="closeModal()">Close</button>
                     </div>
-
-                    <div class="mb-4">
-                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
-                        <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
-
-                 <div class="modal-btn mt-6">
-                    
-                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddPass() ">Add Password</button>
-                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditPass()">Save This Password</button>
-                 </div>
+                </div>                                 
             </div>
         </div>
-        <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
-            <i class="fas fa-times"></i>
-        </button>
+    </div>
+</div>
+
+
+<div id="addmodal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="relative w-85 add-h bg-white rounded shadow-md flex flex-col">
+            <h1 class="text-center text-2xl" >Add Wifi Password</h1>
+                <hr><br>
+        <div class="grid grid-cols-1 flex-grow">
+             <div>
+                <div class="col-span-1 bg-white p-8 rounded-l text-center">
+                
+                <div class="mb-4">
+                        <label for="modal-ssid" class="block text-gray-600 text-sm font-medium mb-2">SSID Name</label>
+                        <input type="text" id="modal-ssid" name="modal-ssid" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="modal-pass" class="block text-gray-600 text-sm font-medium mb-2">Password</label>
+                        <input type="text" id="modal-pass" name="modal-pass" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+                    <div class="text-center">
+                        <button class="bg-blue-500 text-white px-4 py-2 rounded-md mb-4 mt-4 w-half hidden" onclick="editwifi()" id="modal-edit">Update</button>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 mt-4 w-half" onclick="addwifi()" id="modal-save">Save</button>
+                        <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4 w-half" onclick="closeAddModal()">Close</button>
+                    </div>
+                </div>                                 
+            </div>
+        </div>
     </div>
 </div>
 
@@ -187,153 +149,138 @@
     <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
     
     <script defer>
-        const dateString = new Date().toDateString();
-        let passid = 0;
-        let infoEditor;
-        let makeList = document.getElementById('modal-make')
-        let modelList = document.getElementById('modal-model')
-        let macAddress = document.getElementById('modal-mac')
-        let serialNumber = document.getElementById('modal-sn')
-        let install = document.getElementById('modal-installed')
-        let assetTag = document.getElementById('modal-tag')
-        let building = document.getElementById('modal-building')
-        let room = document.getElementById('modal-room')
+        const modal = document.getElementById('modal')
+        const addModal = document.getElementById('addmodal')
+        let ssidName = document.getElementById('modal-ssid')
+        let password = document.getElementById('modal-pass')
+        let wifissid = document.getElementById('wifi-ssid')
+        let wifipass = document.getElementById('wifi-pass')
+        let saveBTN = document.getElementById('modal-save')
+        let editBTN = document.getElementById('modal-edit')
+        let editID = 0
 
-        function openModal(id, make, model) {
-            fetch(`/ap?id=${id}`,{ method: 'post'})
-  		    .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                    document.getElementById('modal').style.display = 'flex';
-                    passid = id;
-                    getmodel(make, model)
-                    macAddress.value = data[0].mac
-                    serialNumber.value = data[0].sn
-                    install.value = data[0].installed
-                    assetTag.value = data[0].tag
-                    //building.value = data[0].building
-                    room.value = data[0].room
-                    
-
-                    var selectElement = document.getElementById("modal-make"); 
-                    for (var i = 0; i < selectElement.options.length; i++) {
-                        var option = selectElement.options[i];
-                        if (option.value === make) {
-                            option.selected = true;
-                            break;
-                        }   
+        function getWifi() {
+           document.getElementById('wifi-grid').innerHTML = '';
+            fetch('/wifi/list')
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data); // Check the structure of the response
+                    if (Array.isArray(data)) { // Check if data is an array
+                        data.forEach(obj => {
+                            document.getElementById('wifi-grid').innerHTML += `
+                                <div class="bg-gray-200 p-4 rounded-md" id="wifi-grid">
+                                    <h2 class="text-lg font-semibold mb-2">${obj.ssid}</h2>
+                                    <p></p>
+                                    <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="openEditModal('${obj.id}')"><i class="fa-solid fa-eye"></i> Edit Password</button>
+                                    <button class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="openModal('${obj.id}')"><i class="fa-solid fa-eye"></i> View Password</button>
+                                </div>
+                            `;
+                        });
+                    } else {
+                        console.error("Data is not an array:", data);
+                        // Handle the case where data is not an array, possibly show an error message
                     }
-
-                    var selectElement = building; 
-                    for (var i = 0; i < selectElement.options.length; i++) {
-                        var option = selectElement.options[i];
-                        if (option.value === data[0].building) {
-                            option.selected = true;
-                            break;
-                        }   
-                    }
-        })
+                })
+                .catch(error => {
+                    console.error('Error fetching WiFi list:', error);
+                    // Handle errors from the fetch request
+                });
         }
 
-        function AddModal() {
-           document.getElementById('modal').style.display = 'flex';
+        function openModal(id) {
+            console.log(id)
+            modal.style.display = 'flex'
+            fetch(`/wifi/password/?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+
+                wifissid.innerText = data[0].ssid
+                wifipass.innerText = data[0].password
+            })
+        }
+
+        function openEditModal(id) {
+            editID = id
+            addmodal.style.display = 'flex'
+            saveBTN.style.display = 'none'
+            editBTN.style.display = 'inline'
+            //console.log(id)
+            fetch(`/wifi/password/?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                ssidName.value = data[0].ssid
+                password.value = data[0].password
+            })
         }
 
         function closeModal() {
-            
-            document.getElementById('modal').style.display = 'none';
+            modal.style.display = 'none' 
         }
 
-        let getList = () => {
-            document.getElementById('password-table').innerHTML = '';
-            fetch('/macbook')
-                .then(response => response.json())
-                .then(data => {
-                    //console.log(data)
-                    data.forEach(obj => {
-                        let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
-                                <td class="py-2 px-4 border">${obj.processor}</td>
-                                <td class="py-2 px-4 border">${obj.ram} GB</td>
-                                <td class="py-2 px-4 border">${obj.hdd} GB</td>
-                                <td class="py-2 px-4 border">${obj.mac}</td>
-                                <td class="py-2 px-4 border">${obj.sn}</td>
-                                <td class="py-2 px-4 border">${obj.building}</td>
-                                <td class="py-2 px-4 border">${obj.room}</td>
-                            </tr>`;
-                        document.getElementById('password-table').innerHTML += row;
-                    });
-                });
-        };
-
-        function getBuildings() {
-                    building.innerHTML = ``
-                    building.innerHTML += `<option value="" >Select A Building</option>`
-                    building.innerHTML += `<option value="none" >Unassign From a Building</option>`
-                    fetch('/buildings')
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                building.innerHTML += `
-                                    <option value="${obj.name}">${obj.name}</option>`
-                            }
-                        });     
-                }
-
-        function getmodel(make, model) {
-            document.getElementById('modal-model').innerHTML = ``
-            document.getElementById('modal-model').innerHTML += `<option value="">Select A Make</option>`;
-
-            fetch(`/model?make=${make}`)
-                .then(response => response.json())
-                .then(data => {
-                    for (let i = 0; i < data.length; i++) {
-                        let obj = data[i];
-                        document.getElementById('modal-model').innerHTML += `
-                            <option value="${obj.model}">${obj.model}</option>`;
-                    }
-                    
-                    var selectElement1 = document.getElementById("modal-model");
-                    var options = selectElement1.options;
-                    
-                    for (var i = 0; i < options.length; i++) {
-                        if (options[i].value === model) {
-                            options[i].selected = true;
-                            break; // Exit the loop after selecting the option
-                        }
-                    }
-                });
-
+        function closeAddModal() {
+            addModal.style.display = 'none'
+            wifipass.value = ''
+            wifissid.value = ''
+            editID = 0
         }
 
+        function addModalOpen() {
+            addmodal.style.display = 'flex'
+            modal.style.display = 'none'
+            saveBTN.style.display = 'inline'
+            editBTN.style.display = 'none'
+        }
 
-       
-        document.getElementById('search').addEventListener('input', function(){
-            if(document.getElementById('search').length < 1) {
-                getPasswords()
-            } else {
-                document.getElementById('password-table').innerHTML = '';
-                fetch(`/password-list/?search=${document.getElementById('search').value}`,{method : 'put'})
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(obj => {
-                            let row = `
-                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '')">
-                                    <td class="py-2 px-4 border">${obj.service}</td>
-                                    <td class="py-2 px-4 border">${obj.url}</td>
-                                    <td class="py-2 px-4 border">${obj.username}</td>
-                                    <td class="py-2 px-4 border">${obj.category}</td>
-                                    <td class="py-2 px-4 border">${obj.updated}</td>
-                                </tr>`;
-                            document.getElementById('password-table').innerHTML += row;
-                        });
-                    });
+        function addwifi() {
+            let data ={
+               ssid : ssidName.value,
+               wifipassword : password.value
             }
-        })
+            
+            fetch(`/wifi/add`,{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            closeAddModal()
+                            getWifi()
+                        } else {
+                            alert('Error adding Wifi password!')
+                        }
+                    });
+        }
 
-    getList()
+        function editwifi() {
+            let data ={
+            id:editID,
+               ssid : ssidName.value,
+               wifipassword : password.value
+            }
+            
+            fetch(`/wifi/edit`,{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            closeAddModal()
+                            getWifi()
+                        } else {
+                            alert('Error adding Wifi password!')
+                        }
+                    });
+        }
+        
+        getWifi()
     </script>
 
 </body>
