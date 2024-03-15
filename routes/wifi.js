@@ -1,72 +1,41 @@
 
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const mysql = require("mysql2");
-const crypto = require("crypto");
-const dotenv = require("dotenv");
-const passport = require("passport");
 
-dotenv.config({ path: "./.env" });
-
-// Encryption function
-function encrypt(text) {
-  const iv = crypto.randomBytes(16);
-  const keyBuffer = Buffer.from(process.env.key, "hex");
-  const cipher = crypto.createCipheriv("aes-256-cbc", keyBuffer, iv);
-  let encrypted = cipher.update(text);
-  encrypted = Buffer.concat([encrypted, cipher.final()]);
-  return iv.toString("hex") + ":" + encrypted.toString("hex");
-}
-
-// Decryption function
-function decrypt(text) {
-  const parts = text.split(":");
-  const iv = Buffer.from(parts.shift(), "hex");
-  const encryptedText = Buffer.from(parts.join(":"), "hex");
-  const keyBuffer = Buffer.from(process.env.key, "hex");
-  const decipher = crypto.createDecipheriv("aes-256-cbc", keyBuffer, iv);
-  let decrypted = decipher.update(encryptedText);
-  decrypted = Buffer.concat([decrypted, decipher.final()]);
-  return decrypted.toString();
-}
-
-const connection = mysql.createPool({
-    host: process.env.db_host,
-    user: process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db_database,
-  });
+const database = require("../utils/database.js");
+const session = require("../utils/session.js");
 
 const router = express.Router();
 
-router.get("/", validateSession, (req, res) => {
+router.get("/");
+
+router.get("/", session.validateSession, (req, res) => {
     res.render("wifi");
   });
 
-  router.get("/list", validateSession, (req, res) => {
-    connection.query(`SELECT id, ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
-        if (error) {
-            console.error("Error retrieving WiFi list:", error);
-            res.status(500).json({ error: "Internal server error" });
-            return;
-        }
-        if (results.length === 0) {
-            console.error("WiFi list is empty");
-            res.status(404).json({ error: "WiFi list is empty" });
-            return;
-        }
-        // Constructing an array with objects for each result
-        let data = results.map(result => {
-            return {
-                ssid: decrypt(result.ssid),
-                id: result.id
-            };
-        });
-        res.json(data);
-    });
+router.get("/list", session.validateSession, (req, res) => {
+  connection.query(`SELECT id, ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
+      if (error) {
+          console.error("Error retrieving WiFi list:", error);
+          res.status(500).json({ error: "Internal server error" });
+          return;
+      }
+      if (results.length === 0) {
+          console.error("WiFi list is empty");
+          res.status(404).json({ error: "WiFi list is empty" });
+          return;
+      }
+      // Constructing an array with objects for each result
+      let data = results.map(result => {
+          return {
+              ssid: decrypt(result.ssid),
+              id: result.id
+          };
+      });
+      res.json(data);
+  });
 });
 
-  router.get("/password", validateSession, (req, res) => {
+  router.get("/password", session.validateSession, (req, res) => {
     let id = req.query.id;
     //console.log(id);
     connection.query(`SELECT ssid,password FROM wifi WHERE id = ? AND status = 'true'`, [id], function (error, results, fields) {
@@ -94,7 +63,7 @@ router.get("/", validateSession, (req, res) => {
     });
 });
 
-router.post("/add", validateSession, (req, res) => {
+router.post("/add", session.validateSession, (req, res) => {
   const {ssid, wifipassword} = req.body
   let data = {ssid : encrypt(ssid), password : encrypt(wifipassword)}
   connection.query(`INSERT INTO wifi SET ?`,[data], function (error, results, fields) {
@@ -105,7 +74,7 @@ router.post("/add", validateSession, (req, res) => {
   );
 });
 
-router.post("/edit", validateSession, (req, res) => {
+router.post("/edit", session.validateSession, (req, res) => {
   const {id, ssid, wifipassword} = req.body
   console.log(id)
   let data = {ssid : encrypt(ssid), password : encrypt(wifipassword)}

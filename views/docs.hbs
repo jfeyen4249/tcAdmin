@@ -187,7 +187,7 @@
 
         function getDocs() {
             document.getElementById('docs-table').innerHTML = ''
-            fetch('/docs/doc-list')
+            fetch('/docs/list')
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data)

@@ -79,7 +79,7 @@ router.get("/ipad",  (req, res) => {
 //     );
 // });
   
-// router.post("/password",  validateSession, (req, res) => {
+// router.post("/password", session.validateSession, (req, res) => {
 //     let data = {
 //       service: req.body.service,
 //       url: req.body.url,
@@ -101,7 +101,7 @@ router.get("/ipad",  (req, res) => {
 //     );
 // });
   
-// router.post("/password-update",  validateSession, (req, res) => {
+// router.post("/password-update", session.validateSession, (req, res) => {
 //     database.query(
 //       `SELECT password FROM passwords WHERE id = ?`,
 //       [req.body.id],
@@ -161,7 +161,7 @@ router.get("/ipad",  (req, res) => {
 //     //
 // });
   
-// router.get("/password-cat",  validateSession, (req, res) => {
+// router.get("/password-cat", session.validateSession, (req, res) => {
 //     database.query(
 //       `SELECT category FROM password_cat ORDER BY category ASC`,
 //       function (error, results, fields) {
