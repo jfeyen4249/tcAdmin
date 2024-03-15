@@ -103,7 +103,7 @@
             document.getElementById('modal').style.display = 'none';
         }
 
-        fetch('/servers')
+        fetch('/servers/info')
   		.then(response => response.json())
   		.then(data => {
 			  for(let i = 0; i < data.length; i++) {

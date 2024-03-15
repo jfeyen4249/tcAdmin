@@ -1,48 +1,14 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const mysql = require("mysql2");
-const crypto = require("crypto");
-const dotenv = require("dotenv");
-const { v4: uuidv4 } = require("uuid");
+
+const database = require("../utils/database.js");
+const session = require("../utils/session.js");
+
 const speakeasy = require('speakeasy');
 const moment = require('moment');
-dotenv.config({ path: "./.env" });
 
 const router = express.Router();
 
-const connection = mysql.createPool({
-    host: process.env.db_host,
-    user: process.env.db_user,
-    password: process.env.db_password,
-    database: process.env.db_database,
-  });
-
-
-  function validateSession(req, res, next) {
-    const sessionID = req.cookies.session_id;
-    const username = req.cookies.username;
-  
-    if (sessionID) {
-      // Check if the session ID exists in the user table
-      connection.query(
-        "SELECT * FROM users WHERE session = ? AND username = ?",
-        [sessionID, username],
-        (err, results) => {
-          if (err) {
-            console.error(err);
-            res.redirect("/login");
-          } else if (results.length === 1) {
-            // If the session is valid, continue to the next middleware or route handler
-            next();
-          } else {
-            res.redirect("/login");
-          }
-        }
-      );
-    } else {
-      res.redirect("/");
-    }
-  }
+router.get("/");
 
   function generateTimeBasedCode(secret) {
     return speakeasy.totp({
@@ -71,35 +37,13 @@ const connection = mysql.createPool({
     return timeRemaining;
   }
 
-  function encrypt(text) {
-    const iv = crypto.randomBytes(16);
-    const keyBuffer = Buffer.from(process.env.key, "hex");
-    const cipher = crypto.createCipheriv("aes-256-cbc", keyBuffer, iv);
-    let encrypted = cipher.update(text);
-    encrypted = Buffer.concat([encrypted, cipher.final()]);
-    return iv.toString("hex") + ":" + encrypted.toString("hex");
-  }
-  
-  // Decryption function
-  function decrypt(text) {
-    const parts = text.split(":");
-    const iv = Buffer.from(parts.shift(), "hex");
-    const encryptedText = Buffer.from(parts.join(":"), "hex");
-    const keyBuffer = Buffer.from(process.env.key, "hex");
-    const decipher = crypto.createDecipheriv("aes-256-cbc", keyBuffer, iv);
-    let decrypted = decipher.update(encryptedText);
-    decrypted = Buffer.concat([decrypted, decipher.final()]);
-    return decrypted.toString();
-  }
-
-
-  router.get("/", validateSession, (req, res) => {
-    res.render("pasword");
+  router.get("/", session.validateSession, (req, res) => {
+    res.render("passwords");
   });
 
 
-  router.get("/password-list", validateSession,  (req, res) => {
-    connection.query(
+  router.get("/password-list", session.validateSession,  (req, res) => {
+    database.query(
       `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
       function (error, results, fields) {
         if (error) throw error;
@@ -108,8 +52,8 @@ const connection = mysql.createPool({
     );
   });
   
-  router.post("/password-list", validateSession,  (req, res) => {
-    connection.query(
+  router.post("/password-list", session.validateSession,  (req, res) => {
+    database.query(
       `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
       [req.query.id],
       function (error, results, fields) {
@@ -119,9 +63,9 @@ const connection = mysql.createPool({
     );
   });
   
-  router.put("/password-list", validateSession,  (req, res) => {
+  router.put("/password-list", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    connection.query(
+    database.query(
       `SELECT id, info, service, updated, url, username, category 
                         FROM passwords 
                         WHERE view = 'true' 
@@ -140,8 +84,8 @@ const connection = mysql.createPool({
     );
   });
   
-  router.get("/password", validateSession,  (req, res) => {
-    connection.query(
+  router.get("/password", session.validateSession,  (req, res) => {
+    database.query(
       `SELECT password FROM passwords WHERE view = 'true' and id = ?`,
       [req.query.id],
       function (error, results, fields) {
@@ -151,7 +95,7 @@ const connection = mysql.createPool({
     );
   });
   
-  router.post("/password",  validateSession, (req, res) => {
+  router.post("/password", session.validateSession, (req, res) => {
     let data = {
       service: req.body.service,
       url: req.body.url,
@@ -163,7 +107,7 @@ const connection = mysql.createPool({
       view: "True",
       info: req.body.info,
     };
-    connection.query(
+    database.query(
       `INSERT INTO passwords SET ?`,
       [data],
       function (error, results, fields) {
@@ -174,8 +118,8 @@ const connection = mysql.createPool({
     );
   });
   
-  router.post("/password-update",  validateSession, (req, res) => {
-    connection.query(
+  router.post("/password-update", session.validateSession, (req, res) => {
+    database.query(
       `SELECT password FROM passwords WHERE id = ?`,
       [req.body.id],
       function (error, results, fields) {
@@ -194,7 +138,7 @@ const connection = mysql.createPool({
             view: "True",
             info: req.body.info,
           };
-          connection.query(
+          database.query(
             `UPDATE passwords SET ? WHERE id = ?`,
             [data, req.body.id],
             function (error, results, fields) {
@@ -217,7 +161,7 @@ const connection = mysql.createPool({
             view: "True",
             info: req.body.info,
           };
-          connection.query(
+          database.query(
             `UPDATE passwords SET ? WHERE id = ?`,
             [data, req.body.id],
             function (error, results, fields) {
@@ -232,8 +176,8 @@ const connection = mysql.createPool({
     );
   });
   
-  router.get("/password-cat",  validateSession, (req, res) => {
-    connection.query(
+  router.get("/password-cat", session.validateSession, (req, res) => {
+    database.query(
       `SELECT category FROM password_cat ORDER BY category ASC`,
       function (error, results, fields) {
         if (error) throw error;
@@ -244,7 +188,7 @@ const connection = mysql.createPool({
   
   router.get('/otp', (req, res) => {
     try {
-      connection.query(
+      database.query(
         `SELECT otp FROM passwords WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
           if (error) {
