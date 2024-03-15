@@ -20,6 +20,36 @@ const passwords = require('./routes/passwords.js');
 const docs = require('./routes/docs.js');
 //End of Routes
 
+
+
+function generateTimeBasedCode(secret) {
+  return speakeasy.totp({
+      secret,
+      encoding: 'base32', // Make sure to specify the encoding
+  });
+}
+
+// Function to calculate the remaining time until the current time-based code expires
+function calculateRemainingTime(secret) {
+  const remainingSeconds = speakeasy.totp.verifyDelta({
+      secret,
+      encoding: 'ascii',
+      token: generateTimeBasedCode(secret),
+      window: 1, // Set window to 1 to ensure accuracy
+  });
+
+
+//   // If remainingSeconds is -1, it means the current code has expired
+//   // We return 0 in that case to indicate no remaining time
+//   if (remainingSeconds === -1) {
+//       return 0;
+//   }
+
+//   // Otherwise, calculate the remaining time until the next code generation
+//   const timeRemaining = 30 - (moment().unix() % 30);
+//   return timeRemaining;
+// }
+
 const app = express();
 const port = 80;
 
@@ -71,10 +101,32 @@ app.get("/docs", (req, res) => {
 
 
 
-app.use("/inventory", session.validateSession, inventory);
-app.use("/wifi", session.validateSession, wifi);
-app.use("/docs", session.validateSession, docs);
-app.use("/servers", session.validateSession, servers)
+app.use("/inventory", validateSession, inventory);
+app.use("/wifi", validateSession, wifi);
+app.use("/docs", validateSession, docs);
+
+
+// app.get("/epass", (req, res) => {
+//   let newpassword = encryption.encrypt(req.query.password);
+//   res.send(newpassword.toString());
+// });
+
+// app.get("/dpass", (req, res) => {
+//   console.log(req.body.password);
+//   let newpassword = encryption.decrypt(req.body.password);
+//   res.send(newpassword);
+// });
+
+// Data API Calls
+
+app.use("/servers", session.validateSession, servers);
+
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+// ********************************************         User API Calls         ********************************************
+// ************************************************************************************************************************
+// ************************************************************************************************************************
+
 app.use("/connection", serverConnection);
 app.use("/passwords", passwords);
 
@@ -146,16 +198,7 @@ app.get("/model", session.validateSession, (req, res) => {
   );
 });
 
-app.post("/ap", session.validateSession, (req, res) => {
-  database.query(
-    `SELECT * FROM ap WHERE view = 'true' AND id = ?`,
-    [req.query.id],
-    function (error, results, fields) {
-      if (error) throw error;
-      res.send(results);
-    }
-  );
-});
+
 
 app.post("/ap-add", session.validateSession, (req, res) => {
   let data = {
