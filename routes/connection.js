@@ -14,6 +14,7 @@ router.get("/");
 
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
+    console.log('Login')
     database.query(
       "SELECT password FROM users WHERE username = ? AND status = ?",
       [username, "Active"],
