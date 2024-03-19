@@ -49,8 +49,8 @@ router.post("/login", async (req, res) => {
                   res.cookie("username", username, {
                     maxAge: currentDate,
                     httpOnly: true,
-                    secure: true,
-                    sameSite: "none",
+                    secure: false,
+                    sameSite: "strict",
                   });
                   //console.log('Pass')
                   res.send("Pass");

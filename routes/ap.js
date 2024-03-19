@@ -56,6 +56,16 @@ router.get("/", session.validateSession, (req, res) => {
       }
     );
   });
+
+  router.get("/room", session.validateSession, (req, res) => {
+    database.query(
+      `SELECT room FROM staff WHERE view = 'true' AND building = ?;`, [req.query.building],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  });
   
   router.get("/model", session.validateSession, (req, res) => {
     database.query(

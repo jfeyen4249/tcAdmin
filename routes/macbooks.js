@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/");
 
 
-router.get("/", session.validateSession, (req, res) => {
+router.get("/list", session.validateSession, (req, res) => {
     database.query(
       `SELECT * FROM computers WHERE view = 'true' and type = 'mac'`,
       function (error, results, fields) {

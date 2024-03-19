@@ -33,16 +33,21 @@
 
     </style>
 
+    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <link rel="manifest" href="../fav/site.webmanifest">
+    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-    <script defer src=".././menu.js"></script>
-   
+   <script defer src=".././menu.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>Wireless Access Points</title>
-    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <title>MacBook</title>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -59,7 +64,7 @@
        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
     <div class="flex items-center justify-between mb-4">
         <!-- Password Manager Passwords text -->
-        <h1 class="text-2xl font-bold mb-4">Wireless Access Point Inventory</h1>
+        <h1 class="text-2xl font-bold mb-4">MacBook Inventory</h1>
 
         <!-- Search Box and Add New Password Button Container -->
         <div class="flex items-center">
@@ -70,8 +75,6 @@
             
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
-            <input type="file" name="" id="upload" hidden>
-            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
         </div>
     </div>
 
@@ -79,12 +82,13 @@
     <table class="w-full border-collapse border border-gray-800">
         <thead>
             <tr class="bg-gray-800 text-white">
-                <th class="py-2 px-4 border">Make</th>
-                <th class="py-2 px-4 border">Model</th>
+                <th class="py-2 px-4 border">Processor</th>
+                <th class="py-2 px-4 border">RAM</th>
+                <th class="py-2 px-4 border">HDD</th>
                 <th class="py-2 px-4 border">Mac Address</th>
                 <th class="py-2 px-4 border">SN</th>
                 <th class="py-2 px-4 border">Building</th>
-                <th class="py-2 px-4 border">Installed</th>
+                <th class="py-2 px-4 border">Room</th>
             </tr>
         </thead>
         <tbody class="text-center" id="password-table">
@@ -162,19 +166,14 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="modal-name" class="block text-gray-600 text-sm font-medium mb-2">AP Name</label>
-                        <input type="text" id="modal-name" name="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
-
-                    <div class="mb-4">
                         <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
                         <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
 
                  <div class="modal-btn mt-6">
                     
-                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddAP()">Add Access Point</button>
-                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditAP()">Save Changes</button>
+                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddPass() ">Add Password</button>
+                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditPass()">Save This Password</button>
                  </div>
             </div>
         </div>
@@ -195,13 +194,10 @@
         let modelList = document.getElementById('modal-model')
         let macAddress = document.getElementById('modal-mac')
         let serialNumber = document.getElementById('modal-sn')
-        let name = document.getElementById('modal-name')
         let install = document.getElementById('modal-installed')
         let assetTag = document.getElementById('modal-tag')
         let building = document.getElementById('modal-building')
         let room = document.getElementById('modal-room')
-        let importBTN = document.getElementById('import')
-        let upload = document.getElementById('upload')
 
         function openModal(id, make, model) {
             fetch(`/ap?id=${id}`,{ method: 'post'})
@@ -213,7 +209,6 @@
                     getmodel(make, model)
                     macAddress.value = data[0].mac
                     serialNumber.value = data[0].sn
-                    name.value = data[0].name
                     install.value = data[0].installed
                     assetTag.value = data[0].tag
                     //building.value = data[0].building
@@ -242,106 +237,34 @@
 
         function AddModal() {
            document.getElementById('modal').style.display = 'flex';
-           document.getElementById('modal-add').classList.remove('hidden')
         }
 
-        function AddAP() {
-            let data = {
-                make : makeList.value,
-                model : modelList.value,
-                sn : serialNumber.value,
-                mac : macAddress.value,
-                name : name.value,
-                tag : assetTag.value,
-                room : room.value,
-                building : building.value,
-                installed : install.value,
-                }
-
-            fetch(`/ap-add`,{
-                method: 'Post',
-                body : JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json",
-                    },
-            })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('password-table').innerHTML = '';
-                        closeModal()
-                        getList()
-                    });
-        }
-
-        function EditAP() {
-            let data = {
-                make : makeList.value,
-                model : modelList.value,
-                sn : serialNumber.value,
-                mac : macAddress.value,
-                name : name.value,
-                tag : assetTag.value,
-                room : room.value,
-                building : building.value,
-                installed : install.value,
-                }
-
-            fetch(`/ap-edit?id=${passid}`,{
-                method: 'Post',
-                body : JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json",
-                    },
-            })
-                    .then(response => response.json())
-                    .then(data => {
-                        document.getElementById('password-table').innerHTML = '';
-                        closeModal()
-                        getList()
-                    });
-        }
-        
         function closeModal() {
-            document.getElementById('modal-add').classList.add('hidden')
+            
             document.getElementById('modal').style.display = 'none';
-            passid = 0
         }
 
         let getList = () => {
             document.getElementById('password-table').innerHTML = '';
-            fetch('/ap')
+            fetch('/macbook')
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
                             <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
-                                <td class="py-2 px-4 border">${obj.make}</td>
-                                <td class="py-2 px-4 border">${obj.model}</td>
+                                <td class="py-2 px-4 border">${obj.processor}</td>
+                                <td class="py-2 px-4 border">${obj.ram} GB</td>
+                                <td class="py-2 px-4 border">${obj.hdd} GB</td>
                                 <td class="py-2 px-4 border">${obj.mac}</td>
                                 <td class="py-2 px-4 border">${obj.sn}</td>
                                 <td class="py-2 px-4 border">${obj.building}</td>
-                                <td class="py-2 px-4 border">${obj.installed}</td>
+                                <td class="py-2 px-4 border">${obj.room}</td>
                             </tr>`;
                         document.getElementById('password-table').innerHTML += row;
                     });
                 });
         };
-
-        function getmake() {
-            document.getElementById('modal-make').innerHTML = ``
-            document.getElementById('modal-make').innerHTML += `<option value="" >Select A Make</option>`
-            fetch('/apmakes')
-  		    .then(response => response.json())
-            .then(data => {
-                //console.log(data)
-                    for(let i = 0; i<data.length; i++) {
-                        let obj = data[i]
-                        document.getElementById('modal-make').innerHTML += `
-                            <option value="${obj.make}">${obj.make}</option>`
-                    }
-                });     
-        }
 
         function getBuildings() {
                     building.innerHTML = ``
@@ -385,97 +308,31 @@
 
         }
 
-        function textChanged() {
-            if(passid !== 0) {
-                document.getElementById('modal-save').classList.remove('hidden')
-            }
-        }
+
        
         document.getElementById('search').addEventListener('input', function(){
             if(document.getElementById('search').length < 1) {
                 getPasswords()
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/ap/?search=${document.getElementById('search').value}`,{method : 'put'})
+                fetch(`/inventory/password-list/?search=${document.getElementById('search').value}`,{method : 'put'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(obj => {
                             let row = `
-                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
-                                <td class="py-2 px-4 border">${obj.make}</td>
-                                <td class="py-2 px-4 border">${obj.model}</td>
-                                <td class="py-2 px-4 border">${obj.mac}</td>
-                                <td class="py-2 px-4 border">${obj.sn}</td>
-                                <td class="py-2 px-4 border">${obj.building}</td>
-                                <td class="py-2 px-4 border">${obj.installed}</td>
-                            </tr>`;
+                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '')">
+                                    <td class="py-2 px-4 border">${obj.service}</td>
+                                    <td class="py-2 px-4 border">${obj.url}</td>
+                                    <td class="py-2 px-4 border">${obj.username}</td>
+                                    <td class="py-2 px-4 border">${obj.category}</td>
+                                    <td class="py-2 px-4 border">${obj.updated}</td>
+                                </tr>`;
                             document.getElementById('password-table').innerHTML += row;
                         });
                     });
             }
         })
 
-       document.getElementById('upload').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const lines = e.target.result.split('\n');
-                lines.forEach(function(line) {
-                    console.log(line); 
-                    let data = {make : line.split(',')[0], model : line.split(',')[1], sn : line.split(',')[2], mac : line.split(',')[3], name : line.split(',')[4], tag : line.split(',')[5], room : line.split(',')[6], building : line.split(',')[7], installed : line.split(',')[8]}
-                    fetch(`/ap-add`,{method: 'Post', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
-                        .then(response => response.json())
-                        .then(data => {});
-                });
-            }
-            reader.readAsText(file);
-            getList(); // Assuming getList() is defined elsewhere
-        }); 
-
-        makeList.addEventListener('change', function(){
-            console.log("Make changed!")
-            document.getElementById('modal-model').innerHTML = ``
-            document.getElementById('modal-model').innerHTML += `<option value="" >Select A Make</option>`
-            fetch(`/model?make=${makeList.value}`)
-  		    .then(response => response.json())
-            .then(data => {
-                //console.log(data)
-                    for(let i = 0; i<data.length; i++) {
-                        let obj = data[i]
-                        document.getElementById('modal-model').innerHTML += `
-                            <option value="${obj.model}">${obj.model}</option>`
-                    }
-                });    
-        })
-
-        importBTN.addEventListener('click', function() {
-            upload.click()
-        })
-
-        function textChanged() {
-            if(passid !== 0) {
-                document.getElementById('modal-save').classList.remove('hidden')
-            }
-
-            if(building.value == 'none') {
-                room.value = ''
-                staff.value = ''
-            }
-        }
-       
-        makeList.addEventListener('input', textChanged)
-        modelList.addEventListener('input', textChanged)
-        macAddress.addEventListener('input', textChanged)
-        serialNumber.addEventListener('input', textChanged)
-        install.addEventListener('input', textChanged)
-        assetTag.addEventListener('input', textChanged)
-        building.addEventListener('input', textChanged)
-        room.addEventListener('input', textChanged)
-        
-
-    getBuildings()
-    getmake()
     getList()
     </script>
 

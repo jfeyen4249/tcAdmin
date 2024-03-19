@@ -3,6 +3,7 @@ const express = require("express");
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
+const {encrypt, decrypt} = require("../utils/encryption.js");
 
 const router = express.Router();
 
@@ -13,7 +14,7 @@ router.get("/", session.validateSession, (req, res) => {
   });
 
 router.get("/list", session.validateSession, (req, res) => {
-  connection.query(`SELECT id, ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
+  database.query(`SELECT id, ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
       if (error) {
           console.error("Error retrieving WiFi list:", error);
           res.status(500).json({ error: "Internal server error" });
@@ -38,7 +39,7 @@ router.get("/list", session.validateSession, (req, res) => {
   router.get("/password", session.validateSession, (req, res) => {
     let id = req.query.id;
     //console.log(id);
-    connection.query(`SELECT ssid,password FROM wifi WHERE id = ? AND status = 'true'`, [id], function (error, results, fields) {
+    database.query(`SELECT ssid,password FROM wifi WHERE id = ? AND status = 'true'`, [id], function (error, results, fields) {
         if (error) {
             console.error("Error retrieving WiFi details:", error);
             res.status(500).json({ error: "Internal server error" });
@@ -66,7 +67,7 @@ router.get("/list", session.validateSession, (req, res) => {
 router.post("/add", session.validateSession, (req, res) => {
   const {ssid, wifipassword} = req.body
   let data = {ssid : encrypt(ssid), password : encrypt(wifipassword)}
-  connection.query(`INSERT INTO wifi SET ?`,[data], function (error, results, fields) {
+  database.query(`INSERT INTO wifi SET ?`,[data], function (error, results, fields) {
       if (error) throw error;
       //console.log(results);
       res.send('added');
@@ -78,7 +79,7 @@ router.post("/edit", session.validateSession, (req, res) => {
   const {id, ssid, wifipassword} = req.body
   console.log(id)
   let data = {ssid : encrypt(ssid), password : encrypt(wifipassword)}
-  connection.query(`UPDATE wifi SET ? WHERE id = ?`,[data, id], function (error, results, fields) {
+  database.query(`UPDATE wifi SET ? WHERE id = ?`,[data, id], function (error, results, fields) {
       if (error) throw error;
        console.log(results);
       res.send('added');
@@ -93,7 +94,7 @@ function validateSession(req, res, next) {
 
     if (sessionID) {
         // Check if the session ID exists in the user table
-        connection.query(
+        database.query(
         "SELECT * FROM users WHERE session = ? AND username = ?",
         [sessionID, username],
         (err, results) => {

@@ -46,8 +46,16 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src=".././menu.js"></script>
     <title>Docmentation</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
+
+<div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
+        <span id="noteText"></span>
+    </div>
+
 <body class="bg-slate-800 h-screen flex">
+    
 
     <!-- Left Side Menu -->
     <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
@@ -186,6 +194,8 @@
         }
 
         function getDocs() {
+            
+
             document.getElementById('docs-table').innerHTML = ''
             fetch('/docs/list')
                 .then(response => response.json())
@@ -200,6 +210,7 @@
                         document.getElementById('docs-table').innerHTML += row; // Corrected table ID
                     });
                 });
+            
         }
 
         document.addEventListener("click", function() {
@@ -242,7 +253,9 @@
         }
 
         function openEditDoc() {
-            console.log('Edit Clicked')
+            if(docID == 0) {
+                showNotification(`No document selected`,'bg-red-600')
+            } else {
             editModalBTN.style.display = 'inline'
             addModal.style.display = 'flex'
             fetch(`/docs/doc?id=${docID}`)
@@ -253,7 +266,7 @@
                         quill.root.innerHTML  = data[0].doc_body
                 }); 
         }
-        
+        }
         function addDoc() {
             {{!-- if(docTitle.value !== ''){
                 alert('Enter the document title!')

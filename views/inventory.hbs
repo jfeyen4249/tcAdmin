@@ -6,7 +6,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
      <script defer src=".././menu.js"></script>
-    <title>IT Documentation</title>
+    <title>Inventory</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -26,7 +28,7 @@
 
             <!-- Documentation List -->
             <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center">
-                <div class="bg-gray-200 p-4 rounded-md">
+                <div onclick="gotopage('desktop')"  class="bg-gray-200 p-4 rounded-md">
                     <h2 class="text-lg font-semibold mb-2">Desktop Computers</h2>
                     <p></p>
                     <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Desktops</button>
@@ -47,9 +49,9 @@
                     <button onclick="gotopage('ipad')" class="bg-yellow-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View iPads</button>
                 </div>
                 <div class="bg-gray-200 p-4 rounded-md">
-                    <h2 class="text-lg font-semibold mb-2">Chromebooks</h2>
+                    <h2 class="text-lg font-semibold mb-2" >Chromebooks</h2>
                     <p></p>
-                    <button class="bg-yellow-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Chromebooks</button>
+                    <button class="bg-yellow-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="notDone()"><i class="fa-solid fa-eye"></i> View Chromebooks</button>
                 </div>
                 <div class="bg-gray-200 p-4 rounded-md">
                     <h2 class="text-lg font-semibold mb-2">Switches</h2>
@@ -109,6 +111,9 @@
             window.location.href = `/inventory/${page}`
         }
         
+        function notDone() {
+            showNotification(`No document selected`,'bg-red-600')
+        }
     </script>
 
 </body>

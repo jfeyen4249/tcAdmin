@@ -17,6 +17,7 @@ const ap = require('./routes/ap.js');
 const macbooks = require('./routes/macbooks.js');
 const ipad = require('./routes/ipads.js');
 const staff = require('./routes/staff.js');
+const desktop = require('./routes/desktop.js');
 //End of Routes
 
 const app = express();
@@ -61,7 +62,7 @@ app.use("/ipad", session.validateSession, ipad);
 app.use("/servers", session.validateSession, servers);
 app.use("/staff", session.validateSession, staff);
 app.use("/passwords", session.validateSession, passwords);
-
+app.use("/desktop", session.validateSession, desktop);
 app.use("/connection", serverConnection);
 
 const server = app.listen(port, () => {
