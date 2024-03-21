@@ -45,7 +45,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
 <body class="bg-slate-800 h-screen flex">
-
+<input type="text" id="textInput" placeholder="Type something" hidden>
     <!-- Left Side Menu -->
     <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
         <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
@@ -65,7 +65,7 @@
         <div class="flex items-center">
             <!-- Search Box -->
             <div class="flex items-center">
-                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="search" oninput="searchDB(this.value)" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             
             <!-- Add New Password Button -->
@@ -391,12 +391,12 @@
             }
         }
        
-        document.getElementById('search').addEventListener('input', function(){
-            if(document.getElementById('search').length < 1) {
+        function searchDB (search){
+            if(search.length < 1) {
                 getPasswords()
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/ap/?search=${document.getElementById('search').value}`,{method : 'put'})
+                fetch(`/ap/?search=${search}`,{method : 'put'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(obj => {
@@ -413,7 +413,7 @@
                         });
                     });
             }
-        })
+        }
 
        document.getElementById('upload').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -472,6 +472,10 @@
         assetTag.addEventListener('input', textChanged)
         building.addEventListener('input', textChanged)
         room.addEventListener('input', textChanged)
+        
+        //const textInput = document.getElementById('textInput');
+
+        
         
 
     getBuildings()

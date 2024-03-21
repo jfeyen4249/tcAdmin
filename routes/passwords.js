@@ -2,6 +2,7 @@ const express = require("express");
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
+const encryption = require("../utils/encryption.js");
 
 const speakeasy = require('speakeasy');
 const moment = require('moment');
@@ -90,7 +91,7 @@ router.get("/");
       [req.query.id],
       function (error, results, fields) {
         if (error) throw error;
-        res.send(decrypt(results[0].password));
+        res.send(encryption.decrypt(results[0].password));
       }
     );
   });
@@ -100,7 +101,7 @@ router.get("/");
       service: req.body.service,
       url: req.body.url,
       username: req.body.username,
-      password: encrypt(req.body.password),
+      password: encryption.encrypt(req.body.password),
       otp : req.body.otp.replace(/\s/g, ""),
       category: req.body.category,
       updated: req.body.updated,
@@ -126,7 +127,7 @@ router.get("/");
         if (error) throw error;
   
         if (
-          req.body.password === decrypt(results[0].password) ||
+          req.body.password === encryption.decrypt(results[0].password) ||
           req.body.password.length == 0
         ) {
           let data = {
@@ -150,12 +151,12 @@ router.get("/");
           return;
         }
   
-        if (req.body.password !== decrypt(results[0].password)) {
+        if (req.body.password !== encryption.decrypt(results[0].password)) {
           let data = {
             service: req.body.service,
             url: req.body.url,
             username: req.body.username,
-            password: encrypt(req.body.password),
+            password: encryption.encrypt(req.body.password),
             category: req.body.category,
             updated: req.body.updated,
             view: "True",
