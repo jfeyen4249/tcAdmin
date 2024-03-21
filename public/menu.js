@@ -2,7 +2,7 @@ let menu = document.getElementById('menu')
 
 menu.innerHTML = `
 <li class="mb-2"><a href="/" class="text-white hover:text-blue-400">Dashboard</a></li>
-<li class="mb-2"><a href="/status" class="text-white hover:text-blue-400">System Status</a></li>
+<li class="mb-2"><a href="#" class="text-white hover:text-blue-400">System Status</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">Contacts</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">Chromebook Repairs</a></li>
 <li class="mb-2"><a href="/docs" class="text-white hover:text-blue-400">Documentation</a></li>
@@ -25,4 +25,22 @@ function logout() {
         }
     })
 
+}
+
+function showNotification(noteText, color) {
+    var notification = document.getElementById('notification');
+    notification.classList.remove('hidden');
+    document.getElementById('noteText').innerText = noteText
+    notification.classList.add(color);
+  
+    setTimeout(function() {
+        notification.classList.add('hidden');
+        notification.classList.remove('animate-slide-out-right');
+        notification.classList.remove(color);
+    }, 4500)
+}
+
+function hideNotification() {
+    var notification = document.getElementById('notification');
+    notification.classList.add('animate-slide-out-right');
 }

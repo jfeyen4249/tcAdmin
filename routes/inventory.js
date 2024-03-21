@@ -26,6 +26,10 @@ router.get("/ipad",  (req, res) => {
     res.render("ipad");
 });
 
+router.get("/desktop",  (req, res) => {
+    res.render("desktop");
+});
+
 // router.get("/password-list", sessions.validateSessions,  (req, res) => {
 //     database.query(
 //       `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true'`,

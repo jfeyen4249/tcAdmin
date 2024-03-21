@@ -5,13 +5,10 @@ const session = require("../utils/session.js");
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
+router.get("/", session.validateSession, (req, res) => {
   res.render("docs");
 });
 
-router.get("/", session.validateSession, (req, res) => {
-    res.render("docs");
-  });
 
   router.get("/list", session.validateSession, (req, res) => {
     let id = req.query.id
@@ -24,7 +21,7 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.get("/", session.validateSession, (req, res) => {
+  router.get("/doc", session.validateSession, (req, res) => {
     let id = req.query.id
     database.query(
       `SELECT * FROM docs WHERE id = ? AND status = 'true'`, [id],
@@ -35,7 +32,7 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.put("/", session.validateSession, (req, res) => {
+  router.put("/doc", session.validateSession, (req, res) => {
     let data = {
       doc : req.body.doc,
       doc_body : req.body.body,
@@ -50,7 +47,7 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.post("/", session.validateSession, (req, res) => {
+  router.post("/doc", session.validateSession, (req, res) => {
     let data = {
       doc : req.body.doc,
       doc_body : req.body.body,
@@ -65,7 +62,7 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.delete("/", session.validateSession, (req, res) => {
+  router.delete("/doc", session.validateSession, (req, res) => {
     database.query(
       `UPDATE docs SET status = 'false' WHERE id = ?`, [req.query.id],
       function (error, results, fields) {
