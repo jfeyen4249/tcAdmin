@@ -4,7 +4,7 @@ const path = require("path");
 const session = require("./utils/session.js");
 
 //Routes
-//const user = require('./routes/user.js');
+
 const servers = require('./routes/servers.js');
 const inventory = require('./routes/inventory.js');
 const serverConnection = require('./routes/connection.js');
