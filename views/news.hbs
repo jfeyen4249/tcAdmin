@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <style>
+     .wpc {
+        width: 30vw;
+    }
+   </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+     <script defer src=".././menu.js"></script>
+    <title>Technology News</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+</head>
+    
+    <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
+        <span id="noteText"></span>
+    </div>
+
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Technology News</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <select name="modal-make" id="news" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                     <option value="">Select news category</option>`
+                     <option value="attack">Cybersecurity Attacks</option>`
+                     <option value="malware">Malware News</option>`
+                     <option value="threat">Threat Defence</option>`
+                </select>
+            </div>
+            
+            <!-- Add New Password Button -->
+            {{!-- <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="document.getElementById('add-modal').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Add</button> --}}
+        </div>
+    </div>
+
+    <!-- Table -->
+        <table class="w-full border-collapse border border-gray-800" >
+            <div class="grid grid-cols-2 gap-2 mt-3 w-full text-center" id="grid">
+                    
+                </div>
+        </table>
+    </div>
+
+    <script defer>
+
+        var selectElement = document.getElementById("news");
+        selectElement.addEventListener("change", function() {
+            var selectedOptionIndex = selectElement.selectedIndex;
+            var selectedOptionValue = selectElement.options[selectedOptionIndex].value;
+            getNews(selectedOptionValue);
+        });
+       
+
+        function getNews(category) {
+            grid.innerHTML = ''
+            
+            fetch(`/news/${category}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                grid.innerHTML = ''
+                for(let i = 0; i<data[0].items.length; i++) {    
+                    let obj = data[0].items[i];
+                        var isoDate = obj.isoDate; // Assuming obj.isoDate is your ISO date string
+                        var datePart = isoDate.split('T')[0];
+                    grid.innerHTML += `
+                            <div class="bg-gray-300 p-4 rounded-md text-left grid grid-cols-2 gap-x-4">
+                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.title}</h2>
+                            <p class="col-span-1">By: ${obj.author.match(/\(([^)]+)\)/)[1]}</p>
+                            <p class="col-span-1 text-right">Date: ${datePart}</p>
+                            <hr class="col-span-2">
+                            <p class="col-span-2">${obj.content}</p>
+                            <br>
+                            <hr class="col-span-2">
+                            <br>
+                            <a href="${obj.link}" target="_blank" rel="">Read More</a>
+                        </div>` 
+                }
+            })
+        }
+        
+    </script>
+
+</body>
+</html>

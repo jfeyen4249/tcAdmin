@@ -18,6 +18,18 @@ router.get("/list", session.validateSession,  (req, res) => {
     );
 });
 
+router.get("/computer", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM computers WHERE id = ? LIMIT 1`, [req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+
+
 router.post("/computer", session.validateSession,  (req, res) => {
     database.query(
         `SELECT * FROM computers WHERE view = 'true' AND type = 'desktop' ORDER BY building ASC`,
@@ -37,6 +49,7 @@ router.put("/computer", session.validateSession,  (req, res) => {
         }
     );
 });
+
 
 router.delete("/computer", session.validateSession,  (req, res) => {
     database.query(
