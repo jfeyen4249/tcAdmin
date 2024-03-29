@@ -16,7 +16,18 @@ router.get("/", session.validateSession, (req, res) => {
       }
     );
   });
-  
+
+    
+  router.post("/ap", session.validateSession, (req, res) => {
+    database.query(
+      `SELECT * FROM ap WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  });
+
   router.put("/", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
     database.query(
@@ -77,8 +88,6 @@ router.get("/", session.validateSession, (req, res) => {
       }
     );
   });
-  
-  
   
   router.post("/add", session.validateSession, (req, res) => {
     let data = {

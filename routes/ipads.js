@@ -8,7 +8,7 @@ const router = express.Router();
 router.get("/");
 
 
-router.get("/", session.validateSession, (req, res) => {
+router.get("/ipads", session.validateSession, (req, res) => {
     database.query(
       `SELECT * FROM ipad WHERE view = 'true'`,
       function (error, results, fields) {
@@ -17,8 +17,18 @@ router.get("/", session.validateSession, (req, res) => {
       }
     );
   });
+
+  router.get("/ipad-details", session.validateSession, (req, res) => {
+    database.query(
+      `SELECT * FROM ipad WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  });
   
-  router.post("/", session.validateSession, (req, res) => {
+  router.post("/ipad", session.validateSession, (req, res) => {
     let data = {
       model: req.body.model,
       sn: req.body.sn,
@@ -31,8 +41,6 @@ router.get("/", session.validateSession, (req, res) => {
       screen: req.body.screen,
       tag: req.body.tag,
     };
-  
-    console.log(data);
     database.query(
       `INSERT INTO ipad Set ?`,
       [data],
@@ -44,7 +52,7 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
   
-  router.put("/", session.validateSession, (req, res) => {
+  router.put("/ipad", session.validateSession, (req, res) => {
     let data = {
       model: req.body.model,
       sn: req.body.sn,
@@ -55,8 +63,6 @@ router.get("/", session.validateSession, (req, res) => {
       screen: req.body.screen,
       tag: req.body.tag,
     };
-  
-    console.log(data);
     database.query(
       `UPDATE ipad Set ? WHERE id = ?`,
       [data, req.query.id],
@@ -74,19 +80,6 @@ router.get("/", session.validateSession, (req, res) => {
       function (error, results, fields) {
         if (error) throw error;
         //console.log(results)
-        res.send(results);
-      }
-    );
-  });
-  
-  router.get("/details", session.validateSession, (req, res) => {
-    console.log(req.query.id);
-    database.query(
-      `SELECT * FROM ipad WHERE id = ?`,
-      [req.query.id],
-      function (error, results, fields) {
-        if (error) throw error;
-        console.log(results);
         res.send(results);
       }
     );

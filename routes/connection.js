@@ -19,8 +19,6 @@ router.post("/login", async (req, res) => {
       "SELECT password FROM users WHERE username = ? AND status = ?",
       [username, "Active"],
       (err, results) => {
-        console.log(results);
-  
         bcrypt.compare(password, results[0].password, function (err, isMatch) {
           if (err) {
             throw err;
