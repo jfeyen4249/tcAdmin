@@ -21,6 +21,4 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Restart Node.js App
-        run: |
-          pm2 restart app.jsß
+
