@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const session = require("./utils/session.js");
+const bcrypt = require("bcryptjs");
 
 //Routes
 
@@ -54,6 +55,7 @@ app.use("/passwords", session.validateSession, passwords);
 app.use("/desktop", session.validateSession, desktop);
 app.use("/connection", serverConnection);
 app.use("/news", news);
+
 
 const server = app.listen(port, () => {
   console.log("listening at http://localhost");

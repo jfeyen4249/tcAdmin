@@ -13,21 +13,8 @@ menu.innerHTML = `
 <li class="mb-2"><a href="/maps" class="text-white hover:text-blue-400">Maps</a></li>
 <li class="mb-2"><a href="/wifi" class="text-white hover:text-blue-400">Wifi Passwords</a></li>
 <li class="mb-2"><a href="/settings" class="text-white hover:text-blue-400">Settings</a></li>
-<li class="mb-2"><a href="#" class="text-white hover:text-blue-400" onclick="logout()">Logout</a></li>
+<li class="mb-2"><a href="/connection/logout" class="text-white hover:text-blue-400" >Logout</a></li>
 `
-
-function logout() {
-    fetch(`/logout`)
-    .then(response => response.text())
-    .then(data => {
-        if(data == 'logged out'){
-            window.location.href = '/login'
-        }else {
-            alert('Error!')
-        }
-    })
-
-}
 
 function showNotification(noteText, color) {
     var notification = document.getElementById('notification');
