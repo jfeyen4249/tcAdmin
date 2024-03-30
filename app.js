@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const session = require("./utils/session.js");
+const bcrypt = require("bcryptjs");
 
 //Routes
 //const user = require('./routes/user.js');
@@ -20,7 +21,7 @@ const news = require('./routes/news.js');
 //End of Routes
 
 const app = express();
-const port = 443;
+const port = 5500;
 
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: true }));
@@ -54,6 +55,7 @@ app.use("/passwords", session.validateSession, passwords);
 app.use("/desktop", session.validateSession, desktop);
 app.use("/connection", serverConnection);
 app.use("/news", news);
+
 
 const server = app.listen(port, () => {
   console.log("listening at http://localhost");

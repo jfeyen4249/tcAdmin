@@ -34,7 +34,9 @@ router.post("/login", async (req, res) => {
                 if (err) {
                   console.error(err);
                 } else {
-                  const currentDate = new Date();
+                  
+                    if(password !== "P@$$Word") {
+                      const currentDate = new Date();
                   // Add one year
                   currentDate.setFullYear(currentDate.getFullYear() + 1);
                   // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
@@ -52,6 +54,10 @@ router.post("/login", async (req, res) => {
                   });
                   //console.log('Pass')
                   res.send("Pass");
+                     
+                    }else{
+                      res.send('change')
+                    }
                 }
               }
             );
@@ -61,6 +67,21 @@ router.post("/login", async (req, res) => {
     );
   });
 
+  router.put("/password", async  (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+    
+    database.query(
+      `UPDATE users SET password = ? WHERE username = ?`,
+      [hashedPassword, username],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send('updated');
+      }
+    );
+});
 
 router.get("/logout", session.validateSession,  (req, res) => {
     const username = req.cookies.username;
@@ -73,6 +94,8 @@ router.get("/logout", session.validateSession,  (req, res) => {
       }
     );
 });
+
+
   
 router.get("/login-check", (req, res) => {
     console.log("connection/login-check hit");
@@ -84,5 +107,7 @@ router.get("/login-check", (req, res) => {
         }
     );
 });
+
+
 
 module.exports = router;
