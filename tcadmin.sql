@@ -85,6 +85,9 @@ CREATE TABLE `password_cat` (
   UNIQUE KEY `category_UNIQUE` (`category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+INSERT INTO `password_cat` VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
+
+
 CREATE TABLE `passwords` (
   `id` int NOT NULL AUTO_INCREMENT,
   `service` varchar(255) DEFAULT NULL,
