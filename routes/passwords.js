@@ -97,12 +97,28 @@ router.get("/");
   });
   
   router.post("/password", session.validateSession, (req, res) => {
+    function code(code) {
+      // Check if code is not a string or is undefined
+      if (typeof code !== 'string' || code === undefined) {
+        return 'none';
+      }
+    
+      // If code is an empty string, return 'none'
+      if (code === "") {
+        return 'none';
+      } else {
+        // Remove white spaces using regex
+        return code.replace(/\s/g, "");
+      }
+    }
+    
+
     let data = {
       service: req.body.service,
       url: req.body.url,
       username: req.body.username,
       password: encryption.encrypt(req.body.password),
-      otp : req.body.otp.replace(/\s/g, ""),
+      otp : code(),
       category: req.body.category,
       updated: req.body.updated,
       view: "True",
