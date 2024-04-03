@@ -3,6 +3,7 @@ let menu = document.getElementById('menu')
 menu.innerHTML = `
 <li class="mb-2"><a href="/" class="text-white hover:text-blue-400">Dashboard</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">System Status</a></li>
+<li class="mb-2"><a href="/maps" class="text-white hover:text-blue-400">Building Maps</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">Contacts</a></li>
 <li class="mb-2"><a href="#" class="text-white hover:text-blue-400">Chromebook Repairs</a></li>
 <li class="mb-2"><a href="/docs" class="text-white hover:text-blue-400">Documentation</a></li>

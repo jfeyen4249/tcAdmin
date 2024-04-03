@@ -133,3 +133,11 @@ CREATE TABLE `wifi` (
   `status` varchar(45) DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `tcadmin`.`maps` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `file` VARCHAR(255) NULL,
+  `building` VARCHAR(45) NULL,
+  `type` VARCHAR(45) NULL,
+  `view` VARCHAR(45) NULL DEFAULT 'true',
+  PRIMARY KEY (`id`));
