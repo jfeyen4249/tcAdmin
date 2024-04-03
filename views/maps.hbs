@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <style>
+        .selected {
+            background-color: darkgrey;
+        }
+
+        .btn {
+            margin-left: -35px;
+        }
+
+        .w-85 {
+            width: 35vw;
+        }
+
+        .top {
+            margin-top: -40px;
+        }
+
+        .h-85 {
+            height: 60vh;
+        }
+
+        .view-h {
+            height: 60vh;
+            max-height: 60vh;
+            border: 2px #333 solid;
+            border-radius: 10px;
+            padding: 15px;
+            overflow: scroll;
+        }
+
+        img {
+            max-width: 90%;
+            height: auto;
+            margin-top: 20px;
+
+        }
+
+
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+       <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+            <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+    <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src=".././menu.js"></script>
+    <title>TC Admin - Building Maps</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+</head>
+
+<div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
+        <span id="noteText"></span>
+    </div>
+
+<body class="bg-slate-800 h-screen flex">
+    
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="./img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    
+            
+<div class="flex-1 p-8">
+    <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+        <div class="flex items-center justify-between mb-4">
+            <h1 class="text-2xl font-bold">Building Maps</h1>
+            <div class="flex items-center ml-auto">
+                    <select id="map-building" class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option value="street">Select Building</option>
+                </select>
+
+                <select id="map-type" class="bg-gray-100 border border-gray-300 ml-4 px-2 py-2 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                    <option value="street">Select Map</option>
+                    
+                </select>
+            </div>
+
+            <div class="flex items-center">
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" onclick="openModal()"><i class="fa-solid fa-plus" ></i> New</button>
+                <button class="bg-red-500 text-white px-4 py-2 rounded-md ml-4" onclick="deleteMap()"><i class="fa-solid fa-trash"></i> Delete</button>
+                <hr>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="flex items-center text-center">
+            <img src="" id="map-image"  alt="">
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div id="modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-95 hidden" ondblclick="event.stopPropagation()">
+    <div class="w-85 h-85 mx-auto mt-12 bg-white p-8 rounded shadow-md h-85">
+        <h2 class="text-2xl font-bold mb-4 text-center" id="show-doc-title">Add a new Map</h2><hr>
+       <div>
+            <div class="grid grid-cols-1 flex-grow">
+             <div>
+                <div class="col-span-1 bg-white p-8 rounded-l text-center">
+                
+                <div class="mb-4">
+                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Location</label>
+                        <select name="modal-building" id="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="modal-info" class="block text-gray-600 text-sm font-medium mb-2">Maps Name</label>
+                        <input type="text" id="modal-info" name="modal-info" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+                    <div class="text-center">
+                        <input type="file" id="fileInput" hidden>
+                        <button class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 mt-4 w-half" onclick="fileInput.click()" id="modal-save">Add Map File</button>
+                    </div>
+                </div>                                 
+            </div>
+        </div>
+        </div>
+        <div class="grid grid-cols-2 m-4 flex-grow">      
+            <button type="button" id="modal-save-btn" class="w-half mr-6 bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 mb-4" onclick="addMap()">Add Map</button>      
+            <button type="button" id="modal-save-btn" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-700 mb-4" onclick="closeModal()">Close</button>      
+        </div>
+    </div> 
+</div>
+
+
+    <script>
+        let building = document.getElementById('map-building')
+        let Modalbuilding = document.getElementById('modal-building')
+        let mapType = document.getElementById('map-type')
+        let Modal = document.getElementById('modal')
+        let mapImage = document.getElementById('map-image')
+
+
+        function openModal(id) {
+            Modal.style.display = 'flex'
+        }
+        function closeModal() {
+            Modal.style.display = 'none'
+
+        }
+
+
+
+        function getBuildings() {
+                    building.innerHTML = ``
+                    building.innerHTML += `<option value="" >Select A Building</option>`
+                    Modalbuilding.innerHTML = ``
+                    Modalbuilding.innerHTML += `<option value="" >Select A Building</option>`
+                    fetch('/ap/buildings')
+                    .then(response => response.json())
+                    .then(data => {
+                        
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                                Modalbuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            }
+                        });     
+            }
+
+        function getMapType() {
+            var a = building.value
+                mapType.innerHTML = ''
+                mapType.innerHTML += `<option value="">Select a Map</option>`
+                fetch(`/maps/type?building=${a}`)
+                .then(response => response.json())
+                .then(data => {
+                        for(let i = 0; i<data.length; i++) {
+                            let obj = data[i]
+                            mapType.innerHTML += `<option value="${obj.id}">${obj.type}</option>`
+                        }
+                    })
+        }
+
+        building.addEventListener('input', () => {
+                    getMapType()
+            })
+
+        mapType.addEventListener('input', () => {
+            console.log(mapType.options[mapType.selectedIndex].text)
+            getMap()
+        })
+        
+        function getMap() {
+            fetch(`/maps/image?id=${mapType.value}`)
+  		    .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                    mapImage.src = data[0].file
+                });
+        }
+        
+        function addMap() {
+            const fileInput = document.getElementById('fileInput');
+            const buildingNameInput = Modalbuilding;
+            const descriptionInput = document.getElementById('modal-info');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a file!');
+                return;
+            }
+
+            if (buildingNameInput.value.length == 0) {
+                alert('Please select a building!');
+                return;
+            }
+
+            if (descriptionInput.value.length == 0) {
+                alert('Please add a map name!');
+                return;
+            }
+
+
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('buildingName', buildingNameInput.value);
+            formData.append('description', descriptionInput.value);
+
+            fetch('/maps/image', {
+                method: 'PUT',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data =>{
+                console.log(data)
+                if(data == "added"){
+                    closeModal()
+                    getBuildings()
+                    getMapType()
+                    Modal.style.display = 'none'
+                } else {
+                    alert("Failed!")
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to upload file');
+            });
+                
+        }
+
+        function deleteMap() {
+            if(mapType.value == "") {
+                return
+            }
+
+            var answer = prompt(`Do you want to delete ${mapType.options[mapType.selectedIndex].text}? (yes/no)`);
+            if (answer === "yes") {
+                fetch(`/maps/image?id=${mapType.value}`,{method : "Delete"})
+                .then(response => response.text())
+                .then(data => {
+                    if(data == "deleted") {
+                        getMapType()
+                    } else {
+                        alert('Error deleting this map!')
+                    }
+                }); 
+               
+            } else if (answer === "no") {
+                
+            } else {
+                 
+            } 
+        }
+    
+        getBuildings()
+    </script>
+
+</body>
+</html>
