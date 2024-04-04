@@ -68,7 +68,7 @@
             </div>
             
             <!-- Add New Password Button -->
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick=""><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddStaffModal()"><i class="fa-solid fa-plus"></i> Add</button>
             <input type="file" name="" id="upload" hidden>
             <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
         </div>
@@ -91,37 +91,32 @@
  
 
     <!-- Modal -->
-    <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div id="add-modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-95 hidden" onclick="event.stopPropagation()">
     <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
         <div class="grid grid-cols-1 flex-grow">
             <div class="col-span-1 bg-white p-8 rounded-l">
-                <form>
-                    <!-- Website/Service -->
+
                     <div class="mb-4">
                         <label for="modal-name" class="block text-gray-600 text-sm font-medium mb-2">Name</label>
-                        <input type="text" id="modal-name" name="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                        <input type="text" id="modal-name" name="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
-                    <!-- URL -->
+
                     <div class="mb-4">
                         <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building</label>
-                        <input type="text" id="modal-building" name="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                        <select id="modal-building" name="modal-building" class="min-w-half ml-4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                     </div>
-
-                    <!-- Username/Email -->
+   
                     <div class="mb-4">
-                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room</label>
-                        <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                        {{!-- <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label> --}}
+                        <input type="text" id="modal-room" name="modal-room" placeholder="Room Number" class="w-half ml-4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                     </div>
 
-                    <div class="modal-btn mt-6">
-                    
-                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddPass() ">Add Password</button>
-                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditPass()">Save This Password</button>
+                <div class="modal-btn mt-6 ">
+                    <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddStaff()">Add Password</button>
+                    <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="editStaff()">Save This Password</button>
                  </div>
 
-                 <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
-                    <i class="fas fa-times"></i>
-                </button>
+                 <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()"><i class="fas fa-times"></i></button>
             </div>
             
         </div>
@@ -152,27 +147,23 @@
             Name.value = staffname
             Building.value = staffbuilding
             Room.value = staffroom
-            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('add-modal').style.display = 'flex';
         }
 
         function AddStaffModal() {
             document.getElementById('modal-add').classList.remove('hidden')
-            document.getElementById('modal').style.display = 'flex';
+            document.getElementById('add-modal').style.display = 'flex';
         }
 
-        function AddPass() {
+        function AddStaff() {
             let data = {
-                service : document.getElementById('modal-website').value,
-                url : document.getElementById('modal-url').value,
-                username : document.getElementById('modal-username').value,
-                password : document.getElementById('modal-password').value,
-                category : document.getElementById('network-cat').value,
-                updated : dateString,
-                view : 'True',
-                info : quill.root.innerHTML
+                name :  Name.value,
+                building : Building.value,
+                room :  Room.value,
+                view : 'true',
             }
 
-            fetch('/password',{
+            fetch('/staff/add',{
                 method: 'Post',
                 body : JSON.stringify(data),
                 headers: {
@@ -189,37 +180,36 @@
                 });
         }
 
-        function EditPass() {
-           
+        function editStaff() {
             let data = {
-                id : passid,
-                service : document.getElementById('modal-website').value,
-                url : document.getElementById('modal-url').value,
-                username : document.getElementById('modal-username').value,
-                password : document.getElementById('modal-password').value,
-                category : document.getElementById('network-cat').value,
-                updated : dateString,
-                view : 'True',
-                info : quill.root.innerHTML
+                name :  Name.value,
+                building : Building.value,
+                room :  Room.value,
             }
 
-            fetch('/password-update',{
-                method: 'post',
+            fetch(`/staff/edit?id=${staffID}`,{
+                method: 'Post',
                 body : JSON.stringify(data),
-                headers: {"Content-Type": "application/json"},
+                headers: {
+                    "Content-Type": "application/json",
+                    },
             })
-  		    .then(response => response.text())
+  		    .then(response => response.json())
             .then(data => {
-                    alert(data);
-                    closeModal();
-                    getPasswords();
+                    if(data.affectedRows == 1) {
+                        getStaff()
+                        closeModal();
+                    } else {
+                        alert("Error: Password not added!!!");
+                    }
                 });
         }
 
         function closeModal() {
+            staffID = 0
             document.getElementById('modal-save').classList.add('hidden')
             document.getElementById('modal-add').classList.add('hidden')
-            document.getElementById('modal').style.display = 'none';
+            document.getElementById('add-modal').style.display = 'none';
         }
 
         let getStaff = () => {
@@ -239,6 +229,20 @@
                     });
                 });
         };
+
+        function getBuildings() {
+                    Building.innerHTML = ``
+                    Building.innerHTML += `<option value="" >Select A Building</option>`
+                    fetch('/ap/buildings')
+                    .then(response => response.json())
+                    .then(data => {
+                        
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                Building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            }
+                        });     
+            }
 
         function textChanged() {
             if(staffID !== 0) {
@@ -297,6 +301,7 @@
         }); 
 
         getStaff()
+        getBuildings()
     </script>
 
 </body>
