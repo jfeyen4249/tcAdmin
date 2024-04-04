@@ -35,6 +35,23 @@ router.post("/add", session.validateSession, (req, res) => {
         }
     );
 });
+
+router.post("/edit", session.validateSession, (req, res) => {
+    let id = req.query.id
+    let data = {
+        name: req.body.name,
+        room: req.body.room,
+        building: req.body.building,
+    };
+    database.query(
+        `UPDATE staff SET ? WHERE id = ?`,
+        [data, id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
   
 router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
