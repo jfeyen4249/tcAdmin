@@ -20,6 +20,7 @@ const desktop = require('./routes/desktop.js');
 const news = require('./routes/news.js');
 const maps = require('./routes/maps.js');
 const laptop = require('./routes/laptop.js');
+const settings = require('./routes/settings.js');
 //End of Routes
 
 const app = express();
@@ -59,6 +60,7 @@ app.use("/connection", serverConnection);
 app.use("/news", news);
 app.use("/maps", maps);
 app.use("/laptop", laptop);
+app.use("/settings", settings);
 
 
 const server = app.listen(port, () => {
