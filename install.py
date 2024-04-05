@@ -38,8 +38,7 @@ def main():
     load_dotenv()
 
     # Navigate to tcAdmin directory and update from Git
-    subprocess.run(["cd", "/home/netadmin/tcAdmin"])
-    subprocess.run(["git", "fetch", "origin"])
+    subprocess.run(["gi≈t", "fetch", "origin"])
     subprocess.run(["git", "reset", "--hard", "origin/main"])
 
     # Install npm dependencies
@@ -55,7 +54,7 @@ def main():
     cursor = cnx.cursor()
 
     # Read table structures from file
-    file_path = '/home/netadmin/tcAdmin/tcadmin.sql'  # Adjust path as needed
+    file_path = 'tcadmin.sql'  # Adjust path as needed
     table_structures = read_table_structure(file_path)
 
     for table_name, structure in table_structures.items():
