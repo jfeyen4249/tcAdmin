@@ -141,3 +141,15 @@ CREATE TABLE `tcadmin`.`maps` (
   `type` VARCHAR(45) NULL,
   `view` VARCHAR(45) NULL DEFAULT 'true',
   PRIMARY KEY (`id`));
+
+  CREATE TABLE `tcadmin`.`servers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(145) NULL,
+  `mac` VARCHAR(45) NULL,
+  `ip` VARCHAR(45) NULL,
+  `hdd` VARCHAR(45) NULL,
+  `ram` VARCHAR(45) NULL,
+  `os` VARCHAR(45) NULL,
+  `role` LONGTEXT NULL,
+  `view` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));

@@ -10,7 +10,7 @@ router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM computers WHERE view = 'true' AND type = 'macbook' ORDER BY building ASC`,
+        `SELECT * FROM computers WHERE view = 'true' AND type = 'laptop' ORDER BY building ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -20,7 +20,7 @@ router.get("/list", session.validateSession,  (req, res) => {
 
 router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'macbook' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
+    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'laptop' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
       [
         `%${searchQuery}%`,
         `%${searchQuery}%`,
@@ -78,9 +78,10 @@ router.delete("/computer", session.validateSession,  (req, res) => {
     );
 });
 
+
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'mac'`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'pc' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -90,7 +91,7 @@ router.get("/make", session.validateSession,  (req, res) => {
 
 router.get("/model", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT model FROM makes WHERE view = 'true' AND make = ? AND type = 'mac' ORDER BY make ASC`, [req.query.make],
+        `SELECT model FROM makes WHERE view = 'true' AND make = ? ORDER BY make ASC`, [req.query.make],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

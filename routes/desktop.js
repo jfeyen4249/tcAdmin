@@ -18,6 +18,27 @@ router.get("/list", session.validateSession,  (req, res) => {
     );
 });
 
+router.get("/search", session.validateSession,  (req, res) => {
+    const searchQuery = req.query.search;
+    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'desktop' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
+      [
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+      ],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+});
+
 router.get("/computer", session.validateSession,  (req, res) => {
     database.query(
         `SELECT * FROM computers WHERE id = ? LIMIT 1`, [req.query.id],
@@ -31,11 +52,9 @@ router.get("/computer", session.validateSession,  (req, res) => {
 
 
 router.post("/computer", session.validateSession,  (req, res) => {
-    database.query(
-        `SELECT * FROM computers WHERE view = 'true' AND type = 'desktop' ORDER BY building ASC`,
-        function (error, results, fields) {
+    database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
-        res.send(results);
+        res.send('saved');
         }
     );
 });
@@ -64,7 +83,7 @@ router.delete("/computer", session.validateSession,  (req, res) => {
 
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT make FROM makes WHERE view = 'true' AND type = 'pc' ORDER BY make ASC`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'pc' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
