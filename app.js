@@ -19,6 +19,7 @@ const staff = require('./routes/staff.js');
 const desktop = require('./routes/desktop.js');
 const news = require('./routes/news.js');
 const maps = require('./routes/maps.js');
+const laptop = require('./routes/laptop.js');
 //End of Routes
 
 const app = express();
@@ -57,6 +58,7 @@ app.use("/desktop", session.validateSession, desktop);
 app.use("/connection", serverConnection);
 app.use("/news", news);
 app.use("/maps", maps);
+app.use("/laptop", laptop);
 
 
 const server = app.listen(port, () => {

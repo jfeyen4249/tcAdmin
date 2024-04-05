@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
      <script defer src=".././menu.js"></script>
-    <title>Desktop Inventory</title>
+    <title>TC Admin - Laptop Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
@@ -35,7 +35,7 @@
        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
     <div class="flex items-center justify-between mb-4">
         <!-- Password Manager Passwords text -->
-        <h1 class="text-2xl font-bold mb-4">Desktop Inventory</h1>
+        <h1 class="text-2xl font-bold mb-4">Laptop Inventory</h1>
 
         <!-- Search Box and Add New Password Button Container -->
         <div class="flex items-center">
@@ -191,7 +191,7 @@
 
         function getEditPc(id) {
             editID = id
-            fetch(`/desktop/computer?id=${id}`)
+            fetch(`/laptop/computer?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data)
@@ -229,7 +229,7 @@
 
         function getDesktop() {
             grid.innerHTML = ''
-            fetch(`/desktop/list`)
+            fetch(`/laptop/list`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''
@@ -287,13 +287,11 @@
             })
         }
 
-
-        
         function getAddMake() {
             document.getElementById('modal-make-add').innerHTML = 
             document.getElementById('modal-make-add').innerHTML = '<option value="">Select a Make</option>'
             editmake.innerHTML = '<option value="">Select a Make</option>'
-            fetch(`/desktop/make/`)
+            fetch(`/laptop/make/`)
                 .then(response => response.json())
                 .then(data => {
                     for(let i=0; i<data.length; i++) {
@@ -305,7 +303,7 @@
         }
 
          function getAddModel() {
-            fetch(`/desktop/model?make=${addmake.value}`)
+            fetch(`/laptop/model?make=${addmake.value}`)
                 .then(response => response.json())
                 .then(data => {
                     addmodel.innerHTML = '<option value="">Select a Model</option>'
@@ -318,7 +316,7 @@
         }
 
          function getEditModel(model) {
-            fetch(`/desktop/model?make=${editmake.value}`)
+            fetch(`/laptop/model?make=${editmake.value}`)
                 .then(response => response.json())
                 .then(data => {
                     editmodel.innerHTML = '<option value="">Select a Model</option>'
@@ -332,7 +330,6 @@
                                 console.log(selectModel.value)
                                 var option = selectModel.options[i];
                                 if (option.value === model) {
-                                    console.log("Running")
                                     option.selected = true;
                                     break;
                                 }   
@@ -433,11 +430,11 @@
                     mac: addmac.value,
                     building: addBuilding.value,
                     room: addRoom.value,
-                    type: 'desktop',
+                    type: 'laptop',
                     view: 'true'
                 }
                 
-                fetch(`/desktop/computer`, {
+                fetch(`/laptop/computer`, {
                 method: 'Put',
                 body : JSON.stringify(data),
                 headers: {
@@ -492,11 +489,11 @@
                     mac: editmac.value,
                     building: editBuilding.value,
                     room: editRoom.value,
-                    type: 'desktop',
+                    type: 'laptop',
                     view: 'true'
                 }
                 
-                fetch(`/desktop/computer?id=${editID}`, {
+                fetch(`/laptop/computer?id=${editID}`, {
                 method: 'POST',
                 body : JSON.stringify(data),
                 headers: {
@@ -520,7 +517,7 @@
         function deleteDesktop(id, pc) {
             var answer = prompt(`Do you want to delete ${pc}? (yes/no)`);
             if (answer === "yes") {
-                fetch(`/desktop/computer?id=${id}`, {method : 'delete'})
+                fetch(`/laptop/computer?id=${id}`, {method : 'delete'})
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
@@ -543,7 +540,7 @@
                 getDesktop()
             } else {
                 grid.innerHTML = ''
-            fetch(`/desktop/search?search=${searchBox.value}`)
+            fetch(`/laptop/search?search=${searchBox.value}`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''

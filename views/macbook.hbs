@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+   <style>
+     .wpc {
+        width: 30vw;
+    }
+   </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
      <script defer src=".././menu.js"></script>
-    <title>Macbook Inventory</title>
+    <title>MacBook Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
+    
+    <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
+        <span id="noteText"></span>
+    </div>
+
 <body class="bg-slate-800 h-screen flex">
 
     <!-- Left Side Menu -->
@@ -21,11 +31,11 @@
     </div>
 
     <!-- Main Content -->
-     <div class="flex-1 p-8">
+    <div class="flex-1 p-8">
        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
     <div class="flex items-center justify-between mb-4">
         <!-- Password Manager Passwords text -->
-        <h1 class="text-2xl font-bold mb-4">Macbook Inventory</h1>
+        <h1 class="text-2xl font-bold mb-4">MacBook Inventory</h1>
 
         <!-- Search Box and Add New Password Button Container -->
         <div class="flex items-center">
@@ -35,49 +45,189 @@
             </div>
             
             <!-- Add New Password Button -->
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="addModalOpen()"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="document.getElementById('add-modal').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
     </div>
 
     <!-- Table -->
         <table class="w-full border-collapse border border-gray-800" >
             
-            <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center" id="grid">
+            <div class="grid grid-cols-3 gap-2 mt-3 w-full text-center" id="grid">
                     
                 </div>
         </table>
     </div>
 
-
-           
-  
-
     <!-- Modal -->
-    <div id="modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="w-1/2 mx-auto mt-20 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4">Edit Inventory</h2>
+    <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+        <div class="wpc mx-auto mt-20 bg-white p-8 rounded shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-center">Add New Computer</h2>
             <form>
                 <!-- Documentation Title -->
                 <div class="mb-4">
-                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Title</label>
-                    <input type="text" id="modal-title" name="modal-title" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
+                    <input type="text" id="modal-mac-add" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
                 </div>
-                <!-- Documentation Content -->
-                <div class="mb-6">
-                    <label for="modal-content" class="block text-gray-600 text-sm font-medium mb-2">Content</label>
-                    <textarea id="modal-content" name="modal-content" class="w-full h-32 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></textarea>
+
+                <div class="mb-4">
+                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
+                        <select name="modal-make" id="modal-make-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        </select>
                 </div>
+               
+               <div class="mb-4">
+                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
+                        <select name="modal-model" id="modal-model-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                <div class="mb-4">
+                    <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
+                    <input type="text" id="modal-sn-add" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
+                    <input type="text" id="modal-tag-add" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4 mt-3">
+                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
+                        <select name="modal-building" id="modal-building-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <div class="mb-4 mt-3">
+                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                        <select name="modal-room" id="modal-room-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                         
+                    </div>
                 <!-- Save Button -->
-                <button type="button" onclick="closeModal()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Save Documentation</button>
-                <button type="button" onclick="closeModal()" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
+                <button type="button" onclick="addMac()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Add Computer</button>
+                <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
             </form>
         </div>
     </div>
 
-    <script>
+    <!-- Modal -->
+    <div id="edit-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md">
+            <h2 class="text-2xl font-bold mb-4 text-center">Edit Computer</h2>
+            <form>
+                <!-- Documentation Title -->
+                <div class="mb-4">
+                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
+                    <input type="text" id="modal-mac-edit" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
+                        <select name="modal-make" id="modal-make-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        </select>
+                </div>
+               
+               <div class="mb-4">
+                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
+                        <select name="modal-model" id="modal-model-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                <div class="mb-4">
+                    <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
+                    <input type="text" id="modal-sn-edit" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4">
+                    <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
+                    <input type="text" id="modal-tag-edit" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-4 mt-3">
+                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
+                        <select name="modal-building" id="modal-building-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" ></select>
+                    </div>
+
+                    <div class="mb-4 mt-3">
+                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                        <select name="modal-room" id="modal-room-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                         
+                    </div>
+                <!-- Save Button -->
+                <button type="button" onclick="editMac()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Save Computer</button>
+                <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
+            </form>
+        </div>
+    </div>
+
+
+    <script defer>
         let grid = document.getElementById('grid')
-        
-        function getDesktop() {
+        let addModal = document.getElementById('add-modal')
+        let addmake = document.getElementById('modal-make-add')
+        let addmodel = document.getElementById('modal-model-add')
+        let addSN = document.getElementById('modal-sn-add')
+        let addtag = document.getElementById('modal-tag-add')
+        let addmac = document.getElementById('modal-mac-add')
+        let addBuilding = document.getElementById('modal-building-add')
+        let addRoom = document.getElementById('modal-room-add')
+        let editID = 0
+        let editModal = document.getElementById('edit-modal')
+        let editmake = document.getElementById('modal-make-edit')
+        let editmodel = document.getElementById('modal-model-edit')
+        let editSN = document.getElementById('modal-sn-edit')
+        let edittag = document.getElementById('modal-tag-edit')
+        let editmac = document.getElementById('modal-mac-edit')
+        let editBuilding = document.getElementById('modal-building-edit')
+        let editRoom = document.getElementById('modal-room-edit')
+
+        let searchBox = document.getElementById('search')
+        addmake.addEventListener("input", function() {getAddModel()})
+        addBuilding.addEventListener("input", function() {getRoom()})
+
+        editBuilding.addEventListener("change", function() {getEditRoom()})
+
+
+        function isValidMACAddress(macAddress) {
+            var macRegex = /^([0-9A-Fa-f]{2}[:-]){7}[0-9A-Fa-f]{2}$/;
+            return macRegex.test(macAddress);
+        }
+
+        function getEditPc(id) {
+            editID = id
+            fetch(`/macbook/computer?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    let obj = data[0]
+                    editmac.value = obj.mac
+                    editSN.value = obj.sn
+                    edittag.value = obj.tag
+
+                    var selectElement = editmake; 
+                    for (var i = 0; i < selectElement.options.length; i++) {
+                        var option = selectElement.options[i];
+                        if (option.value === obj.make) {
+                            option.selected = true;
+                            getEditModel(obj.model)
+                            break;
+                        }   
+                    }
+
+                    var selectElement = editBuilding; 
+                    for (var i = 0; i < selectElement.options.length; i++) {
+                        var option = selectElement.options[i];
+                        if (option.value === obj.building) {
+                            option.selected = true;
+                            console.log('Selected')
+                            getEditRoom(obj.room)
+                            console.log('EditRoom Called')
+                            break;
+                        }   
+                    }
+                    
+
+                });
+            editModal.classList.remove('hidden')
+        }
+
+        function getMac() {
             grid.innerHTML = ''
             fetch(`/macbook/list`)
             .then(response => response.json())
@@ -95,31 +245,367 @@
                             return 'bg-yellow-400'
                         }
 
+                        if(building == 'PS') {
+                            return 'bg-red-400'
+                        }
 
+                        if(building == 'ABE') {
+                            return 'bg-lime-400'
+                        }
 
+                        if(building == 'MHS') {
+                            return 'bg-blue-400'
+                        }
+
+                        if(building == 'MMS') {
+                            return 'bg-orange-400'
+                        }
                     }
-
                     grid.innerHTML += `
-                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left">
-                                <h2 class="text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
-                                <p>Make: ${obj.make}</p>
-                                <p>Model: ${obj.model}</p>
-                                <p>SN: ${obj.sn}</p>
-                                <p>Mac: ${obj.mac}</p>
-                                <p>IP: ${obj.ip}</p>
-                                <p>Ram: ${obj.ram} GB</p>
-                                <p>HDD: ${obj.hdd}</p>
-                                <p>OS: ${obj.os}</p>
-                                {{!-- <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Desktops</button> --}}
-                            </div>
-                        </div>
-                    </div>`
+                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
+                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
+                            <p class="font-semibold text-right col-span-1">Make:</p>
+                            <p class="col-span-2">${obj.make}</p>
+                            <p class="font-semibold text-right col-span-1">Model:</p>
+                            <p class="col-span-2">${obj.model}</p>
+                            <p class="font-semibold text-right col-span-1">SN:</p>
+                            <p class="col-span-2">${obj.sn}</p>
+                            <p class="font-semibold text-right col-span-1">Mac:</p>
+                            <p class="col-span-2">${obj.mac}</p>
+                            <p class="font-semibold text-right col-span-1">IP:</p>
+                            <p class="col-span-2">${obj.ip}</p>
+                            <p class="font-semibold text-right col-span-1">Ram:</p>
+                            <p class="col-span-2">${obj.ram} GB</p>
+                            <p class="font-semibold text-right col-span-1">HDD:</p>
+                            <p class="col-span-2">${obj.hdd}</p>
+                            <p class="font-semibold text-right col-span-1">OS:</p>
+                            <p class="col-span-2">${obj.os}</p>
+                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
+                                    <button type="button" onclick="deleteMac('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
+                        </div>`
                 }
             })
         }
+        
+        function getAddMake() {
+            document.getElementById('modal-make-add').innerHTML = 
+            document.getElementById('modal-make-add').innerHTML = '<option value="">Select a Make</option>'
+            editmake.innerHTML = '<option value="">Select a Make</option>'
+            fetch(`/macbook/make/`)
+                .then(response => response.json())
+                .then(data => {
+                    for(let i=0; i<data.length; i++) {
+                    let obj = data[i];
+                        document.getElementById('modal-make-add').innerHTML += `<option value="${obj.make}">${obj.make}</option>`;
+                        editmake.innerHTML += `<option value="${obj.make}">${obj.make}</option>`;
+                    }
+                });
+        }
+
+         function getAddModel() {
+            fetch(`/macbook/model?make=${addmake.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    addmodel.innerHTML = '<option value="">Select a Model</option>'
+                    editmodel.innerHTML = '<option value="">Select a Model</option>'
+                    for(let i=0; i<data.length; i++) {
+                    let obj = data[i];
+                        addmodel.innerHTML += `<option value="${obj.model}">${obj.model}</option>`;
+                    }
+                });
+        }
+
+         function getEditModel(model) {
+            fetch(`/macbook/model?make=${editmake.value}`)
+                .then(response => response.json())
+                .then(data => {
+                    editmodel.innerHTML = '<option value="">Select a Model</option>'
+                    for(let i=0; i<data.length; i++) {
+                    let obj = data[i];
+                        editmodel.innerHTML += `<option value="${obj.model}">${obj.model}</option>`;
+                    }
+
+                    var selectModel = editmodel; 
+                            for (var i = 0; i < selectModel.options.length; i++) {
+                                console.log(selectModel.value)
+                                var option = selectModel.options[i];
+                                if (option.value === model) {
+                                    console.log("Running")
+                                    option.selected = true;
+                                    break;
+                                }   
+                            }
+
+                });
+        }
+        
+         function getBuildings() {
+                    addBuilding.innerHTML = ``
+                    addBuilding.innerHTML += `<option value="" >Select A Building</option>`
+                    editBuilding.innerHTML += `<option value="" >Select A Building</option>`
+                    fetch('/ap/buildings')
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                addBuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                                editBuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            }
+                        });     
+                }
+
+        function getRoom() {
+                    addRoom.innerHTML = ``
+                    addRoom.innerHTML += `<option value="" >Select A Room</option>`
+                    
+                    fetch(`/ap/room?building=${addBuilding.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                addRoom.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
+                            }
+                        });     
+            }
+        
+        function getEditRoom(room) {
+                    editRoom.innerHTML = ``
+                    editRoom.innerHTML += `<option value="" >Select A Room</option>`
+                    
+                    fetch(`/ap/room?building=${editBuilding.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                editRoom.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
+                            }
+
+                            var selectRoom = editRoom; 
+                            for (var i = 0; i < selectRoom.options.length; i++) {
+                                console.log(selectRoom.value)
+                                var option = selectRoom.options[i];
+                                if (option.value === room) {
+                                    console.log("Running")
+                                    option.selected = true;
+                                    break;
+                                }   
+                            }
+                        });     
+            }
+
+        function addMac() {
+                if(addmac.value == '') {
+                    alert('Enter a Mac Address!')
+                }else {
+
+                }
+                
+                if(addmake.value == '') {
+                    alert('Select a model!')
+                    return
+                }
+
+                if(addmodel.value == '') {
+                    alert('Select a model!')
+                    return
+                }
+
+                if(addSN.value == "") {
+                    alert('Enter a Serial Number!')
+                    return
+                }
+
+                if(addtag.value == '') {
+                    alert('Enter an asset tag!')
+                    return
+                }
+
+                let data = {
+                    make: addmake.value,
+                    model: addmodel.value,
+                    sn: addSN.value,
+                    tag: addtag.value,
+                    mac: addmac.value,
+                    building: addBuilding.value,
+                    room: addRoom.value,
+                    type: 'macbook',
+                    view: 'true'
+                }
+                
+                fetch(`/macbook/computer`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'added') {
+                        addmac.value = ''
+                        addSN.value = ''
+                        addtag.value = ''
+                        addModal.classList.add('hidden')
+                        showNotification('Computer was updated!', 'bg-orange-700')
+                        getMac()
+                    }
+                });
+        }
+
+        function editMac() {
+                if(editmac.value == '') {
+                    alert('Enter a Mac Address!')
+                }else {
+
+                }
+                
+                if(editmake.value == '') {
+                    alert('Select a model!')
+                    return
+                }
+
+                if(editmodel.value == '') {
+                    alert('Select a model!')
+                    return
+                }
+
+                if(editSN.value == "") {
+                    alert('Enter a Serial Number!')
+                    return
+                }
+
+                if(edittag.value == '') {
+                    alert('Enter an asset tag!')
+                    return
+                }
+
+                let data = {
+                    make: editmake.value,
+                    model: editmodel.value,
+                    sn: editSN.value,
+                    tag: edittag.value,
+                    mac: editmac.value,
+                    building: editBuilding.value,
+                    room: editRoom.value,
+                    type: 'macbook',
+                    view: 'true'
+                }
+                
+                fetch(`/macbook/computer?id=${editID}`, {
+                method: 'POST',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    }
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'saved') {
+                        editmac.value = ''
+                        editSN.value = ''
+                        edittag.value = ''
+                        editModal.classList.add('hidden')
+                        editID = 0
+                        showNotification('Computer was updated!', 'bg-orange-700')
+                        getMac()
+                    }
+                });
+        }
+
+        function deleteMac(id, pc) {
+            var answer = prompt(`Do you want to delete ${pc}? (yes/no)`);
+            if (answer === "yes") {
+                fetch(`/macbook/computer?id=${id}`, {method : 'delete'})
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'deleted') {
+                        showNotification(`${pc} was deleted`)
+                        getMac()
+                    }
+                });
+            } else if (answer === "no") {
+                getMac()
+            } else {
+                 getMac()
+            }
 
 
-        getDesktop()
+            
+        }
+
+        searchBox.addEventListener("input", () => {
+            if(searchBox.length = 0) {
+                getMac()
+            } else {
+                grid.innerHTML = ''
+            fetch(`/macbook/search?search=${searchBox.value}`)
+            .then(response => response.json())
+            .then(data => {
+                grid.innerHTML = ''
+                for(let i = 0; i<data.length; i++) {
+                    let obj =data[i];
+
+                    function buildingColor(building) {
+                        if(building == 'DAC') {
+                            return 'bg-green-400'
+                        }
+
+                        if(building == 'NS') {
+                            return 'bg-yellow-400'
+                        }
+
+                        if(building == 'PS') {
+                            return 'bg-red-400'
+                        }
+
+                        if(building == 'ABE') {
+                            return 'bg-lime-400'
+                        }
+
+                        if(building == 'MHS') {
+                            return 'bg-blue-400'
+                        }
+
+                        if(building == 'MMS') {
+                            return 'bg-orange-400'
+                        }
+                    }
+                    grid.innerHTML += `
+                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
+                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
+                            <p class="font-semibold text-right col-span-1">Make:</p>
+                            <p class="col-span-2">${obj.make}</p>
+                            <p class="font-semibold text-right col-span-1">Model:</p>
+                            <p class="col-span-2">${obj.model}</p>
+                            <p class="font-semibold text-right col-span-1">SN:</p>
+                            <p class="col-span-2">${obj.sn}</p>
+                            <p class="font-semibold text-right col-span-1">Mac:</p>
+                            <p class="col-span-2">${obj.mac}</p>
+                            <p class="font-semibold text-right col-span-1">IP:</p>
+                            <p class="col-span-2">${obj.ip}</p>
+                            <p class="font-semibold text-right col-span-1">Ram:</p>
+                            <p class="col-span-2">${obj.ram} GB</p>
+                            <p class="font-semibold text-right col-span-1">HDD:</p>
+                            <p class="col-span-2">${obj.hdd}</p>
+                            <p class="font-semibold text-right col-span-1">OS:</p>
+                            <p class="col-span-2">${obj.os}</p>
+                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
+                                    <button type="button" onclick="deleteMac('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
+                        </div>`
+
+
+
+                }
+            })
+            }
+        })
+
+        getMac()
+        getAddMake()
+        getBuildings()
         
     </script>
 
