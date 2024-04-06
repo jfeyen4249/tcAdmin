@@ -153,3 +153,33 @@ CREATE TABLE `tcadmin`.`maps` (
   `role` LONGTEXT NULL,
   `view` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
+
+
+CREATE TABLE `tcadmin`.`printers` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL,
+  `make` VARCHAR(145) NULL,
+  `model` VARCHAR(145) NULL,
+  `sn` VARCHAR(45) NULL,
+  `date` VARCHAR(45) NULL,
+  `mac` VARCHAR(45) NULL,
+  `ip` VARCHAR(45) NULL,
+  `building` VARCHAR(45) NULL,
+  `room` VARCHAR(45) NULL,
+  `view` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
+
+
+
+CREATE TABLE `tcadmin`.`phones` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `make` VARCHAR(145) NULL,
+  `model` VARCHAR(145) NULL,
+  `sn` VARCHAR(45) NULL,
+  `date` VARCHAR(45) NULL,
+  `mac` VARCHAR(45) NULL,
+  `tag` VARCHAR(45) NULL,
+  `building` VARCHAR(45) NULL,
+  `room` VARCHAR(45) NULL,
+  `view` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));

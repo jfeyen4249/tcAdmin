@@ -10,7 +10,7 @@ router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM computers WHERE view = 'true' AND type = 'desktop' ORDER BY building ASC`,
+        `SELECT * FROM projectors WHERE view = 'true' ORDER BY building ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -20,10 +20,8 @@ router.get("/list", session.validateSession,  (req, res) => {
 
 router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'server' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
+    database.query(`SELECT * FROM projectors WHERE view = 'true' AND (make LIKE ? OR model LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR sn LIKE ? OR bulb LIKE ?) ORDER By building ASC`,
       [
-        `%${searchQuery}%`,
-        `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
@@ -39,9 +37,9 @@ router.get("/search", session.validateSession,  (req, res) => {
     );
 });
 
-router.get("/computer", session.validateSession,  (req, res) => {
+router.get("/projector", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM computers WHERE id = ? LIMIT 1`, [req.query.id],
+        `SELECT * FROM projectors WHERE id = ? LIMIT 1`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -49,17 +47,17 @@ router.get("/computer", session.validateSession,  (req, res) => {
     );
 });
 
-router.post("/computer", session.validateSession,  (req, res) => {
-    database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+router.post("/projector", session.validateSession,  (req, res) => {
+    database.query(`UPDATE projectors SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
         res.send('saved');
         }
     );
 });
 
-router.put("/computer", session.validateSession,  (req, res) => {
+router.put("/projector", session.validateSession,  (req, res) => {
     database.query(
-        `INSERT INTO computers SET ?`, [req.body],
+        `INSERT INTO projectors SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
         res.send('added');
@@ -67,9 +65,10 @@ router.put("/computer", session.validateSession,  (req, res) => {
     );
 });
 
-router.delete("/computer", session.validateSession,  (req, res) => {
+
+router.delete("/projector", session.validateSession,  (req, res) => {
     database.query(
-        `UPDATE computers SET view = 'false' WHERE id = ?`, [req.query.id],
+        `UPDATE projectors SET view = 'false' WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
         res.send('deleted');
@@ -80,7 +79,7 @@ router.delete("/computer", session.validateSession,  (req, res) => {
 
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'server' ORDER BY make ASC`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'projector' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
