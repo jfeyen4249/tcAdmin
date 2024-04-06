@@ -1,7 +1,7 @@
 
 
 
-CREATE TABLE `ap` (
+CREATE TABLE IF NOT EXISTS `ap` (
   `id` int NOT NULL AUTO_INCREMENT,
   `make` varchar(45) DEFAULT NULL,
   `model` varchar(45) DEFAULT NULL,
@@ -16,14 +16,14 @@ CREATE TABLE `ap` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `buildings` (
+CREATE TABLE IF NOT EXISTS `buildings` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(105) DEFAULT NULL,
   `view` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `computers` (
+CREATE TABLE IF NOT EXISTS `computers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT 'N/A',
   `mac` varchar(255) DEFAULT 'N/A',
@@ -43,7 +43,7 @@ CREATE TABLE `computers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `docs` (
+CREATE TABLE IF NOT EXISTS `docs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `doc` varchar(255) DEFAULT NULL,
   `doc_body` longtext,
@@ -52,7 +52,7 @@ CREATE TABLE `docs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `ipad` (
+CREATE TABLE IF NOT EXISTS `ipad` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model` varchar(45) DEFAULT NULL,
   `sn` varchar(45) DEFAULT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE `ipad` (
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE `makes` (
+CREATE TABLE IF NOT EXISTS `makes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `make` varchar(45) DEFAULT NULL,
   `model` varchar(45) DEFAULT NULL,
@@ -78,17 +78,17 @@ CREATE TABLE `makes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `password_cat` (
+CREATE TABLE IF NOT EXISTS `password_cat` (
   `id` int NOT NULL AUTO_INCREMENT,
   `category` varchar(145) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_UNIQUE` (`category`)
 ) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `password_cat` VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
+--INSERT INTO `password_cat` VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
 
 
-CREATE TABLE `passwords` (
+CREATE TABLE IF NOT EXISTS `passwords` (
   `id` int NOT NULL AUTO_INCREMENT,
   `service` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE `passwords` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `staff` (
+CREATE TABLE IF NOT EXISTS `staff` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   `building` varchar(45) DEFAULT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE `staff` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `users` (
+CREATE TABLE IF NOT EXISTS `users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(245) DEFAULT NULL,
   `password` varchar(245) DEFAULT '$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W',
@@ -124,9 +124,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `phone_UNIQUE` (`phone`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-INSERT INTO `users` VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','','Active');
+--INSERT INTO `users` VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','','Active');
 
-CREATE TABLE `wifi` (
+CREATE TABLE IF NOT EXISTS `wifi` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ssid` longtext,
   `password` longtext,
@@ -134,7 +134,7 @@ CREATE TABLE `wifi` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `tcadmin`.`maps` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`maps` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `file` VARCHAR(255) NULL,
   `building` VARCHAR(45) NULL,
@@ -142,20 +142,8 @@ CREATE TABLE `tcadmin`.`maps` (
   `view` VARCHAR(45) NULL DEFAULT 'true',
   PRIMARY KEY (`id`));
 
-  CREATE TABLE `tcadmin`.`servers` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `name` VARCHAR(145) NULL,
-  `mac` VARCHAR(45) NULL,
-  `ip` VARCHAR(45) NULL,
-  `hdd` VARCHAR(45) NULL,
-  `ram` VARCHAR(45) NULL,
-  `os` VARCHAR(45) NULL,
-  `role` LONGTEXT NULL,
-  `view` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`));
 
-
-CREATE TABLE `tcadmin`.`printers` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`printers` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NULL,
   `make` VARCHAR(145) NULL,
@@ -169,9 +157,23 @@ CREATE TABLE `tcadmin`.`printers` (
   `view` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
 
+CREATE TABLE IF NOT EXISTS `tcadmin`.`projectors` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NULL,
+  `make` VARCHAR(145) NULL,
+  `model` VARCHAR(145) NULL,
+  `sn` VARCHAR(45) NULL,
+  `date` VARCHAR(45) NULL,
+  `mac` VARCHAR(45) NULL,
+  `tag` VARCHAR(45) NULL,
+  `building` VARCHAR(45) NULL,
+  `room` VARCHAR(45) NULL,
+  `bulb` VARCHAR(45) NULL,
+  `view` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));
 
 
-CREATE TABLE `tcadmin`.`phones` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`phones` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `make` VARCHAR(145) NULL,
   `model` VARCHAR(145) NULL,
