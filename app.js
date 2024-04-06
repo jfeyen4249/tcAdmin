@@ -21,6 +21,9 @@ const news = require('./routes/news.js');
 const maps = require('./routes/maps.js');
 const laptop = require('./routes/laptop.js');
 const settings = require('./routes/settings.js');
+const printers = require('./routes/printers.js');
+const projectors = require('./routes/projectors.js');
+const phones = require('./routes/phones.js');
 //End of Routes
 
 const app = express();
@@ -52,7 +55,7 @@ app.use("/docs", session.validateSession, docs);
 app.use("/ap", session.validateSession, ap);
 app.use("/macbook", session.validateSession, macbooks);
 app.use("/ipad", session.validateSession, ipad);
-app.use("/servers", session.validateSession, servers);
+app.use("/servers", servers);
 app.use("/staff", session.validateSession, staff);
 app.use("/passwords", session.validateSession, passwords);
 app.use("/desktop", session.validateSession, desktop);
@@ -61,6 +64,9 @@ app.use("/news", news);
 app.use("/maps", maps);
 app.use("/laptop", laptop);
 app.use("/settings", settings);
+app.use("/printers", printers);
+app.use("/projectors", projectors);
+app.use("/phones", phones);
 
 
 const server = app.listen(port, () => {

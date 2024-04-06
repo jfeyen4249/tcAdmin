@@ -10,7 +10,7 @@ router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM computers WHERE view = 'true' AND type = 'desktop' ORDER BY building ASC`,
+        `SELECT * FROM printers WHERE view = 'true' ORDER BY building ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -20,9 +20,8 @@ router.get("/list", session.validateSession,  (req, res) => {
 
 router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'server' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
+    database.query(`SELECT * FROM printers WHERE view = 'true' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR building LIKE ? OR ip LIKE ? OR date LIKE ?) ORDER By building ASC`,
       [
-        `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
@@ -39,9 +38,9 @@ router.get("/search", session.validateSession,  (req, res) => {
     );
 });
 
-router.get("/computer", session.validateSession,  (req, res) => {
+router.get("/printer", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM computers WHERE id = ? LIMIT 1`, [req.query.id],
+        `SELECT * FROM printers WHERE id = ? LIMIT 1`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -49,17 +48,17 @@ router.get("/computer", session.validateSession,  (req, res) => {
     );
 });
 
-router.post("/computer", session.validateSession,  (req, res) => {
-    database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+router.post("/printer", session.validateSession,  (req, res) => {
+    database.query(`UPDATE printers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
         res.send('saved');
         }
     );
 });
 
-router.put("/computer", session.validateSession,  (req, res) => {
+router.put("/printer", session.validateSession,  (req, res) => {
     database.query(
-        `INSERT INTO computers SET ?`, [req.body],
+        `INSERT INTO printers SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
         res.send('added');
@@ -67,9 +66,10 @@ router.put("/computer", session.validateSession,  (req, res) => {
     );
 });
 
-router.delete("/computer", session.validateSession,  (req, res) => {
+router.delete("/printer", session.validateSession,  (req, res) => {
+    let id = req.query.id
     database.query(
-        `UPDATE computers SET view = 'false' WHERE id = ?`, [req.query.id],
+        `UPDATE printers SET view = 'false' WHERE id = ?`, [id],
         function (error, results, fields) {
         if (error) throw error;
         res.send('deleted');
@@ -77,10 +77,9 @@ router.delete("/computer", session.validateSession,  (req, res) => {
     );
 });
 
-
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'server' ORDER BY make ASC`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'printer' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -90,7 +89,7 @@ router.get("/make", session.validateSession,  (req, res) => {
 
 router.get("/model", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT model FROM makes WHERE view = 'true' AND make = ? ORDER BY make ASC`, [req.query.make],
+        `SELECT model FROM makes WHERE view = 'true' AND make = ? and type = 'printer' ORDER BY make ASC`, [req.query.make],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
