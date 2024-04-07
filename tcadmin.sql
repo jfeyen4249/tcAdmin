@@ -1,7 +1,7 @@
 
 
 
-CREATE TABLE IF NOT EXISTS `ap` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`ap` (
   `id` int NOT NULL AUTO_INCREMENT,
   `make` varchar(45) DEFAULT NULL,
   `model` varchar(45) DEFAULT NULL,
@@ -16,14 +16,14 @@ CREATE TABLE IF NOT EXISTS `ap` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=351 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `buildings` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`buildings` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(105) DEFAULT NULL,
   `view` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `computers` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`computers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(255) DEFAULT 'N/A',
   `mac` varchar(255) DEFAULT 'N/A',
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `computers` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `docs` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`docs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `doc` varchar(255) DEFAULT NULL,
   `doc_body` longtext,
@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS `docs` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `ipad` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`ipad` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model` varchar(45) DEFAULT NULL,
   `sn` varchar(45) DEFAULT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS `ipad` (
 ) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-CREATE TABLE IF NOT EXISTS `makes` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`makes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `make` varchar(45) DEFAULT NULL,
   `model` varchar(45) DEFAULT NULL,
@@ -78,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `makes` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `password_cat` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`password_cat` (
   `id` int NOT NULL AUTO_INCREMENT,
   `category` varchar(145) NOT NULL,
   PRIMARY KEY (`id`),
@@ -88,7 +88,7 @@ CREATE TABLE IF NOT EXISTS `password_cat` (
 --INSERT INTO `password_cat` VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
 
 
-CREATE TABLE IF NOT EXISTS `passwords` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`passwords` (
   `id` int NOT NULL AUTO_INCREMENT,
   `service` varchar(255) DEFAULT NULL,
   `url` varchar(255) DEFAULT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE IF NOT EXISTS `passwords` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `staff` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`staff` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   `building` varchar(45) DEFAULT NULL,
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS `staff` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`users` (
   `id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(245) DEFAULT NULL,
   `password` varchar(245) DEFAULT '$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W',
@@ -126,7 +126,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 --INSERT INTO `users` VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','','Active');
 
-CREATE TABLE IF NOT EXISTS `wifi` (
+CREATE TABLE IF NOT EXISTS `tcadmin`.`wifi` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ssid` longtext,
   `password` longtext,
