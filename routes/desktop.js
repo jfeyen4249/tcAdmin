@@ -80,7 +80,7 @@ router.delete("/computer", session.validateSession,  (req, res) => {
 
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'server' ORDER BY make ASC`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'desktop' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

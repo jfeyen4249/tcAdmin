@@ -225,7 +225,7 @@ connection.query(`SHOW TABLES LIKE 'password_cat'`, function (error, results, fi
     }
 
     if (results.length > 0) {
-        console.log('ipad Table exists');
+        console.log('password_cat Table exists');
     } else {
         connection.query(
             `CREATE TABLE \`password_cat\` (
@@ -240,8 +240,8 @@ connection.query(`SHOW TABLES LIKE 'password_cat'`, function (error, results, fi
               console.log('password_cat Table Added');
               connection.query(`INSERT INTO password_cat VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
               `, function (error, results, fields) {
-                  if (error) {
-                      throw error;
+                  if (error) {throw error;
+
                   }
                   console.log('password categories added');
                 }
