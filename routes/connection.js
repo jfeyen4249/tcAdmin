@@ -95,8 +95,6 @@ router.get("/logout", session.validateSession,  (req, res) => {
     );
 });
 
-
-  
 router.get("/login-check", (req, res) => {
     console.log("connection/login-check hit");
     const username = req.cookies.username;
