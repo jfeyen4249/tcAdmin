@@ -107,5 +107,19 @@ router.get("/login-check", (req, res) => {
 });
 
 
+router.post("/info",  (req, res) => {
+  
+  console.log('Connected')
+  console.log(req.body)
+  // database.query(
+  //     `UPDATE computers WHERE view = 'true' AND type = 'desktop' ORDER BY make ASC`,
+  //     function (error, results, fields) {
+  //     if (error) throw error;
+  //     res.send(results);
+  //     }
+  // );
+});
+
+
 
 module.exports = router;
