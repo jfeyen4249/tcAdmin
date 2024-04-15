@@ -496,3 +496,31 @@ connection.query(`SHOW TABLES LIKE 'phones'`, function (error, results, fields) 
           );
     }
 });
+
+connection.query(`SHOW TABLES LIKE 'chromebooks'`, function (error, results, fields) {
+    if (error) {
+        throw error;
+    }
+
+    if (results.length > 0) {
+        console.log('Chromebooks table exists');
+    } else {
+        connection.query(
+            `CREATE TABLE \`chromebooks\` (
+                id INT NOT NULL AUTO_INCREMENT,
+                make VARCHAR(145) NULL,
+                model VARCHAR(145) NULL,
+                sn VARCHAR(45) NULL,
+                tag VARCHAR(45) NULL,
+                status VARCHAR(45) NULL DEFAULT 'true',
+                date VARCHAR(45) NULL,
+                PRIMARY KEY (id));`,
+            function (error, results, fields) {
+              if (error) {
+                  throw error;
+              }
+              console.log('Chrombook table was added!');
+            }
+          );
+    }
+});

@@ -107,19 +107,77 @@ router.get("/login-check", (req, res) => {
 });
 
 
-router.post("/info",  (req, res) => {
-  
+router.post("/info.desptop",  (req, res) => {
+  let obj = req.body
+  let data = { 
+    name : obj.ComputerName,
+    mac : obj.MACAddress,
+    hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+    ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+    os : obj.WindowsVersion,
+    ip : obj.IPAddress,
+    view : 'true',
+    type : 'desktop'
+  }
   console.log('Connected')
   console.log(req.body)
-  // database.query(
-  //     `UPDATE computers WHERE view = 'true' AND type = 'desktop' ORDER BY make ASC`,
-  //     function (error, results, fields) {
-  //     if (error) throw error;
-  //     res.send(results);
-  //     }
-  // );
+  database.query(`Select * FROM computers WHERE view = 'true' AND type = 'desktop' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
+      function (error, results, fields) {
+      if (error) throw error;
+      if(results.length > 0 ){
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [data, req.body.MACAddress],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      } else {
+        database.query(`INSERT INTO computers SET ?`, [data],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      }
+      }
+  );
+  res.send('Thanks')
 });
 
+
+
+router.post("/info/server",  (req, res) => {
+  let obj = req.body
+  let data = { 
+    name : obj.ComputerName,
+    mac : obj.MACAddress,
+    hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+    ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+    os : obj.WindowsVersion,
+    ip : obj.IPAddress,
+    view : 'true',
+    type : 'server'
+  }
+  console.log('Connected')
+  console.log(req.body)
+  database.query(`Select * FROM computers WHERE view = 'true' AND type = 'desktop' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
+      function (error, results, fields) {
+      if (error) throw error;
+      if(results.length > 0 ){
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [data, req.body.MACAddress],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      } else {
+        database.query(`INSERT INTO computers SET ?`, [data],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      }
+      }
+  );
+  res.send('Thanks')
+});
 
 
 module.exports = router;
