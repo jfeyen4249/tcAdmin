@@ -260,6 +260,10 @@
                         if(building == 'MMS') {
                             return 'bg-orange-400'
                         }
+                        
+                        if(building == 'N/A') {
+                            return 'bg-gray-400'
+                        }
                     }
                     grid.innerHTML += `
                         <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">

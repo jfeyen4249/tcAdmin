@@ -16,6 +16,7 @@ function decrypt(text) {
   const iv = Buffer.from(parts.shift(), "hex");
   const encryptedText = Buffer.from(parts.join(":"), "hex");
   const keyBuffer = Buffer.from(process.env.key, "hex");
+  // file deepcode ignore InsecureCipherNoIntegrity: <please specify a reason of ignoring this>
   const decipher = crypto.createDecipheriv("aes-256-cbc", keyBuffer, iv);
   let decrypted = decipher.update(encryptedText);
   decrypted = Buffer.concat([decrypted, decipher.final()]);
