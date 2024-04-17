@@ -1,0 +1,17 @@
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.GeneratedMSBuildEditorConfig.editorconfig
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.AssemblyInfoInputs.cache
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.AssemblyInfo.cs
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.csproj.CoreCompileInputs.cache
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/macinfo
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/macinfo.deps.json
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/macinfo.runtimeconfig.json
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/macinfo.dll
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/macinfo.pdb
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/bin/Debug/net8.0/Newtonsoft.Json.dll
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.csproj.AssemblyReference.cache
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.csproj.Up2Date
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.dll
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/refint/macinfo.dll
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.pdb
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/macinfo.genruntimeconfig.cache
+/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/Debug/net8.0/ref/macinfo.dll

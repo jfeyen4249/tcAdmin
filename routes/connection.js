@@ -12,6 +12,30 @@ const router = express.Router();
 
 router.get("/");
 
+function makesCheck(make, model, type) {
+  database.query(
+      `SELECT * FROM makes WHERE make = ? AND model = ? AND type = ? AND View = 'true'`,
+      [make, model, type],
+      function (error, results, fields) {
+          if (error) throw error;
+          if (results.length > 0) {
+              console.log('Found in Database!')
+          } else {
+              database.query(
+                  `INSERT INTO makes SET make = ?, model = ?, type = ?, View = 'true'`,
+                  [make, model, type],
+                  function (error, results, fields) {
+                      if (error) throw error;
+                      console.log("Added to Makes")
+                  }
+              );
+          }
+
+      }
+  );
+}
+
+
 router.post("/login", async (req, res) => {
     const { username, password } = req.body;
 
@@ -106,26 +130,47 @@ router.get("/login-check", (req, res) => {
     );
 });
 
+router.post("/info/desktop",  (req, res) => {
+  
+  function pcName(nameMake){
+    console.log(nameMake)
+    if(nameMake == 'Dell Inc.') {
+      return 'Dell'
+    } else {
+      return nameMake
+    }
+  }
 
-router.post("/info.desptop",  (req, res) => {
   let obj = req.body
   let data = { 
     name : obj.ComputerName,
     mac : obj.MACAddress,
     hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
     ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
-    os : obj.WindowsVersion,
+    os : obj.OSVersion,
     ip : obj.IPAddress,
+    sn : obj.SerialNumber,
+    make : pcName(obj.ComputerMake),
+    model : obj.ComputerModel, 
     view : 'true',
     type : 'desktop'
   }
-  console.log('Connected')
-  console.log(req.body)
+  // console.log('Connected')
+  // console.log(req.body)
   database.query(`Select * FROM computers WHERE view = 'true' AND type = 'desktop' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
       function (error, results, fields) {
       if (error) throw error;
       if(results.length > 0 ){
-        database.query(`UPDATE computers SET ? WHERE mac = ?`, [data, req.body.MACAddress],
+        let obj = req.body
+        let updatedata = { 
+          name : obj.ComputerName,
+          hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+          ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+          os : obj.OSVersion,
+          ip : obj.IPAddress,
+           
+        }
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [updatedata, req.body.MACAddress],
           function (error, results, fields) {
           if (error) throw error;
           }
@@ -139,30 +184,51 @@ router.post("/info.desptop",  (req, res) => {
       }
       }
   );
-  res.send('Thanks')
+  makesCheck(pcName(obj.ComputerMake), obj.ComputerModel, 'desktop' )
+  res.send('Thank you')
 });
 
+router.post("/info/laptop",  (req, res) => {
+  
+  function pcName(nameMake){
+    // console.log(nameMake)
+    if(nameMake == 'Dell Inc.') {
+      return 'Dell'
+    } else {
+      return nameMake
+    }
+  }
 
-
-router.post("/info/server",  (req, res) => {
   let obj = req.body
   let data = { 
     name : obj.ComputerName,
     mac : obj.MACAddress,
     hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
     ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
-    os : obj.WindowsVersion,
+    os : obj.OSVersion,
     ip : obj.IPAddress,
+    sn : obj.SerialNumber,
+    make : pcName(obj.ComputerMake),
+    model : obj.ComputerModel, 
     view : 'true',
-    type : 'server'
+    type : 'laptop'
   }
-  console.log('Connected')
-  console.log(req.body)
+  // console.log('Connected')
+  // console.log(req.body)
   database.query(`Select * FROM computers WHERE view = 'true' AND type = 'desktop' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
       function (error, results, fields) {
       if (error) throw error;
       if(results.length > 0 ){
-        database.query(`UPDATE computers SET ? WHERE mac = ?`, [data, req.body.MACAddress],
+        let obj = req.body
+        let updatedata = { 
+          name : obj.ComputerName,
+          hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+          ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+          os : obj.OSVersion,
+          ip : obj.IPAddress,
+           
+        }
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [updatedata, req.body.MACAddress],
           function (error, results, fields) {
           if (error) throw error;
           }
@@ -176,8 +242,126 @@ router.post("/info/server",  (req, res) => {
       }
       }
   );
+  //makesCheck(pcName(obj.ComputerMake), obj.ComputerModel, 'laptop' )
   res.send('Thanks')
 });
+
+router.post("/info/server",  (req, res) => {
+
+  function pcName(nameMake){
+    // console.log(nameMake)
+    if(nameMake == 'Dell Inc.') {
+      return 'Dell'
+    } else {
+      return nameMake
+    }
+  }
+
+  let obj = req.body
+  let data = { 
+    name : obj.ComputerName,
+    mac : obj.MACAddress,
+    hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+    ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+    os : obj.OSVersion,
+    ip : obj.IPAddress,
+    sn : obj.SerialNumber,
+    make : pcName(obj.ComputerMake),
+    model : obj.ComputerModel, 
+    view : 'true',
+    type : 'server'
+  }
+
+  // console.log('Connected')
+  // console.log(req.body)
+  database.query(`Select * FROM computers WHERE view = 'true' AND type = 'desktop' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
+      function (error, results, fields) {
+      if (error) throw error;
+      if(results.length > 0 ){
+        let obj = req.body
+        let updatedata = { 
+          name : obj.ComputerName,
+          hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+          ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+          os : obj.OSVersion,
+          ip : obj.IPAddress,
+        }
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [updatedata, req.body.MACAddress],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      } else {
+        database.query(`INSERT INTO computers SET ?`, [data],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      }
+      }
+  );
+  makesCheck(pcName(obj.ComputerMake), obj.ComputerModel, 'server' )
+  res.send('Thanks')
+});
+
+router.post("/info/mac",  (req, res) => {
+  
+  function pcName(nameMake){
+    console.log(nameMake)
+    if(nameMake == 'Dell Inc.') {
+      return 'Dell'
+    } else {
+      return nameMake
+    }
+  }
+
+  let obj = req.body
+  let data = { 
+    name : obj.ComputerName,
+    mac : obj.MACAddress,
+    hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+    ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+    os : obj.OSVersion,
+    ip : obj.IPAddress,
+    sn : obj.SerialNumber,
+    make : 'Apple',
+    model : obj.ComputerModel, 
+    view : 'true',
+    type : 'macbook'
+  }
+  // console.log('Connected')
+  // console.log(req.body)
+  database.query(`Select * FROM computers WHERE view = 'true' AND type = 'macbook' AND mac = ? ORDER BY make ASC`, [req.body.MACAddress],
+      function (error, results, fields) {
+      if (error) throw error;
+      if(results.length > 0 ){
+        let obj = req.body
+        let updatedata = { 
+          name : obj.ComputerName,
+          hdd : `${obj.FreeStorageSpaceInGB}/${obj.TotalStorageSpaceInGB}`,
+          ram : `${obj.UsedRAMInGB}/${obj.TotalRAMInGB}`,
+          os : obj.OSVersion,
+          ip : obj.IPAddress,
+           
+        }
+        database.query(`UPDATE computers SET ? WHERE mac = ?`, [updatedata, req.body.MACAddress],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      } else {
+        database.query(`INSERT INTO computers SET ?`, [data],
+          function (error, results, fields) {
+          if (error) throw error;
+          }
+        ); 
+      }
+      }
+  );
+  //makesCheck(pcName(obj.ComputerMake), obj.ComputerModel, 'desktop' )
+  res.send('Thanks')
+});
+
 
 
 module.exports = router;
