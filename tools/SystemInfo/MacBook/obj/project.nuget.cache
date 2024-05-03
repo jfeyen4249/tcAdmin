@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "nx2ME/RjkmaG9lXjr2yUXdprHqh/xN5/wYbs6QoEJH5BMqrraYZaRKP9EH+FAD0Q60UHj2d3R8Fn268eZpdQmw==",
+  "dgSpecHash": "QPVANuQF6YqaxuwwFWO2MJQDZ72NDep2RYkML/vM3uhJBtu7RBbIJD+Kxm/xo7IhQIZJg2yOdA86nzHbWyB9ig==",
   "success": true,
-  "projectFilePath": "/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/macinfo.csproj",
+  "projectFilePath": "/Users/josephfeyen/Documents/Source Code/tcAdmin/tools/SystemInfo/MacBook/macinfo.csproj",
   "expectedPackageFiles": [
     "/Users/josephfeyen/.nuget/packages/newtonsoft.json/13.0.1/newtonsoft.json.13.0.1.nupkg.sha512"
   ],

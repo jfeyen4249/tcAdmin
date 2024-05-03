@@ -347,7 +347,7 @@
             console.log(docName)
             var answer = prompt(`Do you want to delete ${docName}? (yes/no)`);
             if (answer === "yes") {
-                fetch(`/docs/doc?id=${docID}`,{method : "Delete"})
+                fetch(`/docs/doc?id=${docID}&Name=${docName}`,{method : "Delete"})
                 .then(response => response.json())
                 .then(data => {}); 
                 docID = 0

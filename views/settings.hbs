@@ -5,6 +5,91 @@
      .wpc {
         width: 30vw;
     }
+
+     .tab-width {
+            max-width: 90vw;
+            width: 90vw;
+
+        }
+
+        .tablink {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .tabcontent {
+            border: #F35D07 4px solid;
+            border-radius: 10px;
+            min-height: 85vh;
+            max-height: 85vh;
+            margin-top: -16px;
+        }
+
+        .active {
+            background-color: #F35D07;
+            color: white;
+        }
+
+        .orange-background {
+            background-color: #F35D07;
+        }
+        
+        .fig {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem; /* Adjust the gap as needed */
+            background-color: #fff; /* Set the background color */
+            height: 80vh;
+           
+        }
+
+        /* Define styles for the individual boxes */
+        .box {
+            grid-template-rows: repeat(2, 1fr);
+            {{!-- padding: 1rem; --}}
+            text-align: center;
+            font-weight: bold;
+            
+        }
+
+        .box1 {background-color: #fff;}
+        .box2 {background-color: #fff;}
+        .box3 {background-color: #fff;}
+        .box4 {background-color: #fff;}
+
+        .move {
+            {{!-- margin-top: -11 5px; --}}
+            height: 40px;
+        }
+
+       
+        .chrome {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px; /* Adjust the gap as needed */
+        }
+
+        .chrome-box {
+            grid-template-rows: repeat(2, 1fr);
+            padding: 1rem; /* Add padding for spacing */
+            text-align: center;
+            font-weight: bold;
+            height: 10%;
+        }
+
+        .users {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 1rem;
+        }
+
+        .alert{
+            display: grid;
+            grid-template-columns: 3fr 20px;
+        }
+
+
+        
    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,8 +101,11 @@
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
     
-    <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
-        <span id="noteText"></span>
+    <div id="alerts" class="bg-gray-950 text-center text-white p-4 mr-12 mt-12 rounded-md shadow-md fixed min-w-64 right-0 top-0 rounded border-blue-800">
+        <div class="alert">
+            <div class="mr-4 mt-1"><span id="AlertText">This chromebook was deleted!</span></div>
+            <div><button class="text-white p-1 "><i class="fa-solid fa-circle-xmark"></i></button></div>
+        </div>
     </div>
 
 <body class="bg-slate-800 h-screen flex">
@@ -33,628 +121,1043 @@
 <div class="flex-1 p-8">
     <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
         <div class="flex items-center justify-between mb-4">
-            <!-- Password Manager Passwords text -->
-            <h1 class="text-2xl font-bold mb-4">Desktop Inventory</h1>
+        <div class="tabs">
+            <button class="tablink p-2 ml-2" onclick="openTab('tab6')">Building Management</button>
+            <button class="tablink p-2" onclick="openTab('tab2')">PO Management</button>
+            <button class="tablink p-2" onclick="openTab('tab3')">Inventory Make & Model</button>
+            <button class="tablink p-2" onclick="openTab('tab4')">User management</button>
+            <button class="tablink p-2 active" onclick="openTab('tab5')">Logs</button>
+        </div>
+        </div>
+        
+        
+        <div id="tab2" class="tabcontent" style="display: none;">
+             <h1 class="text-2xl font-bold mb-4 mt-2 text-center">PO Management</h1>
 
-            <!-- Search Box and Add New Password Button Container -->
-            <div class="flex items-center">
-                <!-- Search Box -->
-                <div class="flex items-center">
-                    <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        
+        <div id="tab3" class="tabcontent p-4" style="display: none;">
+           <div class="fig">
+                <div class="box box1">
+                    <h1 class="text-xl text-center font-bold mb-8">Add Device Makes & Models</h1>
+                    <div class="">
+
+                        {{!-- <label for="model" class="block text-gray-600 text-sm font-medium mb-2 mt-4">Model</label> --}}
+                        <input type="text" id="add-device-make" name="model" placeholder="Make" class="mt-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        
+                        <input type="text" id="add-device-model" name="model" placeholder="Model" class="mt-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                        {{!-- <label for="modal-student" class="block text-gray-600 text-sm font-medium mb-2 mt-6">Device Type</label> --}}
+                        <select name="add-device-type" id="add-device-type" class="mt-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+
+                        <button type="button" onclick="AddDevice()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-blue-600">Add Device</button>
+                    </div>
+                </div>
+                
+                
+                <div class="box box2">
+                     <h1 class="text-xl text-center font-bold mb-4">Add Chromebook Makes & Models</h1>
+                     <div class="chrome">
+
+                        <div class="chrome-box">
+
+                        {{!-- <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Chromebook Make & Model</label> --}}
+                        <input type="text" id="add-chrome-make" name="make" placeholder="Make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                        
+                        <input type="text" id="add-chrome-model" name="make" placeholder="Model" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                        <input type="text" id="add-chrome-screen" name="model" placeholder="Screen Size" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                     </div>
+                        <div class="chrome-box move-chrome-add">
+                             <input type="text" id="add-chrome-cost" name="make" placeholder="Cost" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                        {{!-- <label for="model" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Model</label> --}}
+                        <input type="text" id="add-chrome-updates" name="model" placeholder="Uptades until ? ex(2029)" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                        </div>
+
+                     </div>
+                     <div>
+                    <button type="button" onclick="AddChromebook()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Chromebook</button>
+                    </div>
                 </div>
 
-                <!-- Add New Password Button -->
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="document.getElementById('add-modal').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Add</button>
+                <div class="box box3">
+                    <h1 class="text-l text-center font-bold mb-6">Edit Device Make & Model</h1>
+                    <div class="move-edit">
+
+                        {{!-- <label for="device-select" class="block text-gray-600 text-sm font-medium mb-1 mt-6">Select A Device</label> --}}
+                        <select name="device-select" oninput="getDevice()" id="device-select" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+
+                        {{!-- <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Make</label> --}}
+                        <input type="text" id="edit-device-make" name="make" placeholder="Make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                        <input type="text" id="edit-device-model" name="model" placeholder="Model" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                        
+                        {{!-- <label for="edit-device-type" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Device Type</label> --}}
+                        <select name="edit-device-type" id="edit-device-type" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+
+                        <button type="button" onclick="EditDevice()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-blue-600">Update Device</button>
+                        <button type="button" onclick="DeleteDevice()" id="add-btn" class="w-half bg-red-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-red-600">Delete Device</button>
+                
+                    </div>
+                </div>
+                
+                <div class="box box4">
+                     <h1 class="text-xl text-center font-bold mb-6">Edit Chromebook Makes & Models</h1>
+                        <select name="modal-student" oninput="getChromeDetails()" id="edit-chrome-device" class=" move-chrome-edit h-10 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                     <div class="chrome">
+
+                        <div class="chrome-box move-edit">
+
+                        
+                        <input type="text" id="edit-chrome-make" name="make" placeholder="Make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                        <input type="text" id="edit-chrome-model" name="make" placeholder="Model" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                        <input type="text" id="edit-chrome-screen" name="model" placeholder="Screen Size" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                     </div>
+                        <div class="chrome-box move-edit">
+                             <input type="text" id="edit-chrome-cost" name="make" placeholder="Cost" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                        {{!-- <label for="model" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Model</label> --}}
+                        <input type="text" id="edit-chrome-updates" name="edit-chrome-updates" placeholder="Uptades until ? ex(2029)" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+
+                        </div>
+
+                     </div>
+                    <button type="button" onclick="EditChromebook()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Save Chromebook</button>
+                    <button type="button" onclick="DeleteChromebook()" id="add-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600">Delete Chromebook</button>
+                
+                </div>
+            
             </div>
+
+
+
+        </div>
+        
+        <div id="tab4" class="tabcontent p-4" style="display: none;">
+           <h1 class="text-2xl font-bold mb-4">User management</h1>
+            <div class="users">
+
+                <div class="user-box"> 
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Full Name</label>
+                    <input type="text" id="add-user-name" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Username</label>
+                    <input type="text" id="add-user-username" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Phone Number</label>
+                    <input type="text" id="add-user-phone" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <div class="w-full mt-4 text-center">
+                        <button type="button" onclick="AddUser()" id="add-btn" class="w-half pl-4 pr-4 bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-green-800">Add User</button>
+                    </div>
+                </div>
+
+                <div class="user-box"> 
+                    <label for="device-select" class="block text-gray-600 text-sm font-medium mb-1 ">Select A User</label>
+                    <select name="device-select" oninput="getUser()" id="edit-user-select" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        
+                    <label for="device-select" class="block text-gray-600 text-sm font-medium mb-1 ">Account Status</label>
+                    <select name="device-select" oninput="" id="edit-user-status" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <option value="none"></option>
+                        <option value="Active">Active</option>
+                        <option value="Disabled">Disabled</option>
+                    </select>
+
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Full Name</label>
+                    <input type="text" id="edit-user-name" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Username</label>
+                    <input type="text" id="edit-user-username" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Phone Number</label>
+                    <input type="text" id="edit-user-phone" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                    <div class="w-full mt-4 text-center">
+                        <button type="button" onclick="EditUser()" id="add-btn" class="w-half pl-4 pr-4 bg-green-500 text-white p-1 mr-1 rounded-md hover:bg-green-800">Save Changes</button>
+                        <button type="button" onclick="LogUserOut()" id="add-btn" class="w-half pl-4 pr-4 bg-orange-500 text-white p-1 mr-1 rounded-md hover:bg-orange-800">Log user out</button>
+                        <button type="button" onclick="ResetPassword()" id="add-btn" class="w-half pl-4 pr-4 bg-rose-500 text-white p-1 mr-1 rounded-md hover:bg-sky-800">Reset Password</button>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 
-        <!-- Tabs -->
-        <div class="border-b border-gray-200">
-            <ul class="flex">
-                <li class="-mb-px mr-1">
-                    <a href="#" class="tab-link bg-white inline-block border-l border-t border-r rounded-t py-2 px-4 text-blue-500 font-semibold">Tab 1</a>
-                </li>
-                <li class="mr-1">
-                    <a href="#" class="tab-link bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold">Tab 2</a>
-                </li>
-                <li class="mr-1">
-                    <a href="#" class="tab-link bg-white inline-block py-2 px-4 text-gray-500 hover:text-gray-700 font-semibold">Tab 3</a>
-                </li>
-            </ul>
-        </div>
-
-        <!-- Tab Content -->
-        <div class="py-4">
-            <!-- Content for Tab 1 -->
-            <div class="tab-content">
-                Tab 1 content goes here
-            </div>
-
-            <!-- Content for Tab 2 -->
-            <div class="hidden tab-content">
-                Tab 2 content goes here
-            </div>
-
-            <!-- Content for Tab 3 -->
-            <div class="hidden tab-content">
-                Tab 3 content goes here
-            </div>
-        </div>
+        <div id="tab5" class="tabcontent p-4" style="display: block; overflow-x: auto;">
+    <h1 class="text-2xl font-bold mb-4 text-center">System Logs</h1>
+    <div style="overflow-x:auto;">
+        <table class="w-full border-collapse border border-gray-800">
+            <thead>
+                <tr class="bg-gray-800 text-white">
+                    <th class="py-2 px-4 border">Date</th>
+                    <th class="py-2 px-4 border">Time</th>
+                    <th class="py-2 px-4 border">User</th>
+                    <th class="py-2 px-4 border">Log</th>
+                </tr>
+            </thead>
+            <tbody class="text-center" id="log">
+                <!-- Your table data goes here -->
+            </tbody>
+        </table>
     </div>
 </div>
 
-    <!-- Modal -->
-    <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="wpc mx-auto mt-20 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-center">Add New Computer</h2>
-            <form>
-                <!-- Documentation Title -->
-                <div class="mb-4">
-                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
-                    <input type="text" id="modal-mac-add" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
 
-                <div class="mb-4">
-                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
-                        <select name="modal-make" id="modal-make-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+        <div id="tab6" class="tabcontent p-4" style="display: none;">
+           <div class="fig">
+
+                <div class="box box1">
+                    <h1 class="text-xl text-center font-bold mb-3">Add Building</h1>
+                    <div class="">
+                        <label for="make" class="block text-gray-600 text-sm font-medium mb-2">Enter Building</label>
+                        <input type="text" id="add-building" name="make" class=" w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <select name="add-color-select" id="add-color-select" class="w-full px-3 mt-6 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                            <option value="bg-white">Select a color</option>
+                            <option value="bg-red-400">Red</option>
                         </select>
-                </div>
-               
-               <div class="mb-4">
-                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
-                        <select name="modal-model" id="modal-model-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+
+                        <button type="button" onclick="AddBuilding()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-blue-600">Add Building</button>
                     </div>
-
-                <div class="mb-4">
-                    <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
-                    <input type="text" id="modal-sn-add" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
                 </div>
+                
+                
+                <div class="box box2">
+                     <h1 class="text-xl text-center font-bold mb-4">Add Room</h1>
+                     <div>
+                        <label for="edit-device-type" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Building</label>
+                        <select name="edit-device-type" id="add-building-select" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
 
-                <div class="mb-4">
-                    <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
-                    <input type="text" id="modal-tag-add" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
+                        <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Room Number</label>
+                        <input type="text" id="add-room" name="make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                     </div>
 
-                <div class="mb-4 mt-3">
-                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
-                        <select name="modal-building" id="modal-building-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                     <div>
+                    <button type="button" onclick="AddRoom()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 rounded-md hover:bg-green-600">Add Room</button>
                     </div>
-
-                    <div class="mb-4 mt-3">
-                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
-                        <select name="modal-room" id="modal-room-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
-                    </div>
-                <!-- Save Button -->
-                <button type="button" onclick="addDesktop()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Add Computer</button>
-                <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="edit-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-center">Edit Computer</h2>
-            <form>
-                <!-- Documentation Title -->
-                <div class="mb-4">
-                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
-                    <input type="text" id="modal-mac-edit" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
                 </div>
 
-                <div class="mb-4">
-                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
-                        <select name="modal-make" id="modal-make-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+
+                
+
+                <div class="box box3">
+                    <h1 class="text-xl text-center font-bold mb-8">Edit Building</h1>
+                    <div class="move-edit">
+
+                        {{!-- <label for="device-select" class="block text-gray-600 text-sm font-medium mb-1 mt-6">Select A Building</label> --}}
+                        <select name="device-select" oninput="loadBuilding()" id="edit-building-select" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        
+                        <select name="edit-color-select" id="edit-color-select" class="w-full px-3 mt-5 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                            <option value="bg-white">Select a color</option>
+                            <option class="bg-red-400" value="bg-red-400">Red</option>
+                            <option value="bg-green-400">Green</option>
+                            <option value="bg-blue-400">Blue</option>
                         </select>
-                </div>
-               
-               <div class="mb-4">
-                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
-                        <select name="modal-model" id="modal-model-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        
+                        {{!-- <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Building</label> --}}
+                        <input type="text" id="edit-building" name="make"  class="w-full px-3 py-2 border mb-4 mt-6 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                        <button type="button" onclick="EditBuilding()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-blue-600">Save Building</button>
+                        <button type="button" onclick="DeleteBuilding()" id="add-btn" class="w-half bg-red-500 text-white p-1 mr-3 mt-4 rounded-md hover:bg-red-600">Delete Building</button>
+                
                     </div>
-
-                <div class="mb-4">
-                    <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
-                    <input type="text" id="modal-sn-edit" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
                 </div>
+                
+                
+                <div class="box box4">
+                     <h1 class="text-xl text-center font-bold mb-2">Edit Room</h1>
+                     <div>
+                        <label for="edit-room-building-select" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Building</label>
+                        <select name="edit-room-building-select" oninput="getRooms()"  id="edit-room-building-select" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        
+                        <label for="edit-device-type" class="block text-gray-600 text-sm font-medium mb-1 mt-2">Room</label>
+                        <select name="edit-device-type" oninput="loadRoom()" id="edit-room-select" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        
+                        <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Room Number</label>
+                        <input type="text" id="edit-room" name="make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
+                    
+                     </div>
 
-                <div class="mb-4">
-                    <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
-                    <input type="text" id="modal-tag-edit" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                    <button type="button" onclick="EditRoom()" id="add-btn" class="w-half bg-blue-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Save Room</button>
+                    <button type="button" onclick="deleteRoom()" id="add-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600">Delete Room</button>
+                
                 </div>
+            
+            </div>
 
-                <div class="mb-4 mt-3">
-                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
-                        <select name="modal-building" id="modal-building-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" ></select>
-                    </div>
 
-                    <div class="mb-4 mt-3">
-                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
-                        <select name="modal-room" id="modal-room-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
-                    </div>
-                <!-- Save Button -->
-                <button type="button" onclick="editDesktop()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Save Computer</button>
-                <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-            </form>
+
         </div>
-    </div>
-
+        </div>
+        </div>
 
     <script defer>
-        let grid = document.getElementById('grid')
-        let addModal = document.getElementById('add-modal')
-        let addmake = document.getElementById('modal-make-add')
-        let addmodel = document.getElementById('modal-model-add')
-        let addSN = document.getElementById('modal-sn-add')
-        let addtag = document.getElementById('modal-tag-add')
-        let addmac = document.getElementById('modal-mac-add')
-        let addBuilding = document.getElementById('modal-building-add')
-        let addRoom = document.getElementById('modal-room-add')
-        let editID = 0
-        let editModal = document.getElementById('edit-modal')
-        let editmake = document.getElementById('modal-make-edit')
-        let editmodel = document.getElementById('modal-model-edit')
-        let editSN = document.getElementById('modal-sn-edit')
-        let edittag = document.getElementById('modal-tag-edit')
-        let editmac = document.getElementById('modal-mac-edit')
-        let editBuilding = document.getElementById('modal-building-edit')
-        let editRoom = document.getElementById('modal-room-edit')
 
-        let searchBox = document.getElementById('search')
-        addmake.addEventListener("input", function() {getAddModel()})
-        addBuilding.addEventListener("input", function() {getRoom()})
+//  **********************************************************************************************************************
+// ***********************************************************************************************************************
+// ****************************************        Building Functions           ******************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
 
-        editBuilding.addEventListener("change", function() {getEditRoom()})
+        let editDevice = document.getElementById('device-select')
+        let editDeviceType = document.getElementById('edit-device-type')
+        let addDeviceType = document.getElementById('add-device-type')
 
+        let editBuildingSelect = document.getElementById('edit-building-select')
+        let addBuildingSelect = document.getElementById('add-building-select')
+        let addRoom = document.getElementById('add-room')
 
-        const tabLinks = document.querySelectorAll('.tab-link');
-    // Get all tab content
-    const tabContents = document.querySelectorAll('.tab-content');
+        let editRoom = document.getElementById('edit-room')
+        let editRoomBuildingSelect = document.getElementById('edit-room-building-select')
+        let editRoomSelect = document.getElementById('edit-room-select')
+        
+        let addBuilding = document.getElementById('add-building')
+        let editBuilding = document.getElementById('edit-building-select')
+        let editBuildingText = document.getElementById('edit-building')
+        let addColor = document.getElementById('add-color-select')
+        let editColor = document.getElementById('edit-color-select')
+        let buildingID = 0
+    
 
-    // Add click event listeners to all tab links
-    tabLinks.forEach((link, index) => {
-        link.addEventListener('click', () => {
-            // Remove 'active' class from all tab links and content
-            tabLinks.forEach((tabLink) => tabLink.classList.remove('active'));
-            tabContents.forEach((tabContent) => tabContent.classList.add('hidden'));
-
-            // Add 'active' class to the clicked tab link
-            link.classList.add('active');
-            // Display the corresponding tab content
-            tabContents[index].classList.remove('hidden');
-        });
-    });
-
-
-        function isValidMACAddress(macAddress) {
-            var macRegex = /^([0-9A-Fa-f]{2}[:-]){7}[0-9A-Fa-f]{2}$/;
-            return macRegex.test(macAddress);
+        function openTab(tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
         }
-
-        function getEditPc(id) {
-            editID = id
-            fetch(`/desktop/computer?id=${id}`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-                    let obj = data[0]
-                    editmac.value = obj.mac
-                    editSN.value = obj.sn
-                    edittag.value = obj.tag
-
-                    var selectElement = editmake; 
-                    for (var i = 0; i < selectElement.options.length; i++) {
-                        var option = selectElement.options[i];
-                        if (option.value === obj.make) {
-                            option.selected = true;
-                            getEditModel(obj.model)
-                            break;
-                        }   
-                    }
-
-                    var selectElement = editBuilding; 
-                    for (var i = 0; i < selectElement.options.length; i++) {
-                        var option = selectElement.options[i];
-                        if (option.value === obj.building) {
-                            option.selected = true;
-                            console.log('Selected')
-                            getEditRoom(obj.room)
-                            console.log('EditRoom Called')
-                            break;
-                        }   
-                    }
-                    
-
-                });
-            editModal.classList.remove('hidden')
+        tablinks = document.getElementsByClassName("tablink");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
         }
-
-        function getDesktop() {
-            grid.innerHTML = ''
-            fetch(`/desktop/list`)
+        document.getElementById(tabName).style.display = "block";
+        event.currentTarget.className += " active";
+        }
+        
+        function getDevices() {
+            editDevice.innerHTML = ``;
+            editDevice.innerHTML += `<option value="">Select a Device</option>`;
+            fetch(`/settings/devices`)
             .then(response => response.json())
             .then(data => {
-                grid.innerHTML = ''
-                for(let i = 0; i<data.length; i++) {
-                    let obj =data[i];
-
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                    }
-                    grid.innerHTML += `
-                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
-                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
-                            <p class="font-semibold text-right col-span-1">Make:</p>
-                            <p class="col-span-2">${obj.make}</p>
-                            <p class="font-semibold text-right col-span-1">Model:</p>
-                            <p class="col-span-2">${obj.model}</p>
-                            <p class="font-semibold text-right col-span-1">SN:</p>
-                            <p class="col-span-2">${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">Mac:</p>
-                            <p class="col-span-2">${obj.mac}</p>
-                            <p class="font-semibold text-right col-span-1">IP:</p>
-                            <p class="col-span-2">${obj.ip}</p>
-                            <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${obj.ram} GB</p>
-                            <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${obj.hdd}</p>
-                            <p class="font-semibold text-right col-span-1">OS:</p>
-                            <p class="col-span-2">${obj.os}</p>
-                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
-                                    <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
-                        </div>`
-                }
+                data.forEach(obj => {
+                    editDevice.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`;
+                });
             })
         }
 
-
-        
-        function getAddMake() {
-            document.getElementById('modal-make-add').innerHTML = 
-            document.getElementById('modal-make-add').innerHTML = '<option value="">Select a Make</option>'
-            editmake.innerHTML = '<option value="">Select a Make</option>'
-            fetch(`/desktop/make/`)
-                .then(response => response.json())
-                .then(data => {
-                    for(let i=0; i<data.length; i++) {
-                    let obj = data[i];
-                        document.getElementById('modal-make-add').innerHTML += `<option value="${obj.make}">${obj.make}</option>`;
-                        editmake.innerHTML += `<option value="${obj.make}">${obj.make}</option>`;
-                    }
+        function getDevicesType() {
+           
+            editDeviceType.innerHTML = ``;
+            editDeviceType.innerHTML += `<option value="">Select a Device Type</option>`;
+            addDeviceType.innerHTML = ``;
+            addDeviceType.innerHTML += `<option value="">Select a Device Type</option>`;
+            fetch(`/settings/device-type`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                    editDeviceType.innerHTML += `<option value="${obj.device}">${obj.device}</option>`;
+                    addDeviceType.innerHTML += `<option value="${obj.device}">${obj.device}</option>`;
                 });
+            })
         }
 
-         function getAddModel() {
-            fetch(`/desktop/model?make=${addmake.value}`)
-                .then(response => response.json())
-                .then(data => {
-                    addmodel.innerHTML = '<option value="">Select a Model</option>'
-                    editmodel.innerHTML = '<option value="">Select a Model</option>'
-                    for(let i=0; i<data.length; i++) {
-                    let obj = data[i];
-                        addmodel.innerHTML += `<option value="${obj.model}">${obj.model}</option>`;
-                    }
+        function getBuilding() {
+            editBuildingSelect.innerHTML = ``;
+            editBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
+
+            addBuildingSelect.innerHTML = ``;
+            addBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
+
+            editRoomBuildingSelect.innerHTML = ``;
+            editRoomBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
+            fetch(`/settings/buildings`)
+            .then(response => response.json())
+            .then(data => {
+                {{!-- console.log(data) --}}
+                data.forEach(obj => {
+                    editBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
+                    addBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
+                    editRoomBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
                 });
+            })
         }
+       
+        function getBuilding() {
+            editBuildingSelect.innerHTML = ``;
+            editBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
 
-         function getEditModel(model) {
-            fetch(`/desktop/model?make=${editmake.value}`)
-                .then(response => response.json())
-                .then(data => {
-                    editmodel.innerHTML = '<option value="">Select a Model</option>'
-                    for(let i=0; i<data.length; i++) {
-                    let obj = data[i];
-                        editmodel.innerHTML += `<option value="${obj.model}">${obj.model}</option>`;
-                    }
+            addBuildingSelect.innerHTML = ``;
+            addBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
 
-                    var selectModel = editmodel; 
-                            for (var i = 0; i < selectModel.options.length; i++) {
-                                console.log(selectModel.value)
-                                var option = selectModel.options[i];
-                                if (option.value === model) {
-                                    console.log("Running")
-                                    option.selected = true;
-                                    break;
-                                }   
-                            }
-
-                });
+            editRoomBuildingSelect.innerHTML = ``;
+            editRoomBuildingSelect.innerHTML += `<option value="">Select Building</option>`;
+            fetch(`/settings/buildings`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                data.forEach(obj => {
+                    editBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
+                    addBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
+                    editRoomBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
+                });      
+            })
         }
         
-         function getBuildings() {
-                    addBuilding.innerHTML = ``
-                    addBuilding.innerHTML += `<option value="" >Select A Building</option>`
-                    editBuilding.innerHTML += `<option value="" >Select A Building</option>`
-                    fetch('/ap/buildings')
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                addBuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
-                                editBuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
-                            }
-                        });     
-                }
-
-        function getRoom() {
-                    addRoom.innerHTML = ``
-                    addRoom.innerHTML += `<option value="" >Select A Room</option>`
-                    
-                    fetch(`/ap/room?building=${addBuilding.value}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                addRoom.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
-                            }
-                        });     
-            }
+        function getRooms() {
+            editRoomSelect.innerHTML = ``;
+            editRoomSelect.innerHTML += `<option value="">Select a Room</option>`;
+            fetch(`/settings/rooms?building=${editRoomBuildingSelect.value}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                    editRoomSelect.innerHTML += `<option value="${obj.id}">${obj.room}</option>`;
+                });
+            })
+        }
         
-        function getEditRoom(room) {
-                    editRoom.innerHTML = ``
-                    editRoom.innerHTML += `<option value="" >Select A Room</option>`
-                    
-                    fetch(`/ap/room?building=${editBuilding.value}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                editRoom.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
-                            }
+        function loadBuilding() {
+            document.getElementById('edit-building').value = editBuildingSelect.value
+            fetch(`/settings/color?building=${editBuildingSelect.value}`)
+            .then(response => response.json())
+            .then(data => {
+                var selectElement = editColor; 
+                    for (var i = 0; i < selectElement.options.length; i++) {
+                        var option = selectElement.options[i];
+                        if (option.value === data[0].color) {
+                            option.selected = true;
+                            break;
+                        }   
+                    }
+                    buildingID = data[0].id
+            })     
+        }
 
-                            var selectRoom = editRoom; 
-                            for (var i = 0; i < selectRoom.options.length; i++) {
-                                console.log(selectRoom.value)
-                                var option = selectRoom.options[i];
-                                if (option.value === room) {
-                                    console.log("Running")
-                                    option.selected = true;
-                                    break;
-                                }   
-                            }
-                        });     
+
+
+        function loadRoom() {
+            var selectElement = editRoomSelect;
+            var selectedIndex = selectElement.selectedIndex;
+            var selectedText = selectElement.options[selectedIndex].text;
+            editRoom.value = selectedText
+            editRoom.focus()
+        }
+
+        function AddRoom() {
+            if(addBuildingSelect.value == ''){
+                alert('Select a Building')
+                return
             }
 
-        function addDesktop() {
-                if(addmac.value == '') {
-                    alert('Enter a Mac Address!')
-                }else {
+            if(addRoom.value == ''){
+                alert('Enter a Room')
+                return
+            }
 
+            fetch(`/settings/room?room=${addRoom.value}&building=${addBuildingSelect.value}`, {method : 'Put'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added'){
+                    alert('Added!')
+                    GetLog()
                 }
-                
-                if(addmake.value == '') {
-                    alert('Select a model!')
-                    return
-                }
-
-                if(addmodel.value == '') {
-                    alert('Select a model!')
-                    return
-                }
-
-                if(addSN.value == "") {
-                    alert('Enter a Serial Number!')
-                    return
-                }
-
-                if(addtag.value == '') {
-                    alert('Enter an asset tag!')
-                    return
-                }
-
-                let data = {
-                    make: addmake.value,
-                    model: addmodel.value,
-                    sn: addSN.value,
-                    tag: addtag.value,
-                    mac: addmac.value,
-                    building: addBuilding.value,
-                    room: addRoom.value,
-                    type: 'desktop',
-                    view: 'true'
-                }
-                
-                fetch(`/desktop/computer`, {
-                method: 'Put',
-                body : JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json",
-                    }
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'added') {
-                        addmac.value = ''
-                        addSN.value = ''
-                        addtag.value = ''
-                        addModal.classList.add('hidden')
-                        showNotification('Computer was updated!', 'bg-orange-700')
-                        getDesktop()
-                    }
-                });
+            })
         }
+        
+        function EditRoom() {
+            
+            if(editRoomBuildingSelect.value == ''){
+                alert('Select a Building')
+                return
+            }
 
-        function editDesktop() {
-                if(editmac.value == '') {
-                    alert('Enter a Mac Address!')
-                }else {
+            if(editRoom.value == ''){
+                alert('Enter a Room')
+                return
+            }
 
+            fetch(`/settings/room?room=${editRoom.value}&building=${editRoomBuildingSelect.value}&id=${editRoomSelect.value}`, {method : 'Post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added'){
+                    alert('Added!')
+                    GetLog()
                 }
-                
-                if(editmake.value == '') {
-                    alert('Select a model!')
-                    return
-                }
-
-                if(editmodel.value == '') {
-                    alert('Select a model!')
-                    return
-                }
-
-                if(editSN.value == "") {
-                    alert('Enter a Serial Number!')
-                    return
-                }
-
-                if(edittag.value == '') {
-                    alert('Enter an asset tag!')
-                    return
-                }
-
-                let data = {
-                    make: editmake.value,
-                    model: editmodel.value,
-                    sn: editSN.value,
-                    tag: edittag.value,
-                    mac: editmac.value,
-                    building: editBuilding.value,
-                    room: editRoom.value,
-                    type: 'desktop',
-                    view: 'true'
-                }
-                
-                fetch(`/desktop/computer?id=${editID}`, {
-                method: 'POST',
-                body : JSON.stringify(data),
-                headers: {
-                    "Content-Type": "application/json",
-                    }
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'saved') {
-                        editmac.value = ''
-                        editSN.value = ''
-                        edittag.value = ''
-                        editModal.classList.add('hidden')
-                        editID = 0
-                        showNotification('Computer was updated!', 'bg-orange-700')
-                        getDesktop()
-                    }
-                });
+            })
         }
-
-        function deleteDesktop(id, pc) {
-            var answer = prompt(`Do you want to delete ${pc}? (yes/no)`);
+        
+        function deleteRoom() { 
+            var answer = prompt(`Do you want to delete this Room? (yes/no)`);
             if (answer === "yes") {
-                fetch(`/desktop/computer?id=${id}`, {method : 'delete'})
+                fetch(`/settings/room?id=${editRoomSelect.value}&building=${editBuilding.value}&room=${editRoom.value}`, {method : 'delete'})
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        showNotification(`${pc} was deleted`)
-                        getDesktop()
+                        alert(`This room was deleted`)
+                        GetLog()
                     }
                 });
             } else if (answer === "no") {
-                getDesktop()
+                
             } else {
-                 getDesktop()
+                 
             }
-
-
-            
         }
 
-        searchBox.addEventListener("input", () => {
-            if(searchBox.length = 0) {
-                getDesktop()
-            } else {
-                grid.innerHTML = ''
-            fetch(`/desktop/search?search=${searchBox.value}`)
-            .then(response => response.json())
+
+
+        function AddBuilding() {
+            if(addBuilding.value == ''){
+                alert('Select a Building')
+                return
+            }
+
+            fetch(`/settings/buildings?building=${addBuilding.value}&color=${addColor.value}`, {method : 'Put'})
+            .then(response => response.text())
             .then(data => {
-                grid.innerHTML = ''
-                for(let i = 0; i<data.length; i++) {
-                    let obj =data[i];
-
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                    }
-                    grid.innerHTML += `
-                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
-                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
-                            <p class="font-semibold text-right col-span-1">Make:</p>
-                            <p class="col-span-2">${obj.make}</p>
-                            <p class="font-semibold text-right col-span-1">Model:</p>
-                            <p class="col-span-2">${obj.model}</p>
-                            <p class="font-semibold text-right col-span-1">SN:</p>
-                            <p class="col-span-2">${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">Mac:</p>
-                            <p class="col-span-2">${obj.mac}</p>
-                            <p class="font-semibold text-right col-span-1">IP:</p>
-                            <p class="col-span-2">${obj.ip}</p>
-                            <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${obj.ram} GB</p>
-                            <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${obj.hdd}</p>
-                            <p class="font-semibold text-right col-span-1">OS:</p>
-                            <p class="col-span-2">${obj.os}</p>
-                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
-                                    <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
-                        </div>`
-
-
-
+                if(data == 'added'){
+                    alert('Added!')
+                    addBuilding.value = ''
+                    getBuilding()
+                    GetLog()
                 }
             })
-            }
-        })
-
-
-
-        getDesktop()
-        getAddMake()
-        getBuildings()
+        }
         
+        function EditBuilding() {
+
+            if(editBuildingText.value == ''){
+                alert('Enter a Building')
+                return
+            }
+
+            console.log(buildingID)
+
+            fetch(`/settings/buildings?name=${editBuildingText.value}&color=${editColor.value}&id=${buildingID}`, {method : 'Post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated'){
+                    alert('Updated!')
+                    buildingID = 0
+                    GetLog()
+                }
+            })
+        }
+        
+        function DeleteBuilding() {
+            var answer = prompt(`Do you want to delete this Building? (yes/no)`);
+            if (answer === "yes") {
+                fetch(`/settings/buildings?id=${buildingID}&name=${editBuildingText.value}`, {method : 'delete'})
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data)
+                    if(data == 'deleted') {
+                        alert(`This building was deleted`)
+                        GetLog()
+                    }
+                });
+            } else if (answer === "no") {
+                
+            } else {
+                 
+            }
+        }
+        
+
+
+//  **********************************************************************************************************************
+// ***********************************************************************************************************************
+// ****************************************           Device Functions          ******************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+        
+
+        let AddDeviceMake = document.getElementById('add-device-make')
+        let AddDeviceModel = document.getElementById('add-device-model')
+        let editDeviceMake = document.getElementById('edit-device-make')
+        let editDeviceModel = document.getElementById('edit-device-model')
+
+        function AddDevice() {
+            if(AddDeviceMake.value == ''){
+                alert('Enter a Make')
+                return
+            }
+            
+            if(AddDeviceModel.value == ''){
+                alert('Enter a Model')
+                return
+            }
+
+            if(addDeviceType.value == ''){
+                alert('Select a device Type')
+                return
+            }
+
+            fetch(`/settings/device?make=${AddDeviceMake.value}&model=${AddDeviceModel.value}&type=${addDeviceType.value}`, {method : 'Put'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added'){
+                    alert('Added!')
+                    getDevicesType()
+                    getDevices()
+                    GetLog()
+                    AddDeviceMake.value = ''
+                    AddDeviceModel.value = ''
+                    AddDeviceModel.value = ''
+                }
+            })
+        }
+
+        function EditDevice() {
+            if(editDeviceMake.value == ''){
+                alert('Enter a make of device')
+                return
+            }
+            
+            if(editDeviceModel.value == ''){
+                alert('Enter a Model')
+                return
+            }
+
+            if(editDeviceType.value == ''){
+                alert('Select a device Type')
+                return
+            }
+
+            fetch(`/settings/device?make=${editDeviceMake.value}&model=${editDeviceModel.value}&type=${editDeviceType.value}&id=${editDevice.value}`, {method : 'Post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated'){
+                    alert('Updated!')
+                    getDevicesType()
+                    getDevices()
+                    GetLog()
+                    editDeviceMake.value = ''
+                    editDeviceModel.value = ''
+                }
+            })
+        }
+        
+        function DeleteDevice() { 
+                    if(editDevice.value == '') {
+                        return
+                    }
+                    
+                    var answer = prompt(`Do you want to delete this device? (yes/no)`);
+                    if (answer === "yes") {
+                        fetch(`/settings/device?id=${editDevice.value}&make=${editDeviceMake.value}&model=${editDeviceModel.value}&type=${editDeviceType.value}`, {method : 'delete'})
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data)
+                            if(data == 'deleted') {
+                                alert(`This device was deleted`)
+                                getDevicesType()
+                                getDevices()
+                                GetLog()
+                                editDeviceMake.value = ''
+                                editDeviceModel.value = ''
+                            }
+                        });
+                    } else if (answer === "no") {
+                        
+                    } else {
+                        
+                    }
+                }
+
+        function getDevice() {
+            fetch(`/settings/device?id=${editDevice.value}`, {method : 'get'})
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                let obj = data[0]
+                editDeviceMake.value = obj.make
+                editDeviceModel.value = obj.model
+                var selectElement = editDeviceType; 
+                for (var i = 0; i < selectElement.options.length; i++) {
+                    var option = selectElement.options[i];
+                    if (option.value === obj.type) {
+                        option.selected = true;
+                        break;
+                    }   
+                }                
+            })
+        }
+
+
+
+//  **********************************************************************************************************************
+// ***********************************************************************************************************************
+// ****************************************         Chromebook Functions        ******************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+
+    let addChromeMake = document.getElementById('add-chrome-make')
+    let addChromeModel = document.getElementById('add-chrome-model')
+    let addChromeScreen = document.getElementById('add-chrome-screen')
+    let addChromeCost = document.getElementById('add-chrome-cost')
+    let addChromeUpdates = document.getElementById('add-chrome-updates')
+
+    let editChromeDevice = document.getElementById('edit-chrome-device')
+
+    
+    let editChromeMake = document.getElementById('edit-chrome-make')
+    let editChromeModel = document.getElementById('edit-chrome-model')
+    let editChromeScreen = document.getElementById('edit-chrome-screen')
+    let editChromeCost = document.getElementById('edit-chrome-cost')
+    let editChromeUpdates = document.getElementById('edit-chrome-updates')
+
+
+      function AddChromebook() {
+            if(addChromeMake.value == ''){
+                alert('Enter a Make')
+                return
+            }
+            
+            if(addChromeModel.value == ''){
+                alert('Enter a Model')
+                return
+            }
+
+            if(addChromeScreen.value == ''){
+                alert('Enter screen size')
+                return
+            }
+
+            if(addChromeCost.value == ''){
+                alert('Enter cost of chromebook')
+                return
+            }
+
+            if(addChromeUpdates.value == ''){
+                alert('Enter when updates end for this chromebook')
+                return
+            }
+
+            fetch(`/settings/chrome?make=${addChromeMake.value}&model=${addChromeModel.value}&screen=${addChromeScreen.value}&cost=${addChromeCost.value}&update=${addChromeUpdates.value}`, {method : 'Put'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added'){
+                    alert('Added!')
+                    getChromeMakes()
+                    GetLog()
+                    addChromeMake.value = ''
+                    addChromeModel.value = ''
+                    addChromeScreen.value = ''
+                    addChromeCost.value = ''
+                    addChromeUpdates.value = ''
+                }
+            })
+        }
+
+        function EditChromebook() {
+            if(editChromeMake.value == ''){
+                alert('Enter a Make')
+                return
+            }
+            
+            if(editChromeModel.value == ''){
+                alert('Enter a Model')
+                return
+            }
+
+            if(editChromeScreen.value == ''){
+                alert('Enter screen size')
+                return
+            }
+
+            if(editChromeCost.value == ''){
+                alert('Enter cost of chromebook')
+                return
+            }
+
+            if(editChromeUpdates.value == ''){
+                alert('Enter when updates end for this chromebook')
+                return
+            }
+
+            fetch(`/settings/chrome?make=${editChromeMake.value}&model=${editChromeModel.value}&screen=${editChromeScreen.value}&cost=${editChromeCost.value}&updates=${editChromeUpdates.value}&id=${editChromeDevice.value}`, {method : 'Post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated'){
+                    alert('Updated!')
+                    getChromeMakes()
+                    GetLog()
+                    editChromeMake.value = ''
+                    editChromeModel.value = ''
+                    editChromeScreen.value = ''
+                    editChromeCost.value = ''
+                    editChromeUpdates.value = ''
+                }
+            })
+        }
+        
+        function DeleteChromebook() { 
+                    if(editChromeDevice.value == '') {
+                        return
+                    }
+                    
+                    var answer = prompt(`Do you want to delete this device? (yes/no)`);
+                    if (answer === "yes") {
+                        fetch(`/settings/chrome?id=${editChromeDevice.value}&make=${editChromeMake.value}&model=${editChromeModel.value}`, {method : 'delete'})
+                        .then(response => response.text())
+                        .then(data => {
+                            console.log(data)
+                            if(data == 'deleted') {
+                                alert('Updated!')
+                                GetLog()
+                                getChromeMakes()
+                                editChromeMake.value = ''
+                                editChromeModel.value = ''
+                                editChromeScreen.value = ''
+                                editChromeCost.value = ''
+                                editChromeUpdates.value = ''
+                            }
+                        });
+                    } else if (answer === "no") {
+                        
+                    } else {
+                        
+                    }
+                }
+
+        function getChromeMakes() {
+            editChromeDevice.innerHTML = ``;
+            editChromeDevice.innerHTML += `<option value="">Select Chromebook</option>`;
+            fetch(`/settings/chrome-list`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                    editChromeDevice.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`;
+                });
+            })
+        }
+
+        function getChromeDetails() {
+            fetch(`/settings/chrome?id=${editChromeDevice.value}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                let obj = data[0]
+                editChromeMake.value = obj.make
+                editChromeModel.value = obj.model
+                editChromeScreen.value = obj.screen
+                editChromeCost.value = obj.cost
+                editChromeUpdates.value = obj.updates
+            })
+        }
+
+
+//  **********************************************************************************************************************
+// ***********************************************************************************************************************
+// ****************************************       User Account Functions        ******************************************
+// ***********************************************************************************************************************
+// ***********************************************************************************************************************
+
+    
+    let addName = document.getElementById('add-user-name')
+    let addUsername = document.getElementById('add-user-username')
+    let addPhone = document.getElementById('add-user-phone')
+    let editName = document.getElementById('edit-user-name')
+    let editUsername = document.getElementById('edit-user-username')
+    let editFullName = document.getElementById('edit-user-name')
+    let editPhone = document.getElementById('edit-user-phone')
+    let editUserSelect = document.getElementById('edit-user-select')
+    let editUserStatus = document.getElementById('edit-user-status')
+
+    function getUserAccounts() {
+        editUserSelect.innerHTML = ``;
+        editUserSelect.innerHTML += `<option value="">Select a User Account</option>`;
+        editFullName.value = ''
+        editUsername.value = ''
+        editPhone.value = ''
+
+        var selectElement = editUserStatus; 
+        for (var i = 0; i < selectElement.options.length; i++) {
+        var option = selectElement.options[i];
+            if (option.value === 'none') {
+                option.selected = true;
+                break;
+            }  
+        }
+
+        fetch(`/settings/user-list`)
+        .then(response => response.json())
+        .then(data => {
+            data.forEach(obj => {
+                editUserSelect.innerHTML += `<option value="${obj.id}">${obj.name}</option>`;
+            });
+        })
+    }
+
+    function getUser() {
+        //editUserStatus.selectedIndex = 0
+        fetch(`/settings/user?id=${editUserSelect.value}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data)
+            data.forEach(obj => {
+                editFullName.value = obj.name
+                editUsername.value = obj.username
+                editPhone.value = obj.phone
+                var selectElement = editUserStatus; 
+                console.log(obj.status)
+                for (var i = 0; i < selectElement.options.length; i++) {
+                var option = selectElement.options[i];
+                    if (option.value === obj.status) {
+                        option.selected = true;
+                        break;
+                    }  
+                }
+            });
+        })
+    }
+
+    function AddUser() {
+            if(addName.value == ''){
+                alert('Enter the users full name')
+                return
+            }
+            
+            if(addUsername.value == ''){
+                alert('Enter username')
+                return
+            }
+
+            if(addPhone.value == ''){
+                alert('Enter screen size')
+                return
+            }
+
+            fetch(`/settings/user?username=${addUsername.value}&name=${addName.value}&phone=${addPhone.value}`, {method : 'Put'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added'){
+                    alert(`${addName.value}'s account has been added! The password for this account is the system default password and will need to be reset on login.`)
+                    addUsername.value = ''
+                    addName.value = ''
+                    addPhone.value = ''
+                    getUserAccounts()
+                    GetLog()
+                }
+            })
+        }
+
+    function EditUser() {
+            if(editUserSelect.value == ''){
+                alert('Select a user account')
+                return
+            }
+
+            if(editFullName.value == ''){
+                alert('Enter the users full name')
+                return
+            }
+            
+            if(editUsername.value == ''){
+                alert('Enter username')
+                return
+            }
+
+            if(editPhone.value == ''){
+                alert('Enter phone number')
+                return
+            }
+            
+            if(editUserStatus.value == 'none'){
+                alert('Select account status')
+                return
+            }
+
+            fetch(`/settings/user?username=${editUsername.value}&name=${editFullName.value}&phone=${editPhone.value}&status=${editUserStatus.value}&id=${editUserSelect.value}`, {method : 'Post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated'){
+                    alert('Updated!')
+                    getUserAccounts()
+                    GetLog()
+                }
+            })
+        }
+        
+    function LogUserOut() {
+            if(editUserSelect.value == ''){
+                alert('Select a user account')
+                return
+            }
+
+         fetch(`/settings/user?id=${editUserSelect.value}&name=${editFullName.value}`, {method : 'Delete'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'logged out'){
+                    alert(`${editFullName.value}'s account has been logged out.`)
+                    getUserAccounts()
+                    GetLog() 
+                }
+            })
+    }
+
+    function ResetPassword() {
+            if(editUserSelect.value == ''){
+                alert('Select a user account')
+                return
+            }
+
+         fetch(`/settings/password?id=${editUserSelect.value}&name=${editFullName.value}`, {method : 'post'})
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'logged out'){
+                    alert(`${editFullName.value}'s account password has been reset to the system default password.`)
+                    getUserAccounts()
+                    GetLog() 
+                }
+            })
+    }
+        
+        //  **********************************************************************************************************************
+        // ***********************************************************************************************************************
+        // ****************************************              Log Functions          ******************************************
+        // ***********************************************************************************************************************
+        // ***********************************************************************************************************************
+
+       function GetLog() {
+            fetch(`/settings/log`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    let html = ''; // Initialize an empty string to accumulate HTML content
+                    for(let i = 0; i < data.length; i++) {
+                        let obj = data[i];
+                        // Append each row to the HTML content
+                        html += `
+                            <tr class="hover:bg-blue-400">
+                                <td class="py-2 px-4 border">${obj.date}</td>
+                                <td class="py-2 px-4 border">${obj.time}</td>
+                                <td class="py-2 px-4 border">${obj.user}</td>
+                                <td class="py-2 px-4 border">${obj.log}</td>
+                            </tr>`;
+                    }
+                    // Set the accumulated HTML content to the log element
+                    document.getElementById('log').innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Error fetching log data:', error);
+                });
+        }
+
+
+
+        getUserAccounts()
+        getBuilding()
+        getDevicesType()
+        getDevices()
+        getChromeMakes()
+        GetLog() 
     </script>
 
 </body>

@@ -3,7 +3,7 @@ const express = require("express");
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
-
+const logs = require("../utils/logs.js");
 const router = express.Router();
 
 router.get("/");
@@ -52,6 +52,7 @@ router.get("/computer", session.validateSession,  (req, res) => {
 router.post("/computer", session.validateSession,  (req, res) => {
     database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was updated.`, req.cookies.username)
         res.send('saved');
         }
     );
@@ -62,6 +63,7 @@ router.put("/computer", session.validateSession,  (req, res) => {
         `INSERT INTO computers SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was added to the macbook inventory.`, req.cookies.username)
         res.send('added');
         }
     );
@@ -73,6 +75,7 @@ router.delete("/computer", session.validateSession,  (req, res) => {
         `UPDATE computers SET view = 'false' WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`Macbook was deleted from inventory.`, req.cookies.username)
         res.send('deleted');
         }
     );
@@ -80,7 +83,7 @@ router.delete("/computer", session.validateSession,  (req, res) => {
 
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'mac'`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'macbook'`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -90,7 +93,7 @@ router.get("/make", session.validateSession,  (req, res) => {
 
 router.get("/model", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT model FROM makes WHERE view = 'true' AND make = ? AND type = 'mac' ORDER BY make ASC`, [req.query.make],
+        `SELECT model FROM makes WHERE view = 'true' AND make = ? AND type = 'macbook' ORDER BY make ASC`, [req.query.make],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

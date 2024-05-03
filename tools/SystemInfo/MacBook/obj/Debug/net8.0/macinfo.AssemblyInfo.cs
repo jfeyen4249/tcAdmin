@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("macinfo")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+503dbd4b4798ed490df13ed09ea3c2c0cd85ebbf")]
 [assembly: System.Reflection.AssemblyProductAttribute("macinfo")]
 [assembly: System.Reflection.AssemblyTitleAttribute("macinfo")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

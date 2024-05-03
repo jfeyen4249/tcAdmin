@@ -3,6 +3,8 @@ const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 
+const logs = require("../utils/logs.js");
+
 const router = express.Router();
 
 router.get("/");
@@ -80,7 +82,7 @@ router.get("/", session.validateSession, (req, res) => {
   
   router.get("/model", session.validateSession, (req, res) => {
     database.query(
-      `SELECT model FROM makes WHERE make = ? AND view = 'true' ORDER BY make ASC;`,
+      `SELECT model FROM makes WHERE make = ? ORDER BY model ASC;`,
       [req.query.make],
       function (error, results, fields) {
         if (error) throw error;
@@ -99,7 +101,7 @@ router.get("/", session.validateSession, (req, res) => {
       tag: req.body.tag,
       room: req.body.room,
       building: req.body.building,
-      installed: req.body.installed,
+      installed: logs.formattedDate,
       view: "true",
     };
     database.query(
@@ -107,6 +109,7 @@ router.get("/", session.validateSession, (req, res) => {
       [data],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${data.make} ${data.model} (sn:${data.sn}) was added the wireless access point inventory.`, req.cookies.username)
         res.send(results);
       }
     );
@@ -123,7 +126,6 @@ router.get("/", session.validateSession, (req, res) => {
       tag: req.body.tag,
       room: req.body.room,
       building: req.body.building,
-      installed: req.body.installed,
       view: "true",
     };
     database.query(
@@ -131,6 +133,7 @@ router.get("/", session.validateSession, (req, res) => {
       [data, id],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${data.make} ${data.model} (sn:${data.sn}) was updated in the wireless access point inventory.`, req.cookies.username)
         res.send(results);
       }
     );

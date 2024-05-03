@@ -57,11 +57,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/macinfo.csproj",
+      "projectUniqueName": "/Users/josephfeyen/Documents/Source Code/tcAdmin/tools/SystemInfo/MacBook/macinfo.csproj",
       "projectName": "macinfo",
-      "projectPath": "/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/macinfo.csproj",
+      "projectPath": "/Users/josephfeyen/Documents/Source Code/tcAdmin/tools/SystemInfo/MacBook/macinfo.csproj",
       "packagesPath": "/Users/josephfeyen/.nuget/packages/",
-      "outputPath": "/Users/josephfeyen/Documents/Source Code/tcadmin_macinfo/macinfo/obj/",
+      "outputPath": "/Users/josephfeyen/Documents/Source Code/tcAdmin/tools/SystemInfo/MacBook/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "/Users/josephfeyen/.nuget/NuGet/NuGet.Config"

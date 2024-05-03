@@ -2,7 +2,7 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const dotenv = require("dotenv");
 const { v4: uuidv4 } = require("uuid");
-
+const logs = require("../utils/logs.js");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 
@@ -43,50 +43,58 @@ router.post("/login", async (req, res) => {
       "SELECT password FROM users WHERE username = ? AND status = ?",
       [username, "Active"],
       (err, results) => {
-        bcrypt.compare(password, results[0].password, function (err, isMatch) {
-          if (err) {
-            throw err;
-          } else if (!isMatch) {
-            res.send("Incorrect username or password!");
-            // console.log("fail")
-          } else {
-            const sessionID = uuidv4();
-            database.query(
-              "UPDATE users SET session = ? WHERE username = ?",
-              [sessionID, username],
-              (err) => {
-                if (err) {
-                  console.error(err);
-                } else {
-                  
-                    if(password !== "P@$$Word") {
-                      const currentDate = new Date();
-                  // Add one year
-                  currentDate.setFullYear(currentDate.getFullYear() + 1);
-                  // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
-                  res.cookie("session_id", sessionID, {
-                    maxAge: currentDate,
-                    httpOnly: true,
-                    secure: false,
-                    sameSite: "strict",
-                  });
-                  res.cookie("username", username, {
-                    maxAge: currentDate,
-                    httpOnly: true,
-                    secure: false,
-                    sameSite: "strict",
-                  });
-                  //console.log('Pass')
-                  res.send("Pass");
-                     
-                    }else{
-                      res.send('change')
-                    }
+        
+        if(results.length !== 0) {
+          bcrypt.compare(password, results[0].password, function (err, isMatch) {
+            if (err) {
+              throw err;
+            } else if (!isMatch) {
+              res.send("Incorrect username or password!");
+              // console.log("fail")
+            } else {
+              const sessionID = uuidv4();
+              database.query(
+                "UPDATE users SET session = ? WHERE username = ?",
+                [sessionID, username],
+                (err) => {
+                  if (err) {
+                    console.error(err);
+                  } else {
+                    
+                      if(password !== "P@$$Word") {
+                        const currentDate = new Date();
+                    // Add one year
+                    currentDate.setFullYear(currentDate.getFullYear() + 1);
+                    // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
+                    res.cookie("session_id", sessionID, {
+                      maxAge: currentDate,
+                      httpOnly: true,
+                      secure: false,
+                      sameSite: "strict",
+                    });
+                    res.cookie("username", username, {
+                      maxAge: currentDate,
+                      httpOnly: true,
+                      secure: false,
+                      sameSite: "strict",
+                    });
+                    //console.log('Pass')
+                    logs.SystemLog(`${username} logged in!`,username)
+                    res.send("Pass");
+                      
+                      }else{
+                        res.send('change')
+                      }
+                  }
                 }
-              }
-            );
-          }
-        });
+              );
+            }
+          });
+        } else {
+          logs.SystemLog(`${username} entered an incorrect password!`,username)
+          res.send('Incorrect username or password.')
+        }
+
       }
     );
   });
@@ -102,6 +110,7 @@ router.post("/login", async (req, res) => {
       [hashedPassword, username],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${username}'s password was changed!`,username)
         res.send('updated');
       }
     );
@@ -114,6 +123,7 @@ router.get("/logout", session.validateSession,  (req, res) => {
       [username],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${username} logged out!`,username)
         res.send('logged out')
       }
     );

@@ -1,0 +1,185 @@
+const express = require("express");
+
+const database = require("../utils/database.js");
+const session = require("../utils/session.js");
+
+const logs = require("../utils/logs.js");
+
+const router = express.Router();
+
+router.get("/");
+
+router.get("/list", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
+        FROM Chromebooks
+        INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
+        WHERE Chromebooks.status = 'true' ORDER BY Chromebooks.building ASC;`,
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/years", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT DISTINCT year FROM students;`,
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/students", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM students WHERE year = ?`, [req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/makes", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM chromebook_makes WHERE status = 'true';`,
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/search", session.validateSession,  (req, res) => {
+    const searchQuery = req.query.search;
+    database.query(
+    `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
+    FROM Chromebooks
+    INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
+    WHERE Chromebooks.status = 'true'
+    AND (Chromebooks.tag LIKE ? OR Chromebook_makes.make LIKE ? OR Chromebook_makes.model LIKE ? OR Chromebooks.sn LIKE ? OR Chromebooks.building LIKE ? OR Chromebooks.device_status LIKE ?)
+    ORDER BY Chromebooks.building ASC`,
+    [
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+    ],
+    function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+    }
+    );
+});
+
+router.get("/chromebook", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM chromebooks WHERE id = ? LIMIT 1`, [req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.post("/chromebook", session.validateSession,  (req, res) => {
+    database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+        if (error) throw error;
+        logs.SystemLog(`Chromebook was updated in the chromebook inventory.`, req.cookies.username)
+        res.send('updated');
+        }
+    );
+});
+
+router.put("/chromebook", session.validateSession,  (req, res) => {
+    database.query(
+        `INSERT INTO chromebooks SET ?`, [req.body],
+        function (error, results, fields) {
+        if (error) throw error;
+        logs.SystemLog(`A chromebook was added to the chromebook inventory.`, req.cookies.username)
+        res.send('added');
+        }
+    );
+});
+
+
+router.delete("/chromebook", session.validateSession, (req, res) => {
+    // Update the row
+    database.query(
+        `UPDATE chromebooks SET status = 'false' WHERE id = ?`, [req.query.id],
+        function (error, updateResults, fields) {
+            if (error) {
+                throw error;
+            }
+
+            database.query(
+                `SELECT  Chromebooks.sn, Chromebook_makes.make, Chromebook_makes.model
+                FROM Chromebooks
+                INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
+                WHERE Chromebooks.id = ?`,[req.query.id],
+                function (error, selectResults, fields) {
+                    if (error) {
+                        throw error;
+                    }
+                   
+                    logs.SystemLog(`${selectResults[0].make} ${selectResults[0].model} (sn:${selectResults[0].sn}) was deleted from the chromebook inventory.`, req.cookies.username)
+                    res.send('deleted');
+                }
+            );
+        }
+    );
+});
+
+
+router.post("/student", session.validateSession,  (req, res) => {
+    database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+        if (error) throw error;
+        res.send('updated');
+        }
+    );
+});
+
+router.get("/log", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM chromebook_log WHERE chromebook_id = ? ORDER BY id desc`, [req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.put("/log", session.validateSession,  (req, res) => {
+    database.query(
+        `INSERT INTO chromebook_log SET ?`, [req.body],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send('added');
+        }
+    );
+});
+
+router.put("/repair", session.validateSession,  (req, res) => {
+    database.query(`UPDATE chromebooks SET device_status = 'Out for Repair' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+        if (error) throw error;
+        res.send('updated');
+        }
+    );
+});
+
+router.post("/repair", session.validateSession,  (req, res) => {
+    database.query(`UPDATE chromebooks SET device_status = 'In Use' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+        if (error) throw error;
+        res.send('updated');
+        }
+    );
+});
+
+
+
+
+module.exports = router;

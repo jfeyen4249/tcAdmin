@@ -2,6 +2,7 @@ const express = require("express");
 const cookieParser = require("cookie-parser");
 const path = require("path");
 const session = require("./utils/session.js");
+const logs = require("./utils/logs.js");
 const bcrypt = require("bcryptjs");
 
 //Routes
@@ -24,6 +25,8 @@ const settings = require('./routes/settings.js');
 const printers = require('./routes/printers.js');
 const projectors = require('./routes/projectors.js');
 const phones = require('./routes/phones.js');
+const chromebook = require('./routes/chromebook.js');
+const students = require('./routes/student.js');
 //End of Routes
 
 const app = express();
@@ -49,6 +52,7 @@ app.get("/login", (req, res) => {
 });
 
 
+
 app.use("/inventory", session.validateSession, inventory);
 app.use("/wifi", session.validateSession, wifi);
 app.use("/docs", session.validateSession, docs);
@@ -67,6 +71,9 @@ app.use("/settings", settings);
 app.use("/printers", printers);
 app.use("/projectors", projectors);
 app.use("/phones", phones);
+app.use("/chromebook", chromebook);
+app.use("/students", students);
+
 
 
 const server = app.listen(port, () => {

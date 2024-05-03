@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 35%;
+        }
+
+        .h-70 {
+            height: 30%;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+    </style>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <link rel="manifest" href="../fav/site.webmanifest">
+    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script defer src=".././menu.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>iPad</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+</head>
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Student Directory</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="openModal('0')"><i class="fa-solid fa-plus"></i> Add</button>
+            <input type="file" name="" id="upload" hidden>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <table class="w-full border-collapse border border-gray-800">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Name</th>
+                <th class="py-2 px-4 border">Graduation Year</th>
+            </tr>
+        </thead>
+        <tbody class="text-center" id="password-table">
+           
+        </tbody>
+    </table>
+</div>
+
+ 
+    <!-- Modal -->
+    <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
+        <div class="grid grid-cols-1 flex-grow">
+            <div class="col-span-1 bg-white p-8 rounded-l">
+               
+                    <!-- Website/Service -->
+                    <div class="mb-4">
+                        <label for="student-name" class="block text-gray-600 text-sm font-medium mb-2">Student Name</label>
+                        <input type="text" id="student-name" name="student-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" > 
+                    </div>
+                   
+                    <div class="mb-4">
+                        <label for="grad-year" class="block text-gray-600 text-sm font-medium mb-2">Graduation Year</label>
+                        <input type="text" id="grad-year" name="grad-year" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+
+                 
+                    
+                <button type="button" id="add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 mt-2 hidden" onclick="addStudent()">Add Student</button>
+                <button type="button" id="edit" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 mt-2 hidden" onclick="editStudent()">Update Student</button>
+                <button type="button" id="delete" class="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-700 mb-4 mt-2 hidden" onclick="deleteStudent()">Delete Student</button>
+                 
+            </div>
+        </div>
+        <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+
+    <script defer>
+        const dateString = new Date().toDateString();
+        let editid = 0;
+        let studentName = document.getElementById('student-name')
+        let gradYear = document.getElementById('grad-year')
+        let modal = document.getElementById('modal')
+        let addBTN = document.getElementById('add')
+        let editBTN = document.getElementById('edit')
+        let deleteBTN = document.getElementById('delete')
+        let importBTN = document.getElementById('import')
+        let upload = document.getElementById('upload')
+        
+        function openModal(id) {
+            if(id == 0) {
+                modal.classList.remove('hidden')
+                addBTN.classList.remove('hidden')
+            } else {
+                editid = id
+                modal.classList.remove('hidden')
+                editBTN.classList.remove('hidden')
+                deleteBTN.classList.remove('hidden')
+                fetch(`/students/student?id=${editid}`)
+                .then(response => response.json())
+                .then(data => {
+                    let obj = data[0]
+                    studentName.value = obj.student
+                    gradYear.value = obj.year
+                });
+            }
+            studentName.focus()
+        }
+
+        function closeModal() {
+            if(editid == 0) {
+                modal.classList.add('hidden')
+                addBTN.classList.add('hidden')
+            } else {
+                modal.classList.add('hidden')
+                editBTN.classList.add('hidden')
+                deleteBTN.classList.add('hidden')
+                
+            }
+            studentName.value = ''
+            gradYear.value = ''
+            editid = 0
+        }
+
+        let getList = () => {
+            document.getElementById('password-table').innerHTML = '';
+            fetch('/students/list')
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data)
+                    data.forEach(obj => {
+                        let row = `
+                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                                <td class="py-2 px-4 border">${obj.student}</td>
+                                <td class="py-2 px-4 border">${obj.year}</td>   
+                            </tr>`;
+                        document.getElementById('password-table').innerHTML += row;
+                    });
+                });
+        };
+
+        document.getElementById('search').addEventListener('input', function(){
+            if(document.getElementById('search').length < 1) {
+                getPasswords()
+            } else {
+                document.getElementById('password-table').innerHTML = '';
+                fetch(`/students/search?search=${document.getElementById('search').value}`,{method : 'get'})
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(obj => {
+                            let row = `
+                                 <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                                <td class="py-2 px-4 border">${obj.student}</td>
+                                <td class="py-2 px-4 border">${obj.year}</td>
+                                
+                            </tr>`;
+                            document.getElementById('password-table').innerHTML += row;
+                        });
+                    });
+            }
+        })
+
+        function addStudent() {
+            if(studentName.value.length == 0) {
+                alert('Enter the students full name')
+                return
+            }
+        
+            if(gradYear.value.length == 0) {
+                alert('Enter the students graduation year')
+                return
+            }
+
+            let data = {
+                    student: studentName.value,
+                    year: gradYear.value,
+                }
+                
+                fetch(`/students/student`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'added') {
+                       closeModal()
+                       getList()
+                    }
+                });
+        }
+
+        function editStudent() {
+            if(studentName.value.length == 0) {
+                alert('Enter the students full name')
+                return
+            }
+        
+            if(gradYear.value.length == 0) {
+                alert('Enter the students graduation year')
+                return
+            }
+
+            let data = {
+                    student: studentName.value,
+                    year: gradYear.value,
+                }
+                
+                fetch(`/students/student?id=${editid}`, {
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'added') {
+                       closeModal()
+                       getList()
+                    }
+                });
+        }
+
+        function deleteStudent() {
+            var answer = prompt(`Do you want to delete ${studentName.value}? (yes/no)`);
+            if (answer === "yes") {
+                fetch(`/students/student?id=${editid}`, {method : 'delete'})
+                .then(response => response.text())
+                .then(data => {
+                    if(data == 'deleted') {
+                        closeModal()
+                        getList()
+                    }
+                });
+            } else if (answer === "no") {
+                 getList()
+            } 
+        }
+
+        importBTN.addEventListener('click', function() {
+            upload.click()
+        })
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                lines.forEach(function(line) {
+                    //console.log(line); 
+                    let data = {student : line.split(',')[0] + " " + line.split(',')[1], year : line.split(',')[2].slice(0, 4)}
+                    fetch(`/students/student/`,{method: 'Put', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
+                        .then(response => response.text())
+                        .then(data => {console.log(data)});
+                });
+            }
+            reader.readAsText(file);
+            getList();
+        });
+
+
+    getList()
+    
+    </script>
+
+</body>
+</html>
