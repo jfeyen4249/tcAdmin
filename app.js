@@ -6,7 +6,7 @@ const logs = require("./utils/logs.js");
 const bcrypt = require("bcryptjs");
 
 //Routes
-//const user = require('./routes/user.js');
+
 const servers = require('./routes/servers.js');
 const inventory = require('./routes/inventory.js');
 const serverConnection = require('./routes/connection.js');
