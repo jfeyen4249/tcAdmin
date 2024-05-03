@@ -4,6 +4,8 @@ const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 
+const logs = require("../utils/logs.js");
+
 const router = express.Router();
 
 router.get("/");
@@ -44,6 +46,7 @@ router.get("/computer", session.validateSession,  (req, res) => {
         `SELECT * FROM computers WHERE id = ? LIMIT 1`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
+        
         res.send(results);
         }
     );
@@ -52,6 +55,7 @@ router.get("/computer", session.validateSession,  (req, res) => {
 router.post("/computer", session.validateSession,  (req, res) => {
     database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was updated in the desktop inventory.`, req.cookies.username)
         res.send('saved');
         }
     );
@@ -62,6 +66,7 @@ router.put("/computer", session.validateSession,  (req, res) => {
         `INSERT INTO computers SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was added to the desktop inventory.`, req.cookies.username)
         res.send('added');
         }
     );
@@ -72,17 +77,18 @@ router.delete("/computer", session.validateSession,  (req, res) => {
         `UPDATE computers SET view = 'false' WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`Desktop was deleted from the inventory.`, req.cookies.username)
         res.send('deleted');
         }
     );
 });
-
 
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
         `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'desktop' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
+        
         res.send(results);
         }
     );

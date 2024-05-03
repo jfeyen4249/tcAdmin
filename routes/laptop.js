@@ -3,7 +3,7 @@ const express = require("express");
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
-
+const logs = require("../utils/logs.js");
 const router = express.Router();
 
 router.get("/");
@@ -52,6 +52,7 @@ router.get("/computer", session.validateSession,  (req, res) => {
 router.post("/computer", session.validateSession,  (req, res) => {
     database.query(`UPDATE computers SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was updated in the laptop inventory.`, req.cookies.username)
         res.send('saved');
         }
     );
@@ -62,26 +63,26 @@ router.put("/computer", session.validateSession,  (req, res) => {
         `INSERT INTO computers SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was added to the laptop inventory.`, req.cookies.username)
         res.send('added');
         }
     );
 });
-
 
 router.delete("/computer", session.validateSession,  (req, res) => {
     database.query(
         `UPDATE computers SET view = 'false' WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`Laptop was deleted.`, req.cookies.username)
         res.send('deleted');
         }
     );
 });
 
-
 router.get("/make", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'pc' ORDER BY make ASC`,
+        `SELECT DISTINCT make FROM makes WHERE view = 'true' AND type = 'laptop' ORDER BY make ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -91,7 +92,7 @@ router.get("/make", session.validateSession,  (req, res) => {
 
 router.get("/model", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT model FROM makes WHERE view = 'true' AND make = ? ORDER BY make ASC`, [req.query.make],
+        `SELECT model FROM makes WHERE view = 'true' AND make = ? AND type = 'laptop' ORDER BY make ASC`, [req.query.make],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

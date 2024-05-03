@@ -54,6 +54,10 @@ router.get("/server",  (req, res) => {
     res.render("servers");
 });
 
+router.get("/chromebook",  (req, res) => {
+    res.render("chromebook");
+});
+
 
 
 module.exports = router;

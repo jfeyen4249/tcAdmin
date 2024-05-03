@@ -3,6 +3,8 @@ const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 
+const logs = require("../utils/logs.js");
+
 const router = express.Router();
 
 router.get("/", session.validateSession, (req, res) => {
@@ -42,6 +44,7 @@ router.get("/", session.validateSession, (req, res) => {
       `INSERT INTO docs SET ?`, [data],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.doc} was added to documentation.`, req.cookies.username)
         res.send(results);
       }
     );
@@ -57,16 +60,19 @@ router.get("/", session.validateSession, (req, res) => {
       `UPDATE docs SET ? WHERE id = ?`, [data, req.body.id],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.doc} was updated.`, req.cookies.username)
         res.send(results);
       }
     );
   });
 
   router.delete("/doc", session.validateSession, (req, res) => {
+    console.log(req.query.Name)
     database.query(
       `UPDATE docs SET status = 'false' WHERE id = ?`, [req.query.id],
       function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.query.Name} was delete from documentation.`, req.cookies.username)
         res.send(results);
       }
     );

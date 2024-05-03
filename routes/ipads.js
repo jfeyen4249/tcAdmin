@@ -3,6 +3,8 @@ const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 
+const logs = require("../utils/logs.js");
+
 const router = express.Router();
 
 router.get("/");
@@ -33,7 +35,7 @@ router.get("/ipads", session.validateSession, (req, res) => {
       model: req.body.model,
       sn: req.body.sn,
       building: req.body.building,
-      date: new Date().toDateString(),
+      date: logs.formattedDate,
       room: req.body.room,
       staff: req.body.staff,
       view: "true",
@@ -46,7 +48,7 @@ router.get("/ipads", session.validateSession, (req, res) => {
       [data],
       function (error, results, fields) {
         if (error) throw error;
-  
+        logs.SystemLog(`iPad (sn:${req.body.sn}) was was added.`, req.cookies.username)
         res.send(results);
       }
     );
@@ -68,7 +70,7 @@ router.get("/ipads", session.validateSession, (req, res) => {
       [data, req.query.id],
       function (error, results, fields) {
         if (error) throw error;
-  
+        logs.SystemLog(`iPad (sn:${req.body.sn}) was was updated.`, req.cookies.username)
         res.send(results);
       }
     );

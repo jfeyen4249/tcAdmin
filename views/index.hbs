@@ -99,7 +99,7 @@
             </div>
             
             <!-- Add New Password Button -->
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="test()"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
     </div>
 
@@ -195,6 +195,13 @@
             });
         });
 
+        function test() {
+            fetch(`/chromebook/test`)
+                .then(response => response.text())
+                .then(data => {
+                    alert(data)
+                });
+        }
         
     </script>
 </body>

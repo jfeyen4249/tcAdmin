@@ -60,6 +60,13 @@
    }
 }
 
+.alert {
+   width: 300px;
+   border: 3px green solid;
+   border-radius: 10px;
+
+}
+
 .animate-slide-in-right {
    animation: slideInRight 4.5s reverse;
 }

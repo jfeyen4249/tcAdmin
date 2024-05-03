@@ -175,7 +175,7 @@ connection.query(`SHOW TABLES LIKE 'ipad'`, function (error, results, fields) {
                 building varchar(45) DEFAULT NULL,
                 date varchar(45) DEFAULT NULL,
                 room varchar(45) DEFAULT NULL,
-                staff varchar(45) DEFAULT NULL,
+                staff varchar(245) DEFAULT NULL,
                 view varchar(45) DEFAULT NULL,
                 storage varchar(45) DEFAULT NULL,
                 screen varchar(45) DEFAULT NULL,
@@ -214,6 +214,33 @@ connection.query(`SHOW TABLES LIKE 'makes'`, function (error, results, fields) {
                   throw error;
               }
               console.log('make Table Added');
+            }
+          );
+    }
+});
+
+connection.query(`SHOW TABLES LIKE 'maps'`, function (error, results, fields) {
+    if (error) {
+        throw error;
+    }
+
+    if (results.length > 0) {
+        console.log('maps Table exists');
+    } else {
+        connection.query(
+            `CREATE TABLE \`maps\` (
+                id int NOT NULL AUTO_INCREMENT,
+                file varchar(245) DEFAULT NULL,
+                building varchar(245) DEFAULT NULL,
+                view varchar(45) DEFAULT NULL,
+                type varchar(45) DEFAULT NULL,
+                PRIMARY KEY (id)
+              ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`,
+            function (error, results, fields) {
+              if (error) {
+                  throw error;
+              }
+              console.log('maps Table Added');
             }
           );
     }
@@ -294,12 +321,12 @@ connection.query(`SHOW TABLES LIKE 'staff'`, function (error, results, fields) {
         connection.query(
             `CREATE TABLE \`staff\` (
                 id int NOT NULL AUTO_INCREMENT,
-                name varchar(45) DEFAULT NULL,
+                name varchar(245) DEFAULT NULL,
                 building varchar(45) DEFAULT NULL,
                 room varchar(45) DEFAULT NULL,
                 view varchar(45) DEFAULT NULL,
                 PRIMARY KEY (id)
-              ) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;`,
+              )`,
             function (error, results, fields) {
               if (error) {
                   throw error;
@@ -309,6 +336,7 @@ connection.query(`SHOW TABLES LIKE 'staff'`, function (error, results, fields) {
           );
     }
 });
+
 
 connection.query(`SHOW TABLES LIKE 'users'`, function (error, results, fields) {
     if (error) {
@@ -336,7 +364,7 @@ connection.query(`SHOW TABLES LIKE 'users'`, function (error, results, fields) {
                   throw error;
               }
               console.log('users Table Added');
-              connection.query(`NSERT INTO users VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','','Active');`,
+              connection.query(`INSERT INTO users VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','','Active');`,
                 function (error, results, fields) {
                   if (error) {
                       throw error;
@@ -375,31 +403,6 @@ connection.query(`SHOW TABLES LIKE 'wifi'`, function (error, results, fields) {
     }
 });
 
-connection.query(`SHOW TABLES LIKE 'maps'`, function (error, results, fields) {
-    if (error) {
-        throw error;
-    }
-
-    if (results.length > 0) {
-        console.log('maps Table exists');
-    } else {
-        connection.query(
-            `CREATE TABLE \`maps\` (
-                id INT NOT NULL AUTO_INCREMENT,
-                file VARCHAR(255) NULL,
-                building VARCHAR(45) NULL,
-                type VARCHAR(45) NULL,
-                view VARCHAR(45) NULL DEFAULT 'true',
-                PRIMARY KEY (id));`,
-            function (error, results, fields) {
-              if (error) {
-                  throw error;
-              }
-              console.log('maps Table Added');
-            }
-          );
-    }
-});
 
 connection.query(`SHOW TABLES LIKE 'printers'`, function (error, results, fields) {
     if (error) {
@@ -497,6 +500,60 @@ connection.query(`SHOW TABLES LIKE 'phones'`, function (error, results, fields) 
     }
 });
 
+connection.query(`SHOW TABLES LIKE 'chromebook_makes'`, function (error, results, fields) {
+    if (error) {
+        throw error;
+    }
+
+    if (results.length > 0) {
+        console.log('Chromebook_makes table exists');
+    } else {
+        connection.query(
+            `CREATE TABLE \`chromebook_makes\` (
+                id INT NOT NULL AUTO_INCREMENT,
+                make VARCHAR(45) NULL,
+                model VARCHAR(45) NULL,
+                screen VARCHAR(45) NULL,
+                cost VARCHAR(45) NULL,
+                updates VARCHAR(45) NULL,      
+                PRIMARY KEY (id));`,
+            function (error, results, fields) {
+              if (error) {
+                  throw error;
+              }
+              console.log('Chrombook_makes table was added!');
+            }
+          );
+    }
+});
+
+
+connection.query(`SHOW TABLES LIKE 'chromebook_log'`, function (error, results, fields) {
+    if (error) {
+        throw error;
+    }
+
+    if (results.length > 0) {
+        console.log('Chromebook_log table exists');
+    } else {
+        connection.query(
+            `CREATE TABLE \`chromebook_log\` (
+                id INT NOT NULL AUTO_INCREMENT,
+                chromebook_id VARCHAR(45) NULL,
+                action VARCHAR(45) NULL,
+                date VARCHAR(45) NULL,
+                log LONGTEXT NULL,
+                PRIMARY KEY (id));`,
+            function (error, results, fields) {
+              if (error) {
+                  throw error;
+              }
+              console.log('Chrombook_log table was added!');
+            }
+          );
+    }
+});
+
 connection.query(`SHOW TABLES LIKE 'chromebooks'`, function (error, results, fields) {
     if (error) {
         throw error;
@@ -508,12 +565,40 @@ connection.query(`SHOW TABLES LIKE 'chromebooks'`, function (error, results, fie
         connection.query(
             `CREATE TABLE \`chromebooks\` (
                 id INT NOT NULL AUTO_INCREMENT,
-                make VARCHAR(145) NULL,
-                model VARCHAR(145) NULL,
-                sn VARCHAR(45) NULL,
+                model_id VARCHAR(145) NULL,
+                date_added VARCHAR(45) NULL,
                 tag VARCHAR(45) NULL,
+                building VARCHAR(45) NULL,
                 status VARCHAR(45) NULL DEFAULT 'true',
-                date VARCHAR(45) NULL,
+                sn VARCHAR(45) NULL,
+                device_status VARCHAR(45) NULL DEFAULT 'In Use',
+                student VARCHAR(245) NULL,
+                student_year VARCHAR(45) NULL,
+                PRIMARY KEY (id));`,
+            function (error, results, fields) {
+              if (error) {
+                  throw error;
+              }
+              console.log('Chrombooks table was added!');
+            }
+          );
+    }
+});
+
+connection.query(`SHOW TABLES LIKE 'students'`, function (error, results, fields) {
+    if (error) {
+        throw error;
+    }
+
+    if (results.length > 0) {
+        console.log('Students table exists');
+    } else {
+        connection.query(
+            `CREATE TABLE \`students\` (
+                id INT NOT NULL AUTO_INCREMENT,
+                student VARCHAR(245) NULL,
+                year VARCHAR(45) NULL,
+                status VARCHAR(45) NULL DEFAULT 'true',
                 PRIMARY KEY (id));`,
             function (error, results, fields) {
               if (error) {
@@ -524,3 +609,41 @@ connection.query(`SHOW TABLES LIKE 'chromebooks'`, function (error, results, fie
           );
     }
 });
+
+
+
+// CREATE TABLE `tcadmin`.`devices` (
+//     `id` INT NOT NULL AUTO_INCREMENT,
+//     `device` VARCHAR(115) NULL,
+//     `status` VARCHAR(45) NULL DEFAULT 'true',
+//     PRIMARY KEY (`id`));
+  
+// INSERT INTO `devices` (`device`) VALUES ('desktop');
+// INSERT INTO `devices` (`device`) VALUES ('laptop');
+// INSERT INTO `devices` (`device`) VALUES ('Macbook');
+// INSERT INTO `devices` (`device`) VALUES ('ap');
+// INSERT INTO `devices` (`device`) VALUES ('iPad');
+// INSERT INTO `devices` (`device`) VALUES ('Projector');
+// INSERT INTO `devices` (`device`) VALUES ('switch');
+// INSERT INTO `devices` (`device`) VALUES ('server');
+// INSERT INTO `devices` (`device`) VALUES ('Phone');
+// INSERT INTO `devices` (`device`) VALUES ('Printer');
+// INSERT INTO `devices` (`device`) VALUES ('Smartboard');
+
+
+// CREATE TABLE `tcadmin`.`rooms` (
+//     `id` INT NOT NULL AUTO_INCREMENT,
+//     `room` VARCHAR(45) NULL,
+//     `building` VARCHAR(45) NULL,
+//     `view` VARCHAR(45) NULL DEFAULT 'true',
+//     PRIMARY KEY (`id`));
+  
+
+
+// CREATE TABLE `tcadmin`.`logs` (
+//     `id` INT NOT NULL AUTO_INCREMENT,
+//     `dat` VARCHAR(45) NULL,
+//     `time` VARCHAR(45) NULL,
+//     `log` LONGTEXT NULL,
+//     PRIMARY KEY (`id`));
+  
