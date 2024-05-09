@@ -12,19 +12,34 @@
       .modal-size {
         width: 500px;
       }
+
+      .logo {
+        width: 400px;
+        height: auto;
+      }
+
+      .login-box {
+        width: 450px;
+      }
+
+      .bg {
+        background-image: url('./img/bg.jpeg');
+        background-size: cover;
+      }
+
     </style>
   </head>
   <div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
         <span id="noteText"></span>
     </div>
 
-  <body class="bg-gray-900">
+  <body class="bg">
 
     <!-- Page Content -->
-    <div
-      class="container mx-auto p-8 mt-16 bg-gray-500 rounded-lg shadow-md text-center" id="app">
+    {{!-- <div
+      class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col modal-size" id="app">
 
-      <img src="./img/tc-logo.png" class="mb-8 mt-4 login-logo" alt="" />
+      <img src="./img/tc-logo.png" class="mb-8 mt-4 logo" alt="" />
 
       <h1 class="text-2xl font-semibold">TC Admin Login</h1>
 
@@ -46,7 +61,39 @@
         <button class="login-btn" onclick="login()">Login</button>
 
       </div>
+    </div> --}}
+
+  <div class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-10" onclick="event.stopPropagation()">
+    <div class="relative w-85 h-70 bg-gray-900 rounded shadow-md flex flex-col modal-size text-center bg-opacity-70">
+        <div class="grid grid-cols-1 flex-grow">
+            <div class="col-span-1 p-4 mb-4 rounded-r"> 
+              
+              <img src="./img/tc-logo.png" class="mb-8 mt-4" alt="" />
+
+              {{!-- <h1 class="text-2xl font-semibold">TC Admin Login</h1> --}}
+
+              <div class="mt-4 flex flex-col">
+                <input
+                  type="text"
+                  name=""
+                  id="username"
+                  placeholder="Username"
+                  class="mb16 login-box"
+                />
+                <input
+                  type="password"
+                  name=""
+                  id="password"
+                  placeholder="Password"
+                  class="mb16 login-box"
+                />
+                <button class="login-btn" onclick="login()">Login</button>
+
+              </div>
+            </div>
+        </div>
     </div>
+</div>
 
     <!-- Modal -->
     <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-90 hidden" onclick="event.stopPropagation()">
