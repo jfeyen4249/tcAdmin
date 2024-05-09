@@ -27,6 +27,8 @@ const projectors = require('./routes/projectors.js');
 const phones = require('./routes/phones.js');
 const chromebook = require('./routes/chromebook.js');
 const students = require('./routes/student.js');
+const contacts = require('./routes/contacts.js');
+const renew = require('./routes/renew.js');
 //End of Routes
 
 const app = express();
@@ -73,6 +75,8 @@ app.use("/projectors", projectors);
 app.use("/phones", phones);
 app.use("/chromebook", chromebook);
 app.use("/students", students);
+app.use("/contacts", contacts);
+app.use("/renew", renew);
 
 
 
