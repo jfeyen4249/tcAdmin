@@ -91,9 +91,9 @@
     
 
     <!-- Table -->
-    <table class="w-full border-collapse border border-gray-800" >
+    <table class="w-full mx-auto border-collapse border border-gray-800" >
         
-        <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center" id="wifi-grid">
+        <div class="grid grid-cols-2 gap-4 mt-3 w-full text-center" id="wifi-grid">
                 
             </div>
     </table>
@@ -394,10 +394,13 @@
                                         <p><i class="fa-solid fa-fax"></i> ${blank(obj.fax)}</p>
                                         <p><i class="fa-solid fa-globe"></i> ${blank(obj.website)}</p>
                                     </div>
-                                    <button class="bg-green-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="modalOpen(${obj.id})"><i class="fa-solid fa-pen-nib"></i> Edit</button>
-                                    <button class="bg-yellow-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="getInfo(${obj.id})"><i class="fa-solid fa-circle-info"></i> More Info</button>
 
-                                    <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="deleteContact('${obj.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                                    <div class="text-center">
+                                        <button class="bg-green-500 text-white px-4 py-2 mr-4 rounded-md mb-4 mt-4" onclick="modalOpen(${obj.id})"><i class="fa-solid fa-pen-nib"></i> Edit</button>
+                                        <button class="bg-yellow-500 text-white px-4 py-2 mr-4 rounded-md mb-4 mt-4" onclick="getInfo(${obj.id})"><i class="fa-solid fa-circle-info"></i> More Info</button>
+                                        <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="deleteContact('${obj.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+                                    </div>
+                                  
                                 </div>
                             `;
                         });
