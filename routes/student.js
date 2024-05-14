@@ -9,15 +9,21 @@ router.get("/", session.validateSession, (req, res) =>{
     res.render("students");
 });
 
-router.get("/list", session.validateSession,  (req, res) => {
+router.get("/list", session.validateSession, (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
+    const page = parseInt(req.query.page, 10) || 1;
+    const offset = (page - 1) * limit;
+
     database.query(
-        `SELECT * FROM students WHERE status = 'true' ORDER BY year ASC, student ASC`,
+        `SELECT * FROM students WHERE status = 'true' ORDER BY year ASC, student ASC LIMIT ?, ?`,
+        [offset, limit],
         function (error, results, fields) {
-        if (error) throw error;
-        res.send(results);
+            if (error) throw error;
+            res.send(results);
         }
     );
 });
+
 
 router.get("/student", session.validateSession,  (req, res) => {
     database.query(
@@ -63,7 +69,7 @@ router.delete("/student", session.validateSession, (req, res) => {
 
 router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM students WHERE status = 'true' AND (student LIKE ? OR year LIKE ? ) ORDER BY year ASC, student ASC`, [`%${searchQuery}%`,`%${searchQuery}%`,],
+    database.query(`SELECT * FROM students WHERE status = 'true' AND (student LIKE ? OR year LIKE ? ) ORDER BY year ASC, student ASC LIMIT 25`, [`%${searchQuery}%`,`%${searchQuery}%`,],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
