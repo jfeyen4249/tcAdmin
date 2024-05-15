@@ -27,6 +27,7 @@ const projectors = require('./routes/projectors.js');
 const phones = require('./routes/phones.js');
 const chromebook = require('./routes/chromebook.js');
 const students = require('./routes/student.js');
+const submit_repair = require('./routes/submit_repair.js');
 const contacts = require('./routes/contacts.js');
 const renew = require('./routes/renew.js');
 //End of Routes
@@ -75,6 +76,7 @@ app.use("/projectors", projectors);
 app.use("/phones", phones);
 app.use("/chromebook", chromebook);
 app.use("/students", students);
+app.use("/submitRepair", submit_repair);
 app.use("/contacts", contacts);
 app.use("/renew", renew);
 
