@@ -179,6 +179,18 @@ router.post("/repair", session.validateSession,  (req, res) => {
     );
 });
 
+router.put("/return", session.validateSession, (req, res) => {
+    database.query(`UPDATE chromebook_repairs SET isReturned = 'true' WHERE serial = ?`, [req.query.serial])
+});
+
+router.get("/repairInfo/:serial", session.validateSession, async (req, res) => {
+    database.query("SELECT * FROM chromebook_repairs WHERE serial = ?", [req.query.serial],
+        function(error, results, fields) {
+            if(error) throw error;
+            res.send(results);
+        }
+    );
+});
 
 
 

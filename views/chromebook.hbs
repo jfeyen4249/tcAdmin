@@ -82,7 +82,7 @@
             width: 100%;
         }
         
-        #reason {
+        #explaination {
             
             width: 95%;
         }
@@ -199,7 +199,7 @@
 
                     <div class="mb-2">
                         <label for="modal-student" class="block text-gray-600 text-sm font-medium mb-2">Student Name</label>
-                        <select name="modal-student" oninput="AssignStudent()" id="modal-student-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        <select name="modal-student" oninput="AssignStudent()" id="modal-student-add" onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;"  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                     </div>
 
 
@@ -221,18 +221,34 @@
         </div>
         <div id="tab2" class="tabcontent" style="display: none;">
             <h2 class="text-2xl font-bold  text-center">Chromebook Repairs</h2>
+            <div class="grid grid-cols-2 flex-grow">
+                <div class="col-span-1" id="repair">
+                    
+                    <div class="mb-2 p-2 mr-8">
+                        <label for="modal-repairReason" class="block text-gray-600 text-sm font-medium">Repair Reasons</label>
+                        <select name="modal-repairReason" id="modal-repairReason-add" class="w-full py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
 
-            <div class="" id="repair">
-                <div class="mb-2">
-                        {{!-- <label for="reason" class="block text-gray-600 text-sm font-medium mb-1 ml-12">Reason for repair</label> --}}
-                         <textarea id="reason" rows="23" cols="30" name="reason" class="w-full px-3 py-2 border rounded-md m-6" placeholder=" Reason for repair"></textarea>
+                    <div class="mb-2 p-2 mr-8">
+                        <label for="modal-returnSchool" class="block text-gray-600 text-sm font-medium">Return School</label>
+                        <select name="modal-returnSchool" id="modal-returnSchool-add" class="w-full py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <div class="mb-2 p-2 mr-8">
+                        <label for="comment" class="block text-gray-600 text-sm font-medium">Comment</label>
+                        <input id="comment" name="comment" class="w-full px-1 py-2 border rounded-md focus:outline-none focus:border-blue-500" placeholder="Additional Comments"></input>
+                    </div>
+
                 </div>
-
-                <div class="grid grid-flow-col justify-stretch">
+                
+                <div class="mb-2">
+                    <label for="explaination" class="block text-gray-600 text-sm font-medium mt-6">Reason for repair</label>
+                    <textarea id="explaination" rows="20" cols="30" name="explaination" class="w-full px-3 py-2 border rounded-md" placeholder="Explaination of Damages"></textarea>
+                </div>
+            </div>
+            <div class="grid grid-flow-col justify-stretch">
                 <button type="button" onclick="sendChromebook()" id="send-repair" class="w-half bg-red-500 text-white p-1 m-3 rounded-md hover:bg-red-800 hidden">Submit Repair</button>
                 <button type="button" onclick="returnChromebook()" id="close-repair" class="w-half bg-green-500 text-white p-1 m-3 rounded-md hover:bg-green-800 hidden">Returned from Repair</button>
-               
-               </div>
             </div>
         </div>
         <div id="tab3" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
@@ -253,10 +269,6 @@
     </div>
 </div>
 
-   
-
-
-    
     <script defer>
         let addModal = document.getElementById('add-modal')
         let addmake = document.getElementById('modal-model-add')
@@ -270,9 +282,14 @@
         let addBtn = document.getElementById('add-btn')
         let editBtn = document.getElementById('edit-btn')
         let delBtn = document.getElementById('del-btn')
-        let repairText = document.getElementById('reason')
+        let repairText = document.getElementById('explaination')
         let sendBtn = document.getElementById('send-repair')
         let returnBtn = document.getElementById('close-repair')
+        let repairReason = document.getElementById('modal-repairReason-add')
+        let returnSchool = document.getElementById('modal-returnSchool-add')
+        let commentBox = document.getElementById('comment')
+        let deviceStatus = '';
+
         const currentDate = new Date();
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth() + 1; // Months are zero-based (0 = January)
@@ -285,17 +302,19 @@
         let tabModal = document.getElementById('tab-modal')
 
         function openTab(tabName) {
-        var i, tabcontent, tablinks;
-        tabcontent = document.getElementsByClassName("tabcontent");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-        }
-        tablinks = document.getElementsByClassName("tablink");
-        for (i = 0; i < tablinks.length; i++) {
-            tablinks[i].className = tablinks[i].className.replace(" active", "");
-        }
-        document.getElementById(tabName).style.display = "block";
-        event.currentTarget.className += " active";
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+
+            getRepairInfo(deviceStatus);
         }
        
 
@@ -371,8 +390,8 @@
             fetch(`/chromebook/chromebook?id=${editID}`)
             .then(response => response.json())
             .then(data => {
-                    //console.log(data)
                     let obj = data[0]
+                    deviceStatus = data[0].device_status;
                     addSN.value = obj.sn
                     addtag.value = obj.tag
                     addDate.value = obj.date_added
@@ -405,7 +424,6 @@
                     }
 
                    getStudentDetails(obj.student_year, obj.student)
-                    
                     if(obj.device_status == "In Use") {
                         sendBtn.classList.remove('hidden')
                         returnBtn.classList.add('hidden')
@@ -441,10 +459,9 @@
             } else if(repairStatus == 2) {
                 sendBtn.classList.add('hidden')
             }
-
             repairText.value = ""
-            repairStatus = 0
-            getChromebook()
+            repairStatus = 0            
+            getChromebook();
         }
 
         function getBuildings() {
@@ -485,12 +502,13 @@
                     fetch(`/chromebook/students?id=${addYear.value}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                        //console.log(data)
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 addStudent.innerHTML += `<option value="${obj.student}">${obj.student}</option>`
                             }
-                        });     
+                        });   
+
             }
 
         function getStudentDetails(year, name) {
@@ -527,7 +545,7 @@
                     fetch(`/chromebook/makes`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                        //console.log(data)
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 addmake.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
@@ -549,8 +567,6 @@
                 return
             }
 
-
-
              let data = {
                     model_id: addmake.value,
                     sn: addSN.value,
@@ -563,7 +579,7 @@
                     device_status : 'In Use'
                 }
                 
-                fetch(`/chromebook/chromebook`, {
+                fetch(`/chromebook/chromebook`, { 
                 method: 'Put',
                 body : JSON.stringify(data),
                 headers: {"Content-Type": "application/json",}
@@ -619,6 +635,7 @@
                         getChromebook()
                     }
                 });
+                getRepairInfo(obj.device_status);
         }
         
         function deleteChromebook() {
@@ -709,7 +726,7 @@
                     fetch(`/chromebook/log?id=${id}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                        //console.log(data)
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 let row = `
@@ -765,15 +782,56 @@
 
         }
 
-        function sendChromebook() {
+        async function sendChromebook() {
+            //Connect to submit repair API endpoints.
+            var reasonLong = repairReason.options[repairReason.selectedIndex].text;
+            var reason = repairReason.value;
+            var schoolName = returnSchool.options[returnSchool.selectedIndex].text;
+            var school = returnSchool.value;
+            var serial = addSN.value;
+            var explaination = repairText.value;
+            var comment = commentBox.value;
+            var ticketNumber = "";
+
+            if(commentBox.value == '') {
+                comment = reasonLong;
+            }
+
+            let data = {
+                serial,
+                school,
+                reasonLong,
+                reason,
+                comment,
+                explaination,
+                schoolName,
+                
+            }
+
+            await fetch(`/submitRepair/sendRepair`, {
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+                })
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    if(data.status === "success") {
+                        alert("ERROR! Look at console for detailed error message.");
+                        console.log(data);
+                    } else {
+                        alert("Ticket Submitted Successfully!");
+                        ticketNumber = data.ticketNumber;
+                    }
+                });
+
+            //Log that the chromebook was sent for repair
             fetch(`/chromebook/repair?id=${editID}`, {method: 'Put'})
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'updated') {
-                        logChomebook(editID, 'Sent For Repair', repairText.value)
+                        logChomebook(editID, 'Sent For Repair', ticketNumber)
                         document.getElementById('repair-table').innerHTML = '';
-                        //chromebookLog(editID)
-                        //repairText.readonly = 'true'
                         sendBtn.classList.add('hidden')
                         returnBtn.classList.remove('hidden')
                         repairText.value = ''
@@ -781,9 +839,11 @@
                         document.getElementById('tab3-btn').click()
                     }
                 });
+                
         }
 
         function returnChromebook() {
+            let serial = addSN.value;
             fetch(`/chromebook/repair?id=${editID}`, {method: 'Post'})
                 .then(response => response.text())
                 .then(data => {
@@ -798,13 +858,69 @@
                         document.getElementById('tab3-btn').click()
                     }
                 });
+
+            fetch(`/chromebook/return?serial=${serial}`, {method: 'PUT'})
+            .then(response => response.text())
+            .then(data => {
+                //console.log("Updated: " + serial);
+            });
+        }
+
+        function getRepairReasons(){
+            repairReason.innerHTML = ``
+            repairReason.innerHTML += `<option value="" >Select Repair Reason</option>`
+
+            let reasons = fetch(`/submitRepair/repairReasons`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i]
+                    repairReason.innerHTML += `<option value="${obj.value}">${obj.reason}</option>`
+                    }
+                });     
+        }
+
+        function getReturnSchools() {
+            returnSchool.innerHTML = ``
+            returnSchool.innerHTML += `<option value="" >Select Return School</option>`
+
+            let reasons = fetch(`/submitRepair/returnSchools`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i]
+                    returnSchool.innerHTML += `<option value="${obj.building_code}">${obj.name}</option>`
+                    }
+                });     
+        }
+
+        async function getRepairInfo(repairStatus) {
+            let serial = addSN.value;
+            
+            if(repairStatus == "Out for Repair") {
+                await fetch(`/submitRepair/repairInfo?serial=${serial}`, {method: 'Get'})
+                .then(response => response.json())
+                .then(data => {
+                    repairReason.innerHTML = `<option value="${data[0].reason}">${data[0].reasonLong}</option>`
+                    returnSchool.innerHTML = `<option value="${data[0].school}">${data[0].schoolName}</option>`
+                    commentBox.value = data[0].comment;
+                    explaination.value = data[0].explaination;
+                    explaination.ariaReadOnly = true;
+                    commentBox.ariaReadOnly = true;
+                    repairReason.ariaReadOnly = true;
+                    returnSchool.ariaReadOnly = true;
+                })
+            } else {
+                getRepairReasons();
+                getReturnSchools();
+            }
         }
 
         getMakeModel()
         getBuildings()
         getChromebook()
         getYear()
-       
+
     </script>
 
 </body>
