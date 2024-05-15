@@ -647,3 +647,27 @@ connection.query(`SHOW TABLES LIKE 'students'`, function (error, results, fields
 //     `log` LONGTEXT NULL,
 //     PRIMARY KEY (`id`));
   
+// CREATE TABLE `tcadmin`.`new_table` (
+//     `id` INT NOT NULL AUTO_INCREMENT,
+//     `name` VARCHAR(245) NULL,
+//     `company` VARCHAR(245) NULL,
+//     `website` VARCHAR(45) NULL,
+//     `email` VARCHAR(45) NULL,
+//     `phone` VARCHAR(45) NULL,
+//     `fax` VARCHAR(45) NULL,
+//     `info` LONGTEXT NULL,
+//     `status` VARCHAR(45) NULL,
+//     PRIMARY KEY (`id`));
+  
+
+
+
+// CREATE TABLE `tcadmin`.`renewals` (
+//     `id` INT NOT NULL AUTO_INCREMENT,
+//     `start` VARCHAR(45) NULL,
+//     `renewal_date` VARCHAR(45) NULL,
+//     `cost` VARCHAR(45) NULL,
+//     `po` VARCHAR(45) NULL,
+//     `status` VARCHAR(45) NULL DEFAULT 'Active',
+//     PRIMARY KEY (`id`));
+  

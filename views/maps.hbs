@@ -33,7 +33,7 @@
         }
 
         img {
-            max-width: 90%;
+            width: 99%;
             height: auto;
             margin-top: 20px;
 
@@ -95,9 +95,11 @@
         </div>
 
         <!-- Table -->
+    <div class="relative h-[80vh] overflow-y-auto">
         <div class="flex items-center text-center">
             <img src="" id="map-image"  alt="">
         </div>
+    </div>
     </div>
 </div>
 
@@ -146,12 +148,11 @@
         function openModal(id) {
             Modal.style.display = 'flex'
         }
+        
         function closeModal() {
             Modal.style.display = 'none'
 
         }
-
-
 
         function getBuildings() {
                     building.innerHTML = ``
@@ -164,8 +165,8 @@
                         
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
-                                building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
-                                Modalbuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                                building.innerHTML += `<option value="${obj.acronymn}">${obj.name}</option>`
+                                Modalbuilding.innerHTML += `<option value="${obj.acronymn}">${obj.name}</option>`
                             }
                         });     
             }
