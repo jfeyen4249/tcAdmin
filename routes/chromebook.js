@@ -192,6 +192,44 @@ router.get("/repairInfo/:serial", session.validateSession, async (req, res) => {
     );
 });
 
+router.get("/getAllRepairs", session.validateSession, async (req, res) => {
+    let allRepairs = database.query(`SELECT * FROM chromebooks WHERE device_status = 'Out for Repair'`,
+        function (error, results, fields) {
+        if (error) throw error;
+        var returnData = {
+            northside: 0,
+            parkside: 0,
+            abe: 0,
+            highschool: 0,
+            middleschool: 0,
+        }
+        for(let i = 0; i < results.length; i++) {
+            let school = results[i].building;
+            switch(school) {
+                case "Monroe High School":
+                    returnData.highschool += 1;
+                    break;
+                case "Monroe Middle School":
+                    returnData.middleschool += 1;
+                    break;
+                case "Northside School":
+                    returnData.northside += 1;
+                    break;
+                case "Abe School":
+                    returnData.abe += 1;
+                    break;
+                case "Parkside School":
+                    returnData.parkside += 1;
+                    break;
+                default:
+                    break;
+            }
+        }
+            res.send(returnData);
+    })
+
+});
+
 
 
 module.exports = router;

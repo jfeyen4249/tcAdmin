@@ -97,9 +97,6 @@
             <div class="flex items-center">
                 {{!-- <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"> --}}
             </div>
-            
-            <!-- Add New Password Button -->
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="test()"><i class="fa-solid fa-plus"></i> Add</button>
         </div>
     </div>
 
@@ -107,73 +104,97 @@
         <!-- Left half -->
         <div class="w-half h-half float-left border rounded-lg p-8 move">
             <table class="w-full border-collapse border rounded-md border-gray-800">
-                <h1 class="text-center chart-title">Chromebook Awaiting Repair</h1>
+                <h1 class="text-center chart-title">Chromebook Out For Repair</h1>
                 <canvas id="chromebookChart1" class="w-full h-full mb-8"></canvas>
             </table>
         </div>
 
         <!-- Right half -->
-        <div class="w-half h-half float-right border rounded-lg p-12">
-            <table class="w-full border-collapse border rounded-md border-gray-800">
-                <h1 class="text-center chart-title">Chromebook Out Repairs</h1>
-                <canvas id="chromebookChart2" class="w-full h-full mb-8"></canvas>
-            </table>
-        </div>
+<!--        <div class="w-half h-half float-right border rounded-lg p-12">-->
+<!--            <table class="w-full border-collapse border rounded-md border-gray-800">-->
+<!--                <h1 class="text-center chart-title">Chromebook Out Repairs</h1>-->
+<!--                <canvas id="chromebookChart2" class="w-full h-full mb-8"></canvas>-->
+<!--            </table>-->
+<!--        </div>-->
         <div class="clearfix"></div> <!-- Add clearfix to clear floats -->
     </div>
  
 
     <!-- JavaScript to toggle submenus and close them on outside click -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        async function fetchRepairData() {
+            try {
+                const totalRepairs = await fetch(`/chromebook/getAllRepairs`);
+                const data = await totalRepairs.json();
+                return data;
+            }  catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", async function () {
+           await updateRepairs();
+        });
+
+
+        async function updateRepairs() {
             // Fetch data for Chromebook repairs
             const awaitingPickupCount = 10; // Replace with actual data fetching
             const outForRepairCount = 5; // Replace with actual data fetching
+            const totalRepairs = await fetchRepairData();
+
+            let abeRepairs = totalRepairs.abe;
+            let nsRepairs = totalRepairs.northside;
+            let psRepairs = totalRepairs.parkside;
+            let msRepairs = totalRepairs.middleschool;
+            let hsRepairs = totalRepairs.highschool;
+            console.log("Northside: " + nsRepairs);
+            //Need to use fetch to get all chromebooks from the database in json and parse it out.
 
             // Create doughnut chart
-            var ctx1 = document.getElementById('chromebookChart1').getContext('2d');
-            var chromebookChart1 = new Chart(ctx1, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
-                    datasets: [{
-                        label: 'Chromebook Repairs',
-                        data: ['5', '1', '4', '14', '5'],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)', 
-                            'rgba(54, 162, 235, 0.5)', 
-                            'rgb(60, 179, 113)',
-                            'rgb(255, 165, 0)',
-                            'rgb(238, 130, 238)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgb(60, 179, 113)',
-                            'rgb(255, 165, 0)',
-                            'rgb(238, 130, 238)'
-                        ],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
-                }
-            });
+            // var ctx1 = document.getElementById('chromebookChart1').getContext('2d');
+            // var chromebookChart1 = new Chart(ctx1, {
+            //     type: 'doughnut',
+            //     data: {
+            //         labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
+            //         datasets: [{
+            //             label: 'Chromebook Repairs',
+            //             data: ['5', '1', '4', '14', '5'],
+            //             backgroundColor: [
+            //                 'rgba(255, 99, 132, 0.5)',
+            //                 'rgba(54, 162, 235, 0.5)',
+            //                 'rgb(60, 179, 113)',
+            //                 'rgb(255, 165, 0)',
+            //                 'rgb(238, 130, 238)'
+            //             ],
+            //             borderColor: [
+            //                 'rgba(255, 99, 132, 1)',
+            //                 'rgba(54, 162, 235, 1)',
+            //                 'rgb(60, 179, 113)',
+            //                 'rgb(255, 165, 0)',
+            //                 'rgb(238, 130, 238)'
+            //             ],
+            //             borderWidth: 1
+            //         }]
+            //     },
+            //     options: {
+            //         responsive: true,
+            //         maintainAspectRatio: false
+            //     }
+            // });
 
             // Create second doughnut chart
-            var ctx2 = document.getElementById('chromebookChart2').getContext('2d');
+            var ctx2 = document.getElementById('chromebookChart1').getContext('2d');
             var chromebookChart2 = new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
+                    labels: ['Abe', 'Northside', 'Parkside', 'Middle School', 'High School'],
                     datasets: [{
                         label: 'Chromebook Repairs',
-                        data: ['1', '2', '2', '18', '2'],
+                        data: [abeRepairs, nsRepairs, psRepairs, msRepairs, hsRepairs],
                         backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)', 
-                            'rgba(54, 162, 235, 0.5)', 
+                            'rgba(255, 99, 132, 0.5)',
+                            'rgba(54, 162, 235, 0.5)',
                             'rgb(60, 179, 113)',
                             'rgb(255, 165, 0)',
                             'rgb(238, 130, 238)'
@@ -193,14 +214,6 @@
                     maintainAspectRatio: false
                 }
             });
-        });
-
-        function test() {
-            fetch(`/chromebook/test`)
-                .then(response => response.text())
-                .then(data => {
-                    alert(data)
-                });
         }
         
     </script>
