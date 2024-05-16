@@ -78,4 +78,18 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
+  router.get("/search", session.validateSession,  (req, res) => {
+    const searchQuery = req.query.search;
+    database.query(`SELECT * FROM docs WHERE status = 'true' AND (doc LIKE ? OR doc_body LIKE ? ) ORDER By doc ASC`,
+      [
+        `%${searchQuery}%`,
+        `%${searchQuery}%`,
+      ],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+});
+
 module.exports = router;

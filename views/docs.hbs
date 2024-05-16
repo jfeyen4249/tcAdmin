@@ -36,6 +36,32 @@
             height: 100vw;
         }
 
+        .docs {
+            width: 50%;
+        }
+        .docs-btn {
+            width: 300px;
+        }
+
+        #mview {
+            display: none;
+        }
+
+        #madd {
+            display: none;
+        }
+
+        .modal-btn {
+            position: fixed;
+            right: 0;
+            margin-right: 170px;
+            margin-top: 10px;
+        }
+
+       
+
+
+
     </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -45,7 +71,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src=".././menu.js"></script>
-    <title>Docmentation</title>
+    <title>TC Admin - IT Docmentation</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
@@ -74,24 +100,20 @@
             <h1 class="text-2xl font-bold">IT Documentation</h1>
             <div class="flex items-center">
                 <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" onclick="openAddDoc()"><i class="fa-solid fa-plus" ></i> New Doc</button>
-                <button class="bg-yellow-500 text-white px-4 py-2 rounded-md ml-4" onclick="openEditDoc()"><i class="fa-regular fa-pen-to-square" ></i> Edit Doc</button>
-                <button class="bg-red-500 text-white px-4 py-2 rounded-md ml-4" onclick="deleteDoc()"><i class="fa-solid fa-trash"></i> Delete Doc</button>
-                
+                <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" onclick="openAddDoc()"><i class="fa-solid fa-plus" ></i> New Doc</button>                
             </div>
         </div>
 
         <!-- Table -->
     <div class="relative h-[80vh] overflow-y-auto">
         <table class="w-full border-collapse border border-gray-800" id="docs-table">
-            <thead>
+            {{!-- <thead>
                 <tr class="bg-gray-800 text-white">
                     <th class="py-2 px-4 border">Document</th>
                     <th class="py-2 px-4 border">Last Updated</th>
                 </tr>
-            </thead>
+            </thead> --}}
             <tbody class="text-center" id="doc-table">
-                
                 
             </tbody>
         </table>
@@ -100,24 +122,23 @@
 </div>
 
 <!-- Modal -->
-<div id="modal-view" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-85 hidden" ondblclick="event.stopPropagation()">
-    <div class="w-85 mx-auto mt-5 bg-white p-8 rounded shadow-md h-85">
+<div id="modal-view" class="fixed top-0 left-0 w-full h-full bg-gray-950 bg-opacity-95 hidden" ondblclick="event.stopPropagation()">
+    <div id="mview">
+        <div class="w-85 mx-auto mt-5 bg-white p-8 rounded shadow-md h-85">
         <h2 class="text-2xl font-bold mb-4 text-center" id="show-doc-title"></h2><hr>
-       
-       
-       
        <div>
-            <dir id="show-doc-text" class="view-h"></dir>
+            <div id="show-doc-text" class="h-[72vh] ui-syle"></dir>
         </div>
-
-        <div>      
-            <button type="button" id="modal-save-btn" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4" onclick="closeModal()">Close</button>      
+                
+        <div class="mt-4 text-right mr-4">      
+            <button type="button" id="modal-save-btn" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4" onclick="closeModal()">Close</button>      
         </div>
+    </div>
     </div>
 </div>
 
-<div id="modal-add" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-85 hidden" ondblclick="event.stopPropagation()">
-    <div class="w-85 mx-auto mt-5 bg-white p-8 rounded shadow-md h-85">
+<div id="madd">
+     <div class="w-85 mx-auto mt-5 bg-white p-8 rounded shadow-md h-85">
         <h2 class="text-2xl font-bold mb-4 text-center">Add Documentation</h2>
        <div class="mb-6">
             <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Document Name</label>
@@ -125,18 +146,17 @@
        </div>
        
        <div>
-            <div id="editor" class="w-full max-h-96 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
+            <div id="editor" class="w-full max-h-[60vh] px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
         </div>
 
-        <div>
-            <button type="button" id="modal-add-btn" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="addDoc()">Add Documentation</button>
-            <button type="button" id="modal-edit-btn" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="editDoc()">Save Changes</button>      
-            <button type="button" id="modal-save-btn" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4" onclick="closeModal();">Cancel</button>      
-        </div>
-
-    </div>
+ <div class="modal-btn">
+    {{!-- <button type="button" id="modal-add-button" class="w-half bg-green-500 text-white p-2 rounded-md hidden" onclick="addDoc()">Add </button> --}}
+    <button type="button" id="modal-add-button" class="w-half bg-green-500 text-white p-2 rounded-md" onclick="addDoc()">Add Doc</button>
+    <button type="button" id="modal-edit-btn" class="w-half bg-orange-500 text-white p-2 rounded-md hidden" onclick="editDoc()">Save Doc</button>      
+    <button type="button" id="modal-save-btn" class="w-half bg-red-500 text-white p-2 rounded-md" onclick="closeModal();">Cancel</button>      
 </div>
 
+</div>
 
     <script>
         var toolbarOptions = [
@@ -174,30 +194,34 @@
         var rows = table.getElementsByTagName("tr");
         let docID = 0
         let docName = ''
-        const viewModal = document.getElementById('modal-view')
-        const addModal = document.getElementById('modal-add')
-        const editModalBTN = document.getElementById('modal-edit-btn')
-        const addModalBTN = document.getElementById('modal-add-btn')
-        const docTitle = document.getElementById('doc-title')
-    
-        function openModal(id) {
-            viewModal.style.display = 'flex'
-            {{!-- for (var i = 0; i < rows.length; i++) {
-                rows[i].classList.remove("bg-blue-500");
-            } --}}
+        let viewModal = document.getElementById('modal-view')
+        let madd = document.getElementById('madd')
+        let mview = document.getElementById('mview')
+        let editModalBTN = document.getElementById('modal-edit-btn')
+        let addModalBTN = document.getElementById('modal-add-button')
+        let docTitle = document.getElementById('doc-title')
+        let searchBox = document.getElementById('search')
 
+        var DocView = new Quill('#show-doc-text', {
+            theme: 'snow',
+            readOnly: true,  // Set to read-only
+            modules: {
+                toolbar: false  // Disable toolbar
+            }
+        });
+
+        function openModal(id) {
+            viewModal.style.display = 'inline'
+            mview.style.display = 'inline'
             fetch(`/docs/doc?id=${id}`)
   		    .then(response => response.json())
             .then(data => {
-                //console.log(data)
-                        document.getElementById('show-doc-title').innerText = data[0].doc
-                        document.getElementById('show-doc-text').innerHTML = data[0].doc_body
+                    document.getElementById('show-doc-title').innerText = data[0].doc
+                    DocView.root.innerHTML = data[0].doc_body
                 }); 
         }
 
         function getDocs() {
-            
-
             document.getElementById('docs-table').innerHTML = ''
             fetch('/docs/list')
                 .then(response => response.json())
@@ -205,9 +229,13 @@
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
-                            <tr class="" onclick="docSelect('${obj.id}')"  ondblclick="openModal('${obj.id}')">
-                            <td class="py-2 px-4 border">${obj.doc}</td>
+                            <tr class="docs" ondblclick="openModal('${obj.id}')">
+                            <td class="py-2 px-4 border docs">${obj.doc}</td>
                             <td class="py-2 px-4 border">${obj.date}</td>
+                            <td class="py-2 px-4 border docs-btn">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-md ml-4" onclick="openEditDoc(${obj.id})"><i class="fa-regular fa-pen-to-square" ></i> Edit Doc</button>
+                                <button class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="deleteDoc(${obj.id})"><i class="fa-solid fa-trash"></i> Delete Doc</button>
+                            </td>
                         </tr>`;
                         document.getElementById('docs-table').innerHTML += row; // Corrected table ID
                     });
@@ -215,27 +243,10 @@
             
         }
 
-        document.addEventListener("click", function() {
-            // Function to remove the 'selected' class from all rows
-            function clearSelection() {
-                for (var i = 0; i < rows.length; i++) {
-                    rows[i].classList.remove("bg-blue-500");
-                }
-            }
-            // Add click event listener to table rows
-            for (var i = 0; i < rows.length; i++) {
-                rows[i].addEventListener("click", function() {
-                    // Clear previous selections
-                    clearSelection();
-                    // Add 'selected' class to the clicked row
-                    this.classList.add("bg-blue-500");
-                });
-            }
-        });
-
          function closeModal() {
             viewModal.style.display = 'none'
-            addModal.style.display = 'none'
+            mview.style.display = 'none'
+            madd.style.display = 'none'
             addModalBTN.style.display = 'none'
             editModalBTN.style.display = 'none'
             docTitle.value = ''
@@ -243,32 +254,50 @@
             docName = ''
             docID = 0
         }
-        
-        function docSelect(id) {
-            docID = id
-            console.log(id)
-        }
 
         function openAddDoc() {
+            console.log('Add Clicked!')
+            viewModal.style.display = 'inline'
+            madd.style.display = 'inline'
             addModalBTN.style.display = 'inline'
-            addModal.style.display = 'flex'
         }
 
-        function openEditDoc() {
-            if(docID == 0) {
-                showNotification(`No document selected`,'bg-red-600')
-            } else {
+        function openEditDoc(id) {
+            viewModal.style.display = 'inline'
             editModalBTN.style.display = 'inline'
-            addModal.style.display = 'flex'
-            fetch(`/docs/doc?id=${docID}`)
+            madd.style.display = 'inline'
+            docID = id
+            fetch(`/docs/doc?id=${id}`)
   		    .then(response => response.json())
             .then(data => {
-                        console.log(data)
-                        docTitle.value = data[0].doc
-                        quill.root.innerHTML  = data[0].doc_body
+                    docTitle.value = data[0].doc
+                    quill.root.innerHTML  = data[0].doc_body
                 }); 
         }
-        }
+
+        searchBox.addEventListener("input", () => {
+            if(searchBox.length = 0) {
+                getDDocs()
+            } else {
+            document.getElementById('docs-table').innerHTML = ''
+            fetch(`/docs/search?search=${searchBox.value}`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                        let row = `
+                            <tr class="docs" ondblclick="openModal('${obj.id}')">
+                            <td class="py-2 px-4 border docs">${obj.doc}</td>
+                            <td class="py-2 px-4 border">${obj.date}</td>
+                            <td class="py-2 px-4 border docs-btn">
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded-md ml-4" onclick="openEditDoc(${obj.id})"><i class="fa-regular fa-pen-to-square" ></i> Edit Doc</button>
+                                <button class="bg-red-500 text-white px-4 py-2 rounded-md" onclick="deleteDoc(${obj.id})"><i class="fa-solid fa-trash"></i> Delete Doc</button>
+                            </td>
+                        </tr>`;
+                        document.getElementById('docs-table').innerHTML += row; // Corrected table ID
+                    });
+            })
+            }
+        })
         
         function addDoc() {
             {{!-- if(docTitle.value !== ''){
@@ -296,8 +325,6 @@
   		    .then(response => response.json())
             .then(data => {
                     if(data.affectedRows == 1) {
-                        
-                        addModal.style.display = 'none'
                         getDocs()
                         closeModal()
                     } else {
@@ -323,7 +350,7 @@
                 body: quill.root.innerHTML
             }
 
-            fetch('/docs/doc',{
+            fetch(`/docs/doc?id=${docID}`,{
                 method: 'Post',
                 body : JSON.stringify(data),
                 headers: {
@@ -333,24 +360,22 @@
   		    .then(response => response.json())
             .then(data => {
                     if(data.affectedRows == 1) {
-                       
-                        addModal.style.display = 'none'
                         getDocs()
                         closeModal()
                     } else {
-                        alert("Error: Password not added!!!");
+                        alert(`Error: ${docTitle.value} could not be edited!!!`);
                     }
                 });
         }
 
-        function deleteDoc() {
-            fetch(`/docs/doc?id=${docID}`)
+        function deleteDoc(id) {
+            fetch(`/docs/doc?id=${id}`)
   		    .then(response => response.json())
             .then(data => {docName = data[0].doc}); 
             console.log(docName)
             var answer = prompt(`Do you want to delete ${docName}? (yes/no)`);
             if (answer === "yes") {
-                fetch(`/docs/doc?id=${docID}&Name=${docName}`,{method : "Delete"})
+                fetch(`/docs/doc?id=${id}&Name=${docName}`,{method : "Delete"})
                 .then(response => response.json())
                 .then(data => {}); 
                 docID = 0
@@ -365,6 +390,7 @@
                  docName = ''
                 getDocs()
             }
+            getDocs()
         }
 
        getDocs()
