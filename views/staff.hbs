@@ -75,7 +75,7 @@
     </div>
 
     <!-- Table -->
-<div class="relative h-[80vh] overflow-y-auto">
+<div class="relative h-[70vh] overflow-y-auto">
     <table class="w-full border-collapse border border-gray-800">
         <thead>
             <tr class="bg-gray-800 text-white">
@@ -88,7 +88,15 @@
            
         </tbody>
     </table>
+
+    
 </div>
+ <div class="w-full text-right mt-4" id="pageBTN">
+            <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+            <span id="pageIndicator">Page 1</span>
+            <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+
+        </div>
 </div>
  
 
@@ -105,12 +113,22 @@
 
                     <div class="mb-4">
                         <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building</label>
-                        <select id="modal-building" name="modal-building" class="min-w-half ml-4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <select id="modal-building" name="modal-building"  oninput="getRoom(this.value)" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                     </div>
    
                     <div class="mb-4">
-                        {{!-- <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label> --}}
-                        <input type="text" id="modal-room" name="modal-room" placeholder="Room Number" class="w-half ml-4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <label for="modal-roo" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                        <select id="modal-roo" name="modal-roo" class="min-w-half ml-4 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                            
+
+
+                    </div>
+                   
+                    <div class="mb-4">
+                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                        <select id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                            <option value="">Select a Room</option>
+                        </select>
                     </div>
 
                 <div class="modal-btn mt-6 ">
@@ -132,10 +150,12 @@
     <script>
         let staffID = 0
         const dateString = new Date().toDateString();
-       let Name = document.getElementById('modal-name')
-       let Building = document.getElementById('modal-building')
-       let Room = document.getElementById('modal-room')
+        let Name = document.getElementById('modal-name')
+        let Building = document.getElementById('modal-building')
+        let Room = document.getElementById('modal-room')
         let importBTN = document.getElementById('import')
+        let pageNum = document.getElementById('pageIndicator')
+        
 
 
         let upload = document.getElementById('upload')
@@ -144,17 +164,46 @@
             upload.click()
         })
        
-        function openModal(id, staffname, staffbuilding, staffroom) {
+        function openModal(id) {
             staffID = id
-            Name.value = staffname
-            Building.value = staffbuilding
-            Room.value = staffroom
             document.getElementById('add-modal').style.display = 'flex';
+            document.getElementById('modal-save').classList.remove('hidden')
+            fetch(`/staff/member?id=${id}`,{method : 'get'})
+            .then(response => response.json())
+            .then(data => {
+                let obj = data[0]
+                document.getElementById('modal-name').value = obj.name
+                document.getElementById('modal-room').value = obj.room
+                var selectModel = document.getElementById('modal-building'); 
+                    for (var i = 0; i < selectModel.options.length; i++) {
+                        var option = selectModel.options[i];
+                        if (option.value === obj.building) {
+                            option.selected = true;
+                            break;
+                        }   
+                    }
+
+                getRoom(obj.building)
+
+                setTimeout( () => {
+                    var selectRoom = document.getElementById('modal-room'); 
+                    for (var i = 0; i < selectRoom.options.length; i++) {
+                        var option = selectRoom.options[i];
+                        console.log('Select Value:' + option.value + '| Staff Room:' + obj.room)
+                        if (option.value === obj.room) {
+                            option.selected = true;
+                            break;
+                        }   
+                    }
+                }, 10)
+            });
         }
 
         function AddStaffModal() {
             document.getElementById('modal-add').classList.remove('hidden')
             document.getElementById('add-modal').style.display = 'flex';
+            document.getElementById('modal-name').focus();
+
         }
 
         function AddStaff() {
@@ -175,6 +224,7 @@
   		    .then(response => response.json())
             .then(data => {
                     if(data.affectedRows == 1) {
+                        getStaff()
                         closeModal();
                     } else {
                         alert("Error: Password not added!!!");
@@ -198,13 +248,14 @@
             })
   		    .then(response => response.json())
             .then(data => {
-                    if(data.affectedRows == 1) {
-                        getStaff()
-                        closeModal();
-                    } else {
-                        alert("Error: Password not added!!!");
-                    }
-                });
+                console.log
+                if(data.affectedRows == 1) {
+                    getStaff()
+                    closeModal();
+                } else {
+                    alert(`Error: Could not update ${name.value}!`);
+                }
+            });
         }
 
         function closeModal() {
@@ -212,17 +263,23 @@
             document.getElementById('modal-save').classList.add('hidden')
             document.getElementById('modal-add').classList.add('hidden')
             document.getElementById('add-modal').style.display = 'none';
+            document.getElementById('modal-name').value = ''
+            document.getElementById('modal-building').value = ''
+            document.getElementById('modal-room').value = ''
         }
+        
+        let currentPage = 1;
+        const limit = 30;
 
-        let getStaff = () => {
+        let getStaff = (page = 1) => {
             document.getElementById('password-table').innerHTML = '';
-            fetch('/staff/list')
+            fetch(`/staff/list?page=${page}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
                     {{!-- console.log(data) --}}
                     data.forEach(obj => {
                         let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.name}', '${obj.building}', '${obj.room}')">
+                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
                                 <td class="py-2 px-4 border">${obj.name}</td>
                                 <td class="py-2 px-4 border">${obj.building}</td>
                                 <td class="py-2 px-4 border">${obj.room}</td>
@@ -230,7 +287,32 @@
                         document.getElementById('password-table').innerHTML += row;
                     });
                 });
+                currentPage = page;
+                    document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         };
+
+         document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getStaff(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getStaff(currentPage + 1); // You might want to check here if there are still more data
+        });
+
+        function getRoom(building, room) {
+            console.log('Looking for room')
+            document.getElementById('modal-room').innerHTML = ''
+            document.getElementById('modal-room').innerHTML = '<option value="">Select a Room</option>'
+            fetch(`/staff/room?name=${building}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data)
+                    for(let i=0; i <data.length; i++) {
+                        let obj = data[i]
+                        document.getElementById('modal-room').innerHTML += `<option value="${obj.room}">${obj.room}</option>`
+                    }
+            });
+        }
 
         function getBuildings() {
                     Building.innerHTML = ``
@@ -238,7 +320,6 @@
                     fetch('/ap/buildings')
                     .then(response => response.json())
                     .then(data => {
-                        
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 Building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
@@ -261,9 +342,10 @@
                 getPasswords()
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/staff-search/?search=${document.getElementById('search').value}`,{method : 'get'})
+                fetch(`/staff/search?search=${document.getElementById('search').value}`,{method : 'get'})
                     .then(response => response.json())
                     .then(data => {
+                        console.log(data)
                         data.forEach(obj => {
                             let row = `
                                 <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
@@ -302,7 +384,7 @@
             getList(); // Assuming getList() is defined elsewhere
         }); 
 
-        getStaff()
+        getStaff(1)
         getBuildings()
     </script>
 
