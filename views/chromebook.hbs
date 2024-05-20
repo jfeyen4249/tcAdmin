@@ -820,6 +820,8 @@
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
+                    console.log(data[0]);
+                    console.log(data[1]);
                     if(data.status === "success") {
                         alert("ERROR! Look at console for detailed error message.");
                         console.log(data);
