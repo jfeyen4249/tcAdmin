@@ -123,7 +123,7 @@ router.get("/logout", session.validateSession,  (req, res) => {
       function (error, results, fields) {
         if (error) throw error;
         logs.SystemLog(`${username} logged out!`,username)
-        res.send('logged out')
+        res.redirect('/login')
       }
     );
 });

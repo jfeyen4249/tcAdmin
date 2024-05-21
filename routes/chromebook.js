@@ -10,11 +10,14 @@ const router = express.Router();
 router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
+    const page = parseInt(req.query.page, 10) || 1;
+    const offset = (page - 1) * limit;
     database.query(
         `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
         FROM Chromebooks
         INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
-        WHERE Chromebooks.status = 'true' ORDER BY Chromebooks.building ASC;`,
+        WHERE Chromebooks.status = 'true' ORDER BY Chromebooks.building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

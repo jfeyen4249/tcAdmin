@@ -33,26 +33,22 @@
 
     </style>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
-    <link rel="manifest" href="../fav/site.webmanifest">
-    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#ffffff">
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://qajavascriptsdktests.azurewebsites.net/JavaScript/dymo.connect.framework.js"></script>
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    {{!-- <script defer src=".././dymo.js"></script> --}}
     <script defer src=".././menu.js"></script>
+    <script defer src=".././label.js"></script> 
     <script src="https://cdn.tailwindcss.com"></script>
-    <title>iPad</title>
+    <title>TC Admin - Networking Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 </head>
 <body class="bg-slate-800 h-screen flex">
-
+<input type="text" id="textInput" placeholder="Type something" hidden>
     <!-- Left Side Menu -->
     <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
         <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
@@ -66,46 +62,45 @@
        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
     <div class="flex items-center justify-between mb-4">
         <!-- Password Manager Passwords text -->
-        <h1 class="text-2xl font-bold mb-4">iPad Inventory</h1>
+        <h1 class="text-2xl font-bold mb-4">Networking Inventory</h1>
 
         <!-- Search Box and Add New Password Button Container -->
         <div class="flex items-center">
             <!-- Search Box -->
             <div class="flex items-center">
-                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <input type="text" id="search" oninput="searchDB(this.value)" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
             </div>
             
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            <input type="file" name="" id="upload" hidden>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
         </div>
     </div>
 
     <!-- Table -->
-        <div class="relative h-[70vh] overflow-y-auto">
+    <div class="relative h-[70vh] overflow-y-auto">
     <table class="w-full border-collapse border border-gray-800">
         <thead>
             <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Make</th>
                 <th class="py-2 px-4 border">Model</th>
-                <th class="py-2 px-4 border">Storage</th>
-                <th class="py-2 px-4 border">Screen Size</th>
-                <th class="py-2 px-4 border">SN</th>
-                <th class="py-2 px-4 border">Tag</th>
+                <th class="py-2 px-4 border">IP Address</th>
+                <th class="py-2 px-4 border">Device Type</th>
                 <th class="py-2 px-4 border">Building</th>
-                <th class="py-2 px-4 border">Room</th>
-                <th class="py-2 px-4 border">Assigned To</th>
-                <th class="py-2 px-4 border">Date Added</th>
             </tr>
         </thead>
         <tbody class="text-center" id="password-table">
            
         </tbody>
     </table>
-</div>
-<div class="w-full text-right mt-4" id="pageBTN">
-    <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
-    <span id="pageIndicator">Page 1</span>
-    <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
-</div>
+    </div>
+     <div class="w-full text-right mt-4" id="pageBTN">
+            <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+            <span id="pageIndicator">Page 1</span>
+            <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+
+        </div>
 </div>
  
 
@@ -114,30 +109,23 @@
     <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
         <div class="grid grid-cols-2 flex-grow">
             <div class="col-span-1 bg-white p-8 rounded-l">
-               
                     <!-- Website/Service -->
                     <div class="mb-4">
-                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">Model</label>
-                        <select name="modal-model" id="modal-model" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">Make</label>
+                        <select name="modal-make" id="modal-make" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                          
                     </div>
                     <!-- URL -->
                     <div class="mb-4">
-                       <label for="modal-storage" class="block text-gray-600 text-sm font-medium mb-2">Storage</label>
-                        <select name="modal-storage" id="modal-storage" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
-                            <option value="32GB">32GB</option>
-                            <option value="64GB">64GB</option>
-                            <option value="128GB">128GB</option>
-                            <option value="512GB">512GB</option>
-                            <option value="1TB">1TB</option>
-                        </select>
+                       <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">Model</label>
+                        <select name="modal-model" id="modal-model" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                     </div>
 
                     <!-- Username/Email -->
-                    {{!-- <div class="mb-4">
-                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2"></label>
+                    <div class="mb-4">
+                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2">IP Address</label>
                         <input type="text" id="modal-mac" name="modal-mac" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div> --}}
+                    </div>
 
                     <!-- Password -->
                     <div class="mb-4">
@@ -147,39 +135,30 @@
 
                     <!-- Last Updated -->
                     <div class="mb-6">
-                        <label for="modal-screen" class="block text-gray-600 text-sm font-medium mb-2">Screen Size</label>
-                        <input type="text" id="modal-screen" name="modal-screen" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
 
                         <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Tag</label>
                         <input type="text" id="modal-tag" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-   
+                        <br>
+                        <label for="modal-installed" class="block text-gray-600 text-sm font-medium mb-2 hidden">Date Installed</label>
+                        <input type="text" id="modal-installed" name="modal-installed" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 hidden" >
+
                         </select>
                     </div>
 
                     <!-- Information -->
                     <div class="mb-4">
                         </div>
-
-                    <!-- Save Button -->
-                    {{!-- <button type="button" id="addPassword" onclick="AddPass();" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 mb-4 hidden">Add Password</button>
-                    <button type="button" id="close" onclick="closeModal()" class="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-                 --}}
-            </div>
-            <div class="col-span-1 p-4 mb-4 rounded-r">
-            
                 
-                {{!-- <div id="editor" class="w-full max-h-96 px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
-
-                    <p>Hello World!</p>
-                    <p>Some initial <strong>bold</strong> text</p>
-                    <p><br></p> 
-
-                </div> --}}
-                    
+            </div>
+            <div class="col-span-1 p-4 mb-4 rounded-r">                 
                 <div class="mb-4 mt-3">
                         <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
                         <select name="modal-building" id="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="modal-host" class="block text-gray-600 text-sm font-medium mb-2">Hostname</label>
+                        <input type="text" id="modal-host" name="modal-host" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
 
                     <div class="mb-4">
@@ -187,15 +166,10 @@
                         <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
 
-                    <div class="mb-4">
-                        <label for="modal-staff" class="block text-gray-600 text-sm font-medium mb-2">Assigned To</label>
-                        <input type="text" id="modal-staff" name="modal-staff" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
-
                  <div class="modal-btn mt-6">
-                    
-                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddiPad()">Add iPad</button>
-                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditiPad()">Update iPad</button>
+                <button type="button" id="modal-save" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="EditDevice()">Save Changes</button>
+                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddDevice()">Add Device</button>
+                 {{!-- <button type="button" id="modal-print" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 mb-4" onclick="printLabel(document.getElementById('modal-host').value);">Print Label</button> --}}
                  </div>
             </div>
         </div>
@@ -204,53 +178,43 @@
         </button>
     </div>
 </div>
-
-     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
-    <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
     
     <script defer>
         const dateString = new Date().toDateString();
         let passid = 0;
-        let infoEditor;
+        let makeList = document.getElementById('modal-make')
         let modelList = document.getElementById('modal-model')
-        let storageBox = document.getElementById('modal-storage')
+        let macAddress = document.getElementById('modal-mac')
         let serialNumber = document.getElementById('modal-sn')
-        let screenSize = document.getElementById('modal-screen')
+        let name = document.getElementById('modal-host')
+        let install = document.getElementById('modal-installed')
         let assetTag = document.getElementById('modal-tag')
         let building = document.getElementById('modal-building')
         let room = document.getElementById('modal-room')
-        let staff = document.getElementById('modal-staff')
+        let importBTN = document.getElementById('import')
+        let upload = document.getElementById('upload')
+        
 
         function openModal(id, make, model) {
-            fetch(`/ipad/ipad-details?id=${id}`)
+            fetch(`/networking/device?id=${id}`,{ method: 'post'})
   		    .then(response => response.json())
             .then(data => {
-                    console.log(id)
-                    console.log(data)
+                console.log(data)
                     document.getElementById('modal').style.display = 'flex';
                     passid = id;
+                    getmodel(make, model)
+                    macAddress.value = data[0].ip
                     serialNumber.value = data[0].sn
+                    name.value = data[0].hostname
+                    install.value = data[0].date
                     assetTag.value = data[0].tag
-                    //building.value = data[0].building
                     room.value = data[0].room
-                    screenSize.value = data[0].screen
-                    staff.value = data[0].staff
-
                     
 
-                    var selectElement = document.getElementById("modal-model"); 
+                    var selectElement = document.getElementById("modal-make"); 
                     for (var i = 0; i < selectElement.options.length; i++) {
                         var option = selectElement.options[i];
-                        if (option.value === data[0].model) {
-                            option.selected = true;
-                            break;
-                        }   
-                    }
-
-                     var selectElement = document.getElementById("modal-storage"); 
-                    for (var i = 0; i < selectElement.options.length; i++) {
-                        var option = selectElement.options[i];
-                        if (option.value === data[0].storage) {
+                        if (option.value === make) {
                             option.selected = true;
                             break;
                         }   
@@ -268,22 +232,27 @@
         }
 
         function AddModal() {
-            document.getElementById('modal').style.display = 'flex';
-            document.getElementById('modal-add').classList.remove('hidden');
+           document.getElementById('modal').style.display = 'flex';
+           document.getElementById('modal-add').classList.remove('hidden')
+            install.value = new Date().toDateString();
         }
-        
-        function AddiPad() {
+
+        function AddDevice() {
+            install.value = dateString
             let data = {
-                model : modelList.value,
+                make : makeList.value,
+                model : modelList.options[modelList.selectedIndex].text,
                 sn : serialNumber.value,
-                building : building.value,
+                ip : macAddress.value,
+                type : modelList.value,
+                tag : assetTag.value,
                 room : room.value,
-                staff : staff.value,
-                storage : storageBox.value,
-                screen : screenSize.value,
-                tag : assetTag.value
-            }
-            fetch(`/ipad/ipad`,{
+                hostname : name.value,
+                building : building.value,
+                date : formattedDate,
+                }
+
+            fetch(`/networking/add`,{
                 method: 'Post',
                 body : JSON.stringify(data),
                 headers: {
@@ -292,26 +261,28 @@
             })
                     .then(response => response.json())
                     .then(data => {
-                        
                         document.getElementById('password-table').innerHTML = '';
                         closeModal()
-                    
+                        window.location.href = '/inventory/networking'
                     });
         }
 
-        function EditiPad() {
+        function EditDevice() {
             let data = {
-                model : modelList.value,
+                make : makeList.value,
+                model : modelList.options[modelList.selectedIndex].text,
                 sn : serialNumber.value,
-                building : building.value,
+                ip : macAddress.value,
+                type : modelList.value,
+                tag : assetTag.value,
                 room : room.value,
-                staff : staff.value,
-                storage : storageBox.value,
-                screen : screenSize.value,
-                tag : assetTag.value
-            }
-            fetch(`/ipad/ipad?id=${passid}`,{
-                method: 'Put',
+                hostname : name.value,
+                building : building.value,
+                date : formattedDate,
+                }
+
+            fetch(`/networking/edit?id=${passid}`,{
+                method: 'Post',
                 body : JSON.stringify(data),
                 headers: {
                     "Content-Type": "application/json",
@@ -321,52 +292,45 @@
                     .then(data => {
                         document.getElementById('password-table').innerHTML = '';
                         closeModal()
+                        getList()
+                        window.location.href = '/inventory/networking'
                     });
         }
-
+        
         function closeModal() {
-            document.getElementById('modal-add').classList.add('hidden');
-            document.getElementById('modal-save').classList.add('hidden');
-            document.getElementById('modal').style.display = 'none';
-            serialNumber.value=''
-            screenSize.value = ''
+            document.getElementById('modal').style.display = 'none'
+            macAddress.value = ''
+            serialNumber.value = ''
             assetTag.value = ''
             room.value = ''
-            staff.value = ''
+            name.value = ''
             passid = 0
-            getBuildings()
-            getmodel()
-            getList()
         }
-
         let currentPage = 1;
-        const limit = 30; 
+        const limit = 30; // Number of items per page
 
         let getList = (page = 1) => {
             document.getElementById('password-table').innerHTML = '';
-            fetch(`/ipad/ipads?page=${page}&limit=${limit}`)
+            fetch(`/networking?page=${page}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
-                                <td class="py-2 px-4 border">${obj.storage}</td>
-                                <td class="py-2 px-4 border">${obj.screen} inch</td>
-                                <td class="py-2 px-4 border">${obj.sn}</td>
-                                <td class="py-2 px-4 border">${obj.tag}</td>
+                                <td class="py-2 px-4 border">${obj.ip}</td>
+                                <td class="py-2 px-4 border">${obj.type}</td>
                                 <td class="py-2 px-4 border">${obj.building}</td>
-                                <td class="py-2 px-4 border">${obj.room}</td>
-                                <td class="py-2 px-4 border">${obj.staff}</td>
-                                <td class="py-2 px-4 border">${obj.date}</td>
                             </tr>`;
                         document.getElementById('password-table').innerHTML += row;
                     });
                 });
-                currentPage = page;
+                 currentPage = page;
                 document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         };
+
 
         document.getElementById('prevButton').addEventListener('click', () => {
             if (currentPage > 1) getList(currentPage - 1);
@@ -376,10 +340,25 @@
             getList(currentPage + 1); // You might want to check here if there are still more data
         });
 
+        function getmake() {
+            document.getElementById('modal-make').innerHTML = ``
+            document.getElementById('modal-make').innerHTML += `<option value="" >Select A Make</option>`
+            fetch('/ap/makes')
+  		    .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                    for(let i = 0; i<data.length; i++) {
+                        let obj = data[i]
+                        document.getElementById('modal-make').innerHTML += `
+                            <option value="${obj.make}">${obj.make}</option>`
+                    }
+                });     
+        }
+
         function getBuildings() {
                     building.innerHTML = ``
                     building.innerHTML += `<option value="" >Select A Building</option>`
-                    building.innerHTML += `<option value="none" >Unassigned</option>`
+                    building.innerHTML += `<option value="none" >Unassign From a Building</option>`
                     fetch('/ap/buildings')
                     .then(response => response.json())
                     .then(data => {
@@ -392,49 +371,98 @@
                         });     
                 }
 
-        function getmodel() {
+        function getmodel(make, model) {
             document.getElementById('modal-model').innerHTML = ``
             document.getElementById('modal-model').innerHTML += `<option value="">Select A Make</option>`;
 
-            fetch(`/ipad/model`)
+            fetch(`/networking/model?make=${make}`)
                 .then(response => response.json())
                 .then(data => {
                     for (let i = 0; i < data.length; i++) {
+                    
                         let obj = data[i];
-                        document.getElementById('modal-model').innerHTML += `
-                            <option value="${obj.model}">${obj.model}</option>`;
+                        document.getElementById('modal-model').innerHTML += `<option value="${obj.type}">${obj.model}</option>`;
+                    }
+                    
+                    var selectElement1 = document.getElementById("modal-model");
+                    var options = selectElement1.options;
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].text === model) { // Replace "desiredText" with the text you're looking for
+                            options[i].selected = true;
+                            break; // Exit the loop after selecting the option
+                        }
                     }
                 });
         }
- 
-        document.getElementById('search').addEventListener('input', function(){
-            if(document.getElementById('search').length < 1) {
-                getPasswords()
+
+        function textChanged() {
+            if(passid !== 0) {
+                document.getElementById('modal-save').classList.remove('hidden')
+            }
+        }
+       
+        function searchDB (search){
+            if(search.length < 1) {
+                getList(1)
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/ipad/ipad-search/?search=${document.getElementById('search').value}`,{method : 'get'})
+                fetch(`/networking/?search=${search}`,{method : 'put'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(obj => {
                             let row = `
-                                 <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
-                                <td class="py-2 px-4 border">${obj.storage}</td>
-                                <td class="py-2 px-4 border">${obj.screen} inch</td>
-                                <td class="py-2 px-4 border">${obj.sn}</td>
-                                <td class="py-2 px-4 border">${obj.tag}</td>
+                                <td class="py-2 px-4 border">${obj.ip}</td>
+                                <td class="py-2 px-4 border">${obj.type}</td>
                                 <td class="py-2 px-4 border">${obj.building}</td>
-                                <td class="py-2 px-4 border">${obj.room}</td>
-                                <td class="py-2 px-4 border">${obj.staff}</td>
-                                <td class="py-2 px-4 border">${obj.date}</td>
                             </tr>`;
                             document.getElementById('password-table').innerHTML += row;
                         });
                     });
             }
+        }
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                lines.forEach(function(line) {
+                    console.log(line); 
+                    let data = {make : line.split(',')[0], model : line.split(',')[1], sn : line.split(',')[2], mac : line.split(',')[3], name : line.split(',')[4], tag : line.split(',')[5], room : line.split(',')[6], building : line.split(',')[7], installed : line.split(',')[8]}
+                    fetch(`/ap-add`,{method: 'Post', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
+                        .then(response => response.json())
+                        .then(data => {});
+                });
+            }
+            reader.readAsText(file);
+            getList(); // Assuming getList() is defined elsewhere
+        }); 
+
+        makeList.addEventListener('change', function(){
+            console.log("Make changed!")
+            document.getElementById('modal-model').innerHTML = ``
+            document.getElementById('modal-model').innerHTML += `<option value="" >Select A Make</option>`
+            fetch(`/networking/model?make=${makeList.value}`)
+  		    .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                    for(let i = 0; i<data.length; i++) {
+                        let obj = data[i]
+                        document.getElementById('modal-model').innerHTML += `
+                            <option value="${obj.type}">${obj.model}</option>`
+                    }
+                });    
         })
 
-         function textChanged() {
+        importBTN.addEventListener('click', function() {
+            upload.click()
+        })
+
+        function textChanged() {
             if(passid !== 0) {
                 document.getElementById('modal-save').classList.remove('hidden')
             }
@@ -445,19 +473,18 @@
             }
         }
        
+        makeList.addEventListener('input', textChanged)
         modelList.addEventListener('input', textChanged)
-        storageBox.addEventListener('input', textChanged)
+        macAddress.addEventListener('input', textChanged)
         serialNumber.addEventListener('input', textChanged)
-        screenSize.addEventListener('input', textChanged)
+        name.addEventListener('input', textChanged)
         assetTag.addEventListener('input', textChanged)
         building.addEventListener('input', textChanged)
         room.addEventListener('input', textChanged)
-        staff.addEventListener('input', textChanged)
 
-    getmodel()
     getBuildings()
-    getList(1)
-    
+    getmake()
+    getList()
     </script>
 
 </body>

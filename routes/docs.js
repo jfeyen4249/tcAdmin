@@ -13,9 +13,12 @@ router.get("/", session.validateSession, (req, res) => {
 
 
   router.get("/list", session.validateSession, (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
+    const page = parseInt(req.query.page, 10) || 1;
+    const offset = (page - 1) * limit;
     let id = req.query.id
     database.query(
-      "SELECT * FROM docs WHERE status = 'true' ",
+      `SELECT * FROM docs WHERE status = 'true' Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);

@@ -105,7 +105,7 @@
         </div>
 
         <!-- Table -->
-    <div class="relative h-[80vh] overflow-y-auto">
+    <div class="relative h-[70vh] overflow-y-auto">
         <table class="w-full border-collapse border border-gray-800" id="docs-table">
             {{!-- <thead>
                 <tr class="bg-gray-800 text-white">
@@ -118,6 +118,12 @@
             </tbody>
         </table>
     </div>
+    <div class="w-full text-right mt-4" id="pageBTN">
+    <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+    <span id="pageIndicator">Page 1</span>
+    <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+</div>
+
     </div>
 </div>
 
@@ -221,9 +227,12 @@
                 }); 
         }
 
-        function getDocs() {
+        let currentPage = 1;
+        const limit = 30;
+
+        function getDocs(page = 1) {
             document.getElementById('docs-table').innerHTML = ''
-            fetch('/docs/list')
+            fetch(`/docs/list?page=${page}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
                     //console.log(data)
@@ -240,8 +249,17 @@
                         document.getElementById('docs-table').innerHTML += row; // Corrected table ID
                     });
                 });
-            
+            currentPage = page;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         }
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getDocs(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getDocs(currentPage + 1); // You might want to check here if there are still more data
+        });
 
          function closeModal() {
             viewModal.style.display = 'none'
@@ -277,7 +295,7 @@
 
         searchBox.addEventListener("input", () => {
             if(searchBox.length = 0) {
-                getDDocs()
+                getDDocs(1)
             } else {
             document.getElementById('docs-table').innerHTML = ''
             fetch(`/docs/search?search=${searchBox.value}`)
@@ -393,7 +411,7 @@
             getDocs()
         }
 
-       getDocs()
+       getDocs(1)
     </script>
 
 </body>

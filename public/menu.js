@@ -34,7 +34,17 @@ function hideNotification() {
     notification.classList.add('animate-slide-out-right');
 }
 
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth() + 1; // Months are zero-based (0 = January)
+const day = currentDate.getDate();
 
+const hours = currentDate.getHours()
+const minutes = currentDate.getMinutes()
+
+const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`
+
+const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}-${year}`;
 
 
 
