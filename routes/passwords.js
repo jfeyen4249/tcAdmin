@@ -44,8 +44,11 @@ router.get("/");
 
 
   router.get("/password-list", session.validateSession,  (req, res) => {
+    const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
+    const page = parseInt(req.query.page, 10) || 1;
+    const offset = (page - 1) * limit;
     database.query(
-      `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC`,
+      `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' ORDER BY service ASC Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -54,6 +57,7 @@ router.get("/");
   });
   
   router.post("/password-list", session.validateSession,  (req, res) => {
+    
     database.query(
       `SELECT id,info,service,updated,url,username,category FROM passwords WHERE view = 'true' AND id = ? LIMIT 1`,
       [req.query.id],

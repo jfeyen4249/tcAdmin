@@ -14,7 +14,7 @@ router.get("/", session.validateSession, (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
     database.query(
-      `SELECT * FROM ap WHERE view = 'true' ORDER By Name ASC LIMIT ?, ?`,[offset, limit],
+      `SELECT * FROM networking WHERE view = 'true' ORDER By make ASC LIMIT ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -22,10 +22,9 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-    
-  router.post("/ap", session.validateSession, (req, res) => {
+  router.post("/device", session.validateSession, (req, res) => {
     database.query(
-      `SELECT * FROM ap WHERE id = ?`, [req.query.id],
+      `SELECT * FROM networking WHERE id = ?`, [req.query.id],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -36,8 +35,9 @@ router.get("/", session.validateSession, (req, res) => {
   router.put("/", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
     database.query(
-      `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC`,
+      `SELECT * FROM networking WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR ip LIKE ? OR hostname LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR type LIKE ?) ORDER By building ASC`,
       [
+        `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
@@ -55,7 +55,7 @@ router.get("/", session.validateSession, (req, res) => {
   
   router.get("/makes", session.validateSession, (req, res) => {
     database.query(
-      `SELECT make FROM makes WHERE view = 'true' AND type = 'AP' GROUP BY make ORDER BY make ASC;`,
+      `SELECT make FROM makes WHERE view = 'true' AND type = 'switch' GROUP BY make ORDER BY make ASC;`,
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -75,7 +75,7 @@ router.get("/", session.validateSession, (req, res) => {
 
   router.get("/room", session.validateSession, (req, res) => {
     database.query(
-      `SELECT room FROM staff WHERE view = 'true' AND building = ?;`, [req.query.building],
+      `SELECT room FROM rooms WHERE view = 'true' AND building = ?;`, [req.query.building],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -85,7 +85,7 @@ router.get("/", session.validateSession, (req, res) => {
   
   router.get("/model", session.validateSession, (req, res) => {
     database.query(
-      `SELECT model FROM makes WHERE make = ? and type = 'AP' AND view = 'true' ORDER BY model ASC;`,
+      `SELECT model, type FROM makes WHERE make = ? AND type = 'switch' OR type = 'Firewall' OR type = 'Router' OR type = 'Wireless Controller' OR type = 'Wireless Bridge'  ORDER BY model ASC;`,
       [req.query.make],
       function (error, results, fields) {
         if (error) throw error;
@@ -95,24 +95,12 @@ router.get("/", session.validateSession, (req, res) => {
   });
   
   router.post("/add", session.validateSession, (req, res) => {
-    let data = {
-      make: req.body.make,
-      model: req.body.model,
-      sn: req.body.sn,
-      mac: req.body.mac,
-      name: req.body.name,
-      tag: req.body.tag,
-      room: req.body.room,
-      building: req.body.building,
-      installed: logs.formattedDate,
-      view: "true",
-    };
+    
     database.query(
-      `INSERT INTO ap SET ?`,
-      [data],
+      `INSERT INTO networking SET ?`, [req.body],
       function (error, results, fields) {
         if (error) throw error;
-        logs.SystemLog(`${data.make} ${data.model} (sn:${data.sn}) was added the wireless access point inventory.`, req.cookies.username)
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.body.sn}) was added the networking inventory.`, req.cookies.username)
         res.send(results);
       }
     );
@@ -120,23 +108,12 @@ router.get("/", session.validateSession, (req, res) => {
   
   router.post("/edit", session.validateSession, (req, res) => {
     let id = req.query.id;
-    let data = {
-      make: req.body.make,
-      model: req.body.model,
-      sn: req.body.sn,
-      mac: req.body.mac,
-      name: req.body.name,
-      tag: req.body.tag,
-      room: req.body.room,
-      building: req.body.building,
-      view: "true",
-    };
     database.query(
-      `UPDATE ap SET ? WHERE id = ?`,
-      [data, id],
+      `UPDATE networking SET ? WHERE id = ?`,
+      [req.body, id],
       function (error, results, fields) {
         if (error) throw error;
-        logs.SystemLog(`${data.make} ${data.model} (sn:${data.sn}) was updated in the wireless access point inventory.`, req.cookies.username)
+        logs.SystemLog(`${req.body.make} ${req.body.model} (sn:${req.query.sn}) was updated in the wireless access point inventory.`, req.cookies.username)
         res.send(results);
       }
     );

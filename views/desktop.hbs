@@ -50,12 +50,21 @@
     </div>
 
     <!-- Table -->
+    <div class="relative h-[72vh] overflow-y-auto">
         <table class="w-full border-collapse border border-gray-800" >
             
             <div class="grid grid-cols-3 gap-2 mt-3 w-full text-center" id="grid">
                     
                 </div>
         </table>
+    </div>
+        
+         <div class="w-full text-right mt-4" id="pageBTN">
+            <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+            <span id="pageIndicator">Page 1</span>
+            <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+
+        </div>
     </div>
 
     <!-- Modal -->
@@ -105,6 +114,7 @@
                 <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
             </form>
         </div>
+
     </div>
 
     <!-- Modal -->
@@ -184,6 +194,7 @@
         editBuilding.addEventListener("change", function() {getEditRoom()})
 
 
+
         function isValidMACAddress(macAddress) {
             var macRegex = /^([0-9A-Fa-f]{2}[:-]){7}[0-9A-Fa-f]{2}$/;
             return macRegex.test(macAddress);
@@ -227,9 +238,11 @@
             editModal.classList.remove('hidden')
         }
 
-        function getDesktop() {
+        let currentPage = 1;
+        const limit = 30; // Number of items per page
+        function getDesktop(page = 1) {
             grid.innerHTML = ''
-            fetch(`/desktop/list`)
+            fetch(`/desktop/list?page=${page}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''
@@ -289,9 +302,18 @@
                         </div>`
                 }
             })
+            currentPage = page;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         }
 
 
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getDesktop(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getDesktop(currentPage + 1); // You might want to check here if there are still more data
+        });
         
         function getAddMake() {
             document.getElementById('modal-make-add').innerHTML = 
@@ -541,7 +563,7 @@
 
         searchBox.addEventListener("input", () => {
             if(searchBox.length = 0) {
-                getDesktop()
+                getDesktop(1)
             } else {
                 grid.innerHTML = ''
             fetch(`/desktop/search?search=${searchBox.value}`)
@@ -608,7 +630,7 @@
 
 
 
-        getDesktop()
+        getDesktop(1)
         getAddMake()
         getBuildings()
         

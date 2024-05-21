@@ -91,12 +91,19 @@
     
 
     <!-- Table -->
-    <table class="w-full mx-auto border-collapse border border-gray-800" >
-        
-        <div class="grid grid-cols-2 gap-4 mt-3 w-full text-center" id="wifi-grid">
+    <div class="relative h-[70vh] overflow-y-auto">
+            <table class="w-full mx-auto border-collapse border border-gray-800" >
                 
-            </div>
-    </table>
+                <div class="grid grid-cols-3 gap-4 mt-3 w-full text-center" id="wifi-grid">
+                        
+                    </div>
+            </table>
+        </div>
+        <div class="w-full text-right mt-4" id="pageBTN">
+        <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+        <span id="pageIndicator">Page 1</span>
+        <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+    </div>
 </div>
  
 
@@ -334,7 +341,7 @@
 
             if(searchBox.length = 0) {
                 document.getElementById('wifi-grid').innerHTML = ''
-                getContact()
+                getContact(1)
             } else {
             document.getElementById('wifi-grid').innerHTML = ''
             fetch(`/contacts/search?search=${searchBox.value}`)
@@ -367,7 +374,10 @@
             }
         })
 
-        function getContact() {
+        let currentPage = 1;
+        const limit = 30; 
+
+        function getContact(page = 1) {
             function blank(data) {
                 if(data == null) {
                     return " "
@@ -376,7 +386,7 @@
                 }
             }
             document.getElementById('wifi-grid').innerHTML = ''
-            fetch('/contacts/list')
+            fetch(`/contacts/list?page=${page}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
                     if (Array.isArray(data)) { // Check if data is an array
@@ -397,7 +407,7 @@
 
                                     <div class="text-center">
                                         <button class="bg-green-500 text-white px-4 py-2 mr-4 rounded-md mb-4 mt-4" onclick="modalOpen(${obj.id})"><i class="fa-solid fa-pen-nib"></i> Edit</button>
-                                        <button class="bg-yellow-500 text-white px-4 py-2 mr-4 rounded-md mb-4 mt-4" onclick="getInfo(${obj.id})"><i class="fa-solid fa-circle-info"></i> More Info</button>
+                                        <button class="bg-yellow-500 text-white px-4 py-2 mr-4 rounded-md mb-4 mt-4" onclick="getInfo(${obj.id})"><i class="fa-solid fa-circle-info"></i> Info</button>
                                         <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="deleteContact('${obj.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
                                     </div>
                                   
@@ -409,10 +419,20 @@
                         // Handle the case where data is not an array, possibly show an error message
                     }
                 })
+                currentPage = page;
+                document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         }
 
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getContact(currentPage - 1);
+        });
 
-        getContact()
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getContact(currentPage + 1); // You might want to check here if there are still more data
+        });
+
+
+        getContact(1)
         infoModal.classList.add('hidden')
     </script>
 

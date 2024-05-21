@@ -11,8 +11,11 @@ router.get("/");
 
 
 router.get("/ipads", session.validateSession, (req, res) => {
+  const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
+    const page = parseInt(req.query.page, 10) || 1;
+    const offset = (page - 1) * limit;
     database.query(
-      `SELECT * FROM ipad WHERE view = 'true'`,
+      `SELECT * FROM ipad WHERE view = 'true' Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);

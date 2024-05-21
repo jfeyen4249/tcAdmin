@@ -13,7 +13,7 @@ router.get("/list", session.validateSession, (req, res) => {
     const limit = parseInt(req.query.limit, 10) || 30; // Set default limit to 30
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
-
+ 
     database.query(
         `SELECT * FROM students WHERE status = 'true' ORDER BY year ASC, student ASC LIMIT ?, ?`,
         [offset, limit],
@@ -65,7 +65,6 @@ router.delete("/student", session.validateSession, (req, res) => {
         }
     );
 });
-
 
 router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
