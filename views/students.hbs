@@ -68,7 +68,7 @@
             <h1 class="text-2xl font-bold mb-4">Student Directory</h1>
             <div class="flex items-center">
                 <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4"><i class="fa-solid fa-plus"></i> Add</button>
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4"><i class="fa-solid fa-plus" onclick="openModal(0)"></i> Add</button>
                 <input type="file" name="" id="upload" hidden>
                 <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import">Import</button>
             </div>
@@ -146,6 +146,7 @@
         let upload = document.getElementById('upload')
         
         function openModal(id) {
+            console.log("Test");
             if(id == 0) {
                 modal.classList.remove('hidden')
                 addBTN.classList.remove('hidden')

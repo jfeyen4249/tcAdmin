@@ -203,7 +203,7 @@
 
                     <div class="mb-2">
                         <label for="modal-student" class="block text-gray-600 text-sm font-medium mb-2">Student Name</label>
-                        <select name="modal-student" oninput="AssignStudent()" id="modal-student-add" onmousedown="if(this.options.length>6){this.size=6;}"  onchange='this.size=0;' onblur="this.size=0;"  class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        <select data-role="select" name="modal-student" oninput="AssignStudent()" id="modal-student-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                     </div>
 
 
@@ -214,6 +214,7 @@
                 <!-- Save Button -->
                <div class="grid grid-flow-col justify-stretch">
                 <button type="button" onclick="addChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Chromebook</button>
+               <button type="button" onclick="addAnotherChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Create and Add Another</button>
                 <button type="button" onclick="editChromebook()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
                 <button type="button" onclick="deleteChromebook()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
                 <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
@@ -601,6 +602,51 @@
                 });
         }
 
+        function addAnotherChromebook() {
+            if(addmake.value == '') {
+                alert('Select a Make & Model')
+                return
+            }
+            if(addSN.value == '') {
+                alert('Enter a Serial Number')
+                return
+            }
+            if(addBuilding.value == '') {
+                alert('Select a building')
+                return
+            }
+
+            let data = {
+                model_id: addmake.value,
+                sn: addSN.value,
+                tag: addtag.value,
+                building: addBuilding.value,
+                date_added: addDate.value,
+                student : addStudent.value,
+                student_year : addYear.value,
+                status: 'true',
+                device_status : 'In Use'
+            }
+
+            fetch(`/chromebook/chromebook`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            addSN.value = ''
+                            addtag.value = ''
+                            addSN.focus();
+                            //addModal.classList.add('hidden')
+                            //showNotification('Computer was updated!', 'bg-orange-700')
+                            //AddModalClose()
+                            //getChromebook()
+                        }
+                    });
+        }
+
         function editChromebook() {
             if(addmake.value == '') {
                 alert('Select a Make & Model')
@@ -809,7 +855,6 @@
                 comment,
                 explaination,
                 schoolName,
-                
             }
 
             await fetch(`/submitRepair/sendRepair`, {
@@ -817,17 +862,15 @@
                 body : JSON.stringify(data),
                 headers: {"Content-Type": "application/json",}
                 })
-                .then(response => response.text())
+                .then(response => response.json())
                 .then(data => {
                     console.log(data);
-                    console.log(data[0]);
-                    console.log(data[1]);
                     if(data.status === "success") {
-                        alert("ERROR! Look at console for detailed error message.");
-                        console.log(data);
-                    } else {
                         alert("Ticket Submitted Successfully!");
                         ticketNumber = data.ticketNumber;
+                    } else {
+                        alert("ERROR! Look at console for detailed error message.");
+                        console.log(data);
                     }
                 });
 
@@ -928,6 +971,5 @@
         getYear()
 
     </script>
-
 </body>
 </html>
