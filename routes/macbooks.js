@@ -13,7 +13,7 @@ router.get("/list", session.validateSession,  (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
     database.query(
-        `SELECT * FROM computers WHERE view = 'true' AND type = 'macbook' ORDER BY building ASC Limit ?, ?`,[offset, limit],
+        `SELECT * FROM computers WHERE view = 'true' AND type = 'mac' ORDER BY building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

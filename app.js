@@ -31,6 +31,7 @@ const submit_repair = require('./routes/submit_repair.js');
 const contacts = require('./routes/contacts.js');
 const renew = require('./routes/renew.js');
 const networking = require('./routes/networking.js');
+const info = require('./routes/info.js');
 //End of Routes
 
 const app = express();
@@ -53,6 +54,10 @@ app.get("/", session.validateSession, (req, res) => {
 
 app.get("/login", (req, res) => {
   res.render("login");
+});
+
+app.post("/macinfo", (req, res) => {
+  console.log(req.body)
 });
 
 
@@ -81,6 +86,7 @@ app.use("/submitRepair", submit_repair);
 app.use("/contacts", contacts);
 app.use("/renew", renew);
 app.use("/networking", networking);
+app.use("/info", info);
 
 
 
