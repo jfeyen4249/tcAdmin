@@ -36,7 +36,7 @@ router.get("/", session.validateSession, (req, res) => {
   router.put("/", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
     database.query(
-      `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC`,
+      `SELECT * FROM ap WHERE view = 'true' AND (model LIKE ? OR sn LIKE ? OR mac LIKE ? OR name LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ?) ORDER By building ASC LIMIT 30`,
       [
         `%${searchQuery}%`,
         `%${searchQuery}%`,

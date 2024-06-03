@@ -15,8 +15,7 @@ router.get("/list", session.validateSession,  (req, res) => {
     const offset = (page - 1) * limit;
     database.query(
         `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
-        FROM Chromebooks
-        INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
+        FROM Chromebooks INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
         WHERE Chromebooks.status = 'true' ORDER BY Chromebooks.building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
@@ -63,7 +62,7 @@ router.get("/search", session.validateSession,  (req, res) => {
     INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
     WHERE Chromebooks.status = 'true'
     AND (Chromebooks.tag LIKE ? OR Chromebook_makes.make LIKE ? OR Chromebook_makes.model LIKE ? OR Chromebooks.sn LIKE ? OR Chromebooks.building LIKE ? OR Chromebooks.device_status LIKE ?)
-    ORDER BY Chromebooks.building ASC`,
+    ORDER BY Chromebooks.building ASC Limit 30`,
     [
         `%${searchQuery}%`,
         `%${searchQuery}%`,
