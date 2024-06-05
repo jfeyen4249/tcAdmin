@@ -317,7 +317,7 @@
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                            <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
                                 <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.mac}</td>
@@ -358,19 +358,20 @@
 
 
         function getBuildings() {
-                    building.innerHTML = ``
-                    building.innerHTML += `<option value="" >Select A Building</option>`
-                    building.innerHTML += `<option value="none" >Unassign From a Building</option>`
-                    fetch('/ap/buildings')
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                building.innerHTML += `
-                                    <option value="${obj.name}">${obj.name}</option>`
-                            }
-                        });     
+                localStorage.clear()
+                building.innerHTML = ``
+                building.innerHTML += `<option value="" >Select A Building</option>`
+                building.innerHTML += `<option value="none" >Unassign From a Building</option>`
+                fetch('/ap/buildings')
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data)
+                        for(let i = 0; i<data.length; i++) {
+                            let obj = data[i]
+                            building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            localStorage.setItem(obj.name, obj.color)
+                        }
+                    });     
                 }
 
         function getmodel(make, model) {
@@ -406,7 +407,7 @@
        
         function searchDB (search){
             if(search.length < 1) {
-                getPasswords()
+                getList(1)
             } else {
                 document.getElementById('password-table').innerHTML = '';
                 fetch(`/ap/?search=${search}`,{method : 'put'})
@@ -414,7 +415,7 @@
                     .then(data => {
                         data.forEach(obj => {
                             let row = `
-                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
                                 <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.mac}</td>
@@ -490,7 +491,7 @@
 
     getBuildings()
     getmake()
-    getList()
+    getList(1)
     </script>
 
 </body>

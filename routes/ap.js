@@ -14,7 +14,7 @@ router.get("/", session.validateSession, (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
     database.query(
-      `SELECT * FROM ap WHERE view = 'true' ORDER By Name ASC LIMIT ?, ?`,[offset, limit],
+      `SELECT * FROM ap WHERE view = 'true' ORDER By building ASC LIMIT ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -75,7 +75,7 @@ router.get("/", session.validateSession, (req, res) => {
 
   router.get("/room", session.validateSession, (req, res) => {
     database.query(
-      `SELECT room FROM staff WHERE view = 'true' AND building = ?;`, [req.query.building],
+      `SELECT room FROM rooms WHERE view = 'true' AND building = ?;`, [req.query.building],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);

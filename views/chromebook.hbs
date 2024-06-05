@@ -326,42 +326,14 @@
         const limit = 30; // Number of items per page
         
         function getChromebook(page = 1) {
+            localStorage.clear()
             document.getElementById('password-table').innerHTML = ''
             fetch(`/chromebook/list?page=${page}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
                 data.forEach(obj => {
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                        
-                        if(building == 'N/A') {
-                            return 'bg-gray-400'
-                        }
-                    }
                     let row = `
-                        <tr class="hover:bg-blue-400 ${buildingColor(obj.building)}" onclick="EditModal('${obj.id}')">
+                        <tr class="hover:bg-blue-400 ${localStorage.getItem(obj.building)}" onclick="EditModal('${obj.id}')">
                         <td class="py-2 px-4 border">${obj.make}</td>
                         <td class="py-2 px-4 border">${obj.model}</td>
                         <td class="py-2 px-4 border">${obj.screen} inch</td>
@@ -493,7 +465,7 @@
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 addBuilding.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
-                                
+                                localStorage.setItem(obj.name, obj.color)
                             }
                         });     
                 }
@@ -721,7 +693,12 @@
         }
 
         searchBox.addEventListener("input", () => {
-             document.getElementById('password-table').innerHTML = ''
+            let timeout
+            clearTimeout(timeout)
+
+            timeout = setTimeout( () => {
+
+            document.getElementById('password-table').innerHTML = ''
             if(searchBox.length = 0) {
                 getChromebook(1)
                 return
@@ -733,35 +710,8 @@
                
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                    }
-                    
                     let row = `
-                        <tr class="hover:bg-blue-400 ${buildingColor(obj.building)}" onclick="EditModal('${obj.id}')">
+                        <tr class="hover:bg-blue-400 ${localStorage.getItem(obj.building)}" onclick="EditModal('${obj.id}')">
                         <td class="py-2 px-4 border">${obj.make}</td>
                         <td class="py-2 px-4 border">${obj.model}</td>
                         <td class="py-2 px-4 border">${obj.screen} inch</td>
@@ -775,13 +725,14 @@
                         
                          </tr>`;
                     document.getElementById('password-table').innerHTML += row;
-                
-
-
-
                 }
             })
             }
+
+            },1500)
+
+
+            
         })
 
         function chromebookLog(id) {
