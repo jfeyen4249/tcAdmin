@@ -350,7 +350,7 @@
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                            <tr class=" ${localStorage.getItem(obj.building)} hover:bg-gray-400" onclick="openModal('${obj.id}')">
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.storage}</td>
                                 <td class="py-2 px-4 border">${obj.screen} inch</td>
@@ -377,6 +377,7 @@
         });
 
         function getBuildings() {
+                    localStorage.clear()
                     building.innerHTML = ``
                     building.innerHTML += `<option value="" >Select A Building</option>`
                     building.innerHTML += `<option value="none" >Unassigned</option>`
@@ -388,6 +389,7 @@
                                 let obj = data[i]
                                 building.innerHTML += `
                                     <option value="${obj.name}">${obj.name}</option>`
+                                    localStorage.setItem(obj.name, obj.color)
                             }
                         });     
                 }
@@ -409,15 +411,15 @@
  
         document.getElementById('search').addEventListener('input', function(){
             if(document.getElementById('search').length < 1) {
-                getPasswords()
+                    getList(1)
             } else {
                 document.getElementById('password-table').innerHTML = '';
-                fetch(`/ipad/ipad-search/?search=${document.getElementById('search').value}`,{method : 'get'})
+                fetch(`/ipad/search/?search=${document.getElementById('search').value}`,{method : 'get'})
                     .then(response => response.json())
                     .then(data => {
                         data.forEach(obj => {
                             let row = `
-                                 <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                                 <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}')">
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.storage}</td>
                                 <td class="py-2 px-4 border">${obj.screen} inch</td>
@@ -454,8 +456,8 @@
         room.addEventListener('input', textChanged)
         staff.addEventListener('input', textChanged)
 
-    getmodel()
     getBuildings()
+    getmodel()
     getList(1)
     
     </script>

@@ -93,10 +93,7 @@ router.get("/ipads", session.validateSession, (req, res) => {
   router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
     database.query(
-      `SELECT *
-                      FROM ipad 
-                      WHERE view = 'true' 
-                      AND (sn LIKE ? OR building LIKE ? OR staff LIKE ? OR tag LIKE ? OR storage LIKE ? OR room LIKE ?)`,
+      `SELECT * FROM ipad WHERE view = 'true' AND (sn LIKE ? OR building LIKE ? OR staff LIKE ? OR tag LIKE ? OR storage LIKE ? OR room LIKE ?)`,
       [
         `%${searchQuery}%`,
         `%${searchQuery}%`,

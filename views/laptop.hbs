@@ -239,40 +239,15 @@
 
         function getDesktop(page = 1) {
             grid.innerHTML = ''
+            localStorage.clear()
             fetch(`/laptop/list?page=${page}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                    }
                     grid.innerHTML += `
-                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
+                        <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
                             <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
                             <p class="font-semibold text-right col-span-1">Make:</p>
                             <p class="col-span-2">${obj.make}</p>
@@ -566,34 +541,8 @@
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
-                    function buildingColor(building) {
-                        if(building == 'DAC') {
-                            return 'bg-green-400'
-                        }
-
-                        if(building == 'NS') {
-                            return 'bg-yellow-400'
-                        }
-
-                        if(building == 'PS') {
-                            return 'bg-red-400'
-                        }
-
-                        if(building == 'ABE') {
-                            return 'bg-lime-400'
-                        }
-
-                        if(building == 'MHS') {
-                            return 'bg-blue-400'
-                        }
-
-                        if(building == 'MMS') {
-                            return 'bg-orange-400'
-                        }
-                    }
                     grid.innerHTML += `
-                        <div class="${buildingColor(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
+                        <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
                             <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
                             <p class="font-semibold text-right col-span-1">Make:</p>
                             <p class="col-span-2">${obj.make}</p>
@@ -624,9 +573,9 @@
 
 
 
+        getBuildings()
         getDesktop(1)
         getAddMake()
-        getBuildings()
         
     </script>
 

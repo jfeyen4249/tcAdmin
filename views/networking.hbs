@@ -317,7 +317,7 @@
                     //console.log(data)
                     data.forEach(obj => {
                         let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                            <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
                                 <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.ip}</td>
@@ -367,6 +367,7 @@
                                 let obj = data[i]
                                 building.innerHTML += `
                                     <option value="${obj.name}">${obj.name}</option>`
+                                    localStorage.setItem(obj.name, obj.color)
                             }
                         });     
                 }
@@ -411,7 +412,7 @@
                     .then(data => {
                         data.forEach(obj => {
                             let row = `
-                                <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
                                 <td class="py-2 px-4 border">${obj.make}</td>
                                 <td class="py-2 px-4 border">${obj.model}</td>
                                 <td class="py-2 px-4 border">${obj.ip}</td>
@@ -484,7 +485,7 @@
 
     getBuildings()
     getmake()
-    getList()
+    getList(1)
     </script>
 
 </body>
