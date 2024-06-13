@@ -122,11 +122,13 @@
     <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
         <div class="flex items-center justify-between mb-4">
         <div class="tabs">
-            <button class="tablink p-2 ml-2" onclick="openTab('tab6')">Building Management</button>
+            <button class="tablink p-2 ml-2 active" onclick="openTab('tab6')">Building Management</button>
             <button class="tablink p-2" onclick="openTab('tab2')">PO Management</button>
-            <button class="tablink p-2" onclick="openTab('tab3')">Inventory Make & Model</button>
+            <button class="tablink p-2" onclick="openTab('tab3')">Inventory</button>
+            <button class="tablink p-2" onclick="openTab('tab7')">Slack</button>
+            <button class="tablink p-2" onclick="openTab('tab8')">Monitoring</button>
             <button class="tablink p-2" onclick="openTab('tab4')">User management</button>
-            <button class="tablink p-2 active" onclick="openTab('tab5')">Logs</button>
+            <button class="tablink p-2 " onclick="openTab('tab5')">Logs</button>
         </div>
         </div>
         
@@ -289,7 +291,7 @@
 
         </div>
 
-        <div id="tab5" class="tabcontent p-4" style="display: block; overflow-x: auto;">
+        <div id="tab5" class="tabcontent p-4" style="display: none; overflow-x: auto;">
         <h1 class="text-2xl font-bold mb-4 text-center">System Logs</h1>
         <div style="overflow-x:auto;">
             <table class="w-full border-collapse border border-gray-800">
@@ -309,7 +311,7 @@
     </div>
 
 
-        <div id="tab6" class="tabcontent p-4" style="display: none;">
+        <div id="tab6" class="tabcontent p-4" style="display: block;">
            <div class="fig">
 
                 <div class="box box1">
@@ -412,8 +414,28 @@
 
 
         </div>
+
+
+
+        <div id="tab7" class="tabcontent" style="display: none;">
+             <h1 class="text-2xl font-bold mb-4 mt-2 text-center">Slack Integration</h1>
+             <button onclick="slack()">Test Slack</button>
+
+        </div>
+
+             
+        
+        <div id="tab8" class="tabcontent" style="display: none;">
+             <h1 class="text-2xl font-bold mb-4 mt-2 text-center">Network Monitoring</h1>
+
+        </div>
+
+
         </div>
         </div>
+        
+             
+        
 
     <script defer>
 
@@ -1167,6 +1189,28 @@
                     console.error('Error fetching log data:', error);
                 });
         }
+       
+       function slack() {
+  let data = {
+    text: 'Testing Looks TcAdmin.',
+  };
+
+  fetch('/settings/slack', {
+    method: 'POST',
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  })
+    .then((response) => response.text())
+    .then((data) => {
+      console.log(data);
+    });
+}
+
+
+
+
 
 
 

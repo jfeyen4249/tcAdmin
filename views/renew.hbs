@@ -68,7 +68,8 @@
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="openModal('0')"><i class="fa-solid fa-plus"></i> Add</button>
             <input type="file" name="" id="upload" hidden>
-            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="history" onclick="openChart()"><i class="fa-solid fa-chart-line"></i> History</button>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="history" onclick="openChart()"><i class="fa-solid fa-rotate-right"></i> Renew</button>
+            <button class="bg-red-500 text-white px-4 py-2 rounded-md ml-4" id="history" onclick="openChart()"><i class="fa-solid fa-chart-line"></i> History</button>
         </div>
     </div>
 
@@ -314,6 +315,7 @@
         }
 
         async function fetchData() {
+            clearChart()
             try {
                 const response = await fetch(`/renew/history?service=${historyService.value}`);
                 const data = await response.json();
@@ -324,6 +326,7 @@
         }
 
         async function updateChart() {
+
             const data = await fetchData();
             const labels = data.map(item => item.year);
             const values = data.map(item => item.cost);
@@ -356,6 +359,13 @@
         }
 
         // Call the closeModal function to destroy the chart when the modal is closed
+        function clearChart() {
+            var chart = Chart.getChart('myChart');
+            if (chart) {
+                chart.destroy();
+            }
+        }
+
         function closeChart() {
             var chart = Chart.getChart('myChart');
             if (chart) {

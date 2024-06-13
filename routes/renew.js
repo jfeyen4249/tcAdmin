@@ -99,4 +99,15 @@ router.get("/search", session.validateSession, (req, res) => {
     );
 });
 
+
+router.get("/upcoming", session.validateSession, (req, res) => {
+    
+    database.query(`SELECT * FROM renewals WHERE STR_TO_DATE(renewal_date, '%m-%d-%Y') BETWEEN CURDATE() AND CURDATE() + INTERVAL 90 DAY`,
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
 module.exports = router;

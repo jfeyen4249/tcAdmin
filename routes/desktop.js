@@ -107,6 +107,16 @@ router.get("/model", session.validateSession,  (req, res) => {
     );
 });
 
+router.get("/dashboard", session.validateSession,  (req, res) => {
+    database.query(
+        `SELECT * FROM computers WHERE CAST(SUBSTRING_INDEX(hdd, '/', -1) AS UNSIGNED) / CAST(SUBSTRING_INDEX(hdd, '/', 1) AS UNSIGNED) >= 0.9 OR CAST(SUBSTRING_INDEX(ram, '/', -1) AS UNSIGNED) / CAST(SUBSTRING_INDEX(ram, '/', 1) AS UNSIGNED) >= 0.9 AND view = 'true'`, [req.query.make],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
 
 
 module.exports = router;

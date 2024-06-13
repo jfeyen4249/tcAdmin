@@ -9,6 +9,18 @@ const moment = require('moment');
 
 const router = express.Router();
 
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth() + 1; // Months are zero-based (0 = January)
+const day = currentDate.getDate();
+
+const hours = currentDate.getHours()
+const minutes = currentDate.getMinutes()
+
+const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`
+
+const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}-${year}`;
+
 router.get("/");
 
   function generateTimeBasedCode(secret) {
@@ -101,20 +113,20 @@ router.get("/");
   });
   
   router.post("/password", session.validateSession, (req, res) => {
-    function code(code) {
-      // Check if code is not a string or is undefined
-      if (typeof code !== 'string' || code === undefined) {
-        return 'none';
-      }
+    // function code(code) {
+    //   // Check if code is not a string or is undefined
+    //   if (typeof code !== 'string' || code === undefined) {
+    //     return 'none';
+    //   }
     
-      // If code is an empty string, return 'none'
-      if (code === "") {
-        return 'none';
-      } else {
-        // Remove white spaces using regex
-        return code.replace(/\s/g, "");
-      }
-    }
+    //   // If code is an empty string, return 'none'
+    //   if (code === "") {
+    //     return 'none';
+    //   } else {
+    //     // Remove white spaces using regex
+    //     return code.replace(/\s/g, "");
+    //   }
+    // }
     
 
     let data = {
@@ -122,7 +134,7 @@ router.get("/");
       url: req.body.url,
       username: req.body.username,
       password: encryption.encrypt(req.body.password),
-      otp : code(),
+      otp : req.body.otp,
       category: req.body.category,
       updated: req.body.updated,
       view: "True",
@@ -145,11 +157,11 @@ router.get("/");
       [req.body.id],
       function (error, results, fields) {
         if (error) throw error;
-  
         if (
           req.body.password === encryption.decrypt(results[0].password) ||
           req.body.password.length == 0
         ) {
+          
           let data = {
             service: req.body.service,
             url: req.body.url,
@@ -172,6 +184,7 @@ router.get("/");
         }
   
         if (req.body.password !== encryption.decrypt(results[0].password)) {
+          logHistory(results[0].password, req.cookies.username, req.body.id)
           let data = {
             service: req.body.service,
             url: req.body.url,
@@ -188,7 +201,7 @@ router.get("/");
             function (error, results, fields) {
               if (error) throw error;
               //console.log(results)
-              res.send(results);
+              res.send('Updated');
             }
           );
           return;
@@ -196,6 +209,27 @@ router.get("/");
       }
     );
   });
+
+  function logHistory(password, user, id) {
+      console.log(encryption.decrypt(password))
+      console.log(user)
+      console.log(id)
+
+      let data = {
+        password_id:id,
+        password:password,
+        date:formattedDate,
+        time:formattedTime,
+        user:user,
+      };
+      database.query(`INSERT INTO password_history SET ?`,
+        [data],
+        function (error, results, fields) {
+          if (error) throw error;
+
+        }
+      );
+  }  
   
   router.get("/password-cat", session.validateSession, (req, res) => {
     database.query(
@@ -245,6 +279,26 @@ router.get("/");
     }
   });
 
+  router.get("/password-history", session.validateSession, (req, res) => {
 
+    database.query(
+      `SELECT id,date,time,user FROM password_history WHERE password_id = ? ORDER BY id DESC`, [req.query.id],
+      function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+      }
+    );
+  });
+  router.get("/old", session.validateSession, (req, res) => {
+
+    database.query(
+      `SELECT password FROM password_history WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+        if (error) throw error;
+        console.log(results)
+        res.send(encryption.decrypt(results[0].password));
+      }
+    );
+  });
 
   module.exports = router;

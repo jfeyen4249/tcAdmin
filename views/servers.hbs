@@ -200,7 +200,12 @@
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
+                    
+                    let hddFree = obj.hdd.split('/')[1]
+                    let hddTotal = obj.hdd.split('/')[0]
+                    
+                    let ramFree = obj.ram.split('/')[1]
+                    let ramTotal = obj.ram.split('/')[0]
                    
                     grid.innerHTML += `
                         <div class="bg-gray-300 p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
@@ -211,14 +216,13 @@
                             <p class="col-span-2">${obj.model}</p>
                             <p class="font-semibold text-right col-span-1">SN:</p>
                             <p class="col-span-2">${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">Mac:</p>
-                            <p class="col-span-2">${obj.mac}</p>
+                            
                             <p class="font-semibold text-right col-span-1">IP:</p>
                             <p class="col-span-2">${obj.ip}</p>
                             <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${obj.ram} GB</p>
+                            <p class="col-span-2">${ramFree} GB used of ${ramTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${obj.hdd}</p>
+                            <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">OS:</p>
                             <p class="col-span-2">${obj.os}</p>
                                     <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>

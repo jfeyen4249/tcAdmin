@@ -14,7 +14,7 @@ router.get("/", session.validateSession, (req, res) => {
   });
 
 router.get("/list", session.validateSession, (req, res) => {
-  database.query(`SELECT id, ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
+  database.query(`SELECT id,ssid FROM wifi WHERE status = 'true'`, function (error, results, fields) {
       if (error) {
           console.error("Error retrieving WiFi list:", error);
           res.status(500).json({ error: "Internal server error" });
@@ -84,6 +84,16 @@ router.post("/edit", session.validateSession, (req, res) => {
        console.log(results);
       res.send('added');
     }
+  );
+});
+
+router.delete("/delete", session.validateSession,  (req, res) => {
+  database.query(
+      `UPDATE wifi SET status = 'false' WHERE id = ?`, [req.query.id],
+      function (error, results, fields) {
+      if (error) throw error;
+      res.send('deleted');
+      }
   );
 });
 

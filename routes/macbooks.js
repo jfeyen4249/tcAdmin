@@ -96,7 +96,7 @@ router.get("/make", session.validateSession,  (req, res) => {
 
 router.get("/model", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT model FROM makes WHERE view = 'true' AND make = ? AND type = 'macbook' ORDER BY make ASC`, [req.query.make],
+        `SELECT model FROM makes WHERE view = 'true' AND make = 'Apple' AND type = 'mac' ORDER BY make ASC`, 
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

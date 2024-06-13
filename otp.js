@@ -11,7 +11,7 @@ const otplib = require('otplib');
 otplib.authenticator.options = { step: 30 };
 
 // Secret key
-const secret = 'dhcqd5wx27c567yj';
+const secret = 'lszxmglnn7vzls5l';
 
 // Generate TOTP
 const token = otplib.authenticator.generate(secret);

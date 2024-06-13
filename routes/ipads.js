@@ -89,7 +89,8 @@ router.get("/ipads", session.validateSession, (req, res) => {
       }
     );
   });
-  
+
+
   router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
     database.query(
@@ -108,5 +109,7 @@ router.get("/ipads", session.validateSession, (req, res) => {
       }
     );
   });
+
+
 
 module.exports = router;
