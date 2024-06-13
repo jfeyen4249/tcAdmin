@@ -16,23 +16,8 @@ menu.innerHTML = `
 <li class="mb-2"><a href="/connection/logout" class="text-white hover:text-blue-400" >Logout</a></li>
 `
 
-function showNotification(noteText, color) {
-    var notification = document.getElementById('notification');
-    notification.classList.remove('hidden');
-    document.getElementById('noteText').innerText = noteText
-    notification.classList.add(color);
-  
-    setTimeout(function() {
-        notification.classList.add('hidden');
-        notification.classList.remove('animate-slide-out-right');
-        notification.classList.remove(color);
-    }, 4500)
-}
 
-function hideNotification() {
-    var notification = document.getElementById('notification');
-    notification.classList.add('animate-slide-out-right');
-}
+
 
 const currentDate = new Date();
 const year = currentDate.getFullYear();

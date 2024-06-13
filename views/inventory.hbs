@@ -1,6 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showAlertWarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
+    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -9,6 +27,7 @@
     <title>TC Admin - Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -81,7 +100,7 @@
                 <div class="bg-gray-200 p-4 rounded-md">
                     <h2 class="text-lg font-semibold mb-2">Smartboards</h2>
                     <p></p>
-                    <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4"><i class="fa-solid fa-eye"></i> View Smartboards</button>
+                    <button class="bg-red-500 text-white px-4 py-2 rounded-md mb-4 mt-4" onclick="showAlertWarning('This page is not build yet!')" ><i class="fa-solid fa-eye"></i> View Smartboards</button>
                 </div>
                 <div class="bg-gray-200 p-4 rounded-md">
                     <h2 class="text-lg font-semibold mb-2">Phones</h2>
@@ -115,8 +134,7 @@
         </div>
     </div>
 
-    <script>
-        
+    <script>        
         function gotopage(page) {
             window.location.href = `/inventory/${page}`
         }

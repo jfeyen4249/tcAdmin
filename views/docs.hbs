@@ -74,6 +74,23 @@
     <title>TC Admin - IT Docmentation</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showAlertWarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 
 <div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
@@ -133,7 +150,7 @@
         <div class="w-85 mx-auto mt-5 bg-white p-8 rounded shadow-md h-85">
         <h2 class="text-2xl font-bold mb-4 text-center" id="show-doc-title"></h2><hr>
        <div>
-            <div id="show-doc-text" class="h-[72vh] ui-syle"></dir>
+            <div id="show-doc-text" class="h-[62vh] ui-syle"></dir>
         </div>
                 
         <div class="mt-4 text-right mr-4">      
@@ -152,7 +169,7 @@
        </div>
        
        <div>
-            <div id="editor" class="w-full max-h-[60vh] px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
+            <div id="editor" class="w-full max-h-[50vh] px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 border-gray-700">
         </div>
 
  <div class="modal-btn">
@@ -319,12 +336,12 @@
         
         function addDoc() {
             {{!-- if(docTitle.value !== ''){
-                alert('Enter the document title!')
+                showAlertWarning('Enter the document title!')
                 return
             }
 
             if(docBody !== "<p><br></p>"){
-                alert('Enter the document title!')
+                showAlertWarning('Enter the document title!')
                 return
             } --}}
 
@@ -343,22 +360,23 @@
   		    .then(response => response.json())
             .then(data => {
                     if(data.affectedRows == 1) {
+                        showAlertSuccess(docTitle.value + ' was added to documentation.')
                         getDocs()
                         closeModal()
                     } else {
-                        alert("Error: Password not added!!!");
+                        showAlertWarning("Error: this document was not added!!!");
                     }
                 });
         }
 
         function editDoc() {
             {{!-- if(docTitle.value !== ''){
-                alert('Enter the document title!')
+                showAlertWarning('Enter the document title!')
                 return
             }
 
             if(docBody !== "<p><br></p>"){
-                alert('Enter the document title!')
+                showAlertWarning('Enter the document title!')
                 return
             } --}}
 
@@ -378,10 +396,11 @@
   		    .then(response => response.json())
             .then(data => {
                     if(data.affectedRows == 1) {
+                        showAlertSuccess(`${docTitle.value} was updated!`)
                         getDocs()
                         closeModal()
                     } else {
-                        alert(`Error: ${docTitle.value} could not be edited!!!`);
+                        showAlertWarning(`Error: ${docTitle.value} could not be edited!!!`);
                     }
                 });
         }
@@ -395,20 +414,25 @@
             if (answer === "yes") {
                 fetch(`/docs/doc?id=${id}&Name=${docName}`,{method : "Delete"})
                 .then(response => response.json())
-                .then(data => {}); 
+                .then(data => {
+                    showAlertSuccess(`${docName} was deleted!`)
+                    document.getElementById('docs-table').innerHTML = ''
+                    getDocs(1)
+                    closeModal()
+                }); 
                 docID = 0
                 docName = ''
-                getDocs()
             } else if (answer === "no") {
                 docID = 0
                 docName = ''
-                getDocs()
+
             } else {
                  docID = 0
                  docName = ''
-                getDocs()
+
             }
-            getDocs()
+            
+
         }
 
        getDocs(1)

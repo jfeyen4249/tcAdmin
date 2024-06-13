@@ -14,11 +14,25 @@
     <title>TC Admin - Laptop Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showAlertWarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
-    
-    <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
-        <span id="noteText"></span>
-    </div>
+
 
 <body class="bg-slate-800 h-screen flex">
 
@@ -71,10 +85,10 @@
             <h2 class="text-2xl font-bold mb-4 text-center">Add New Computer</h2>
             <form>
                 <!-- Documentation Title -->
-                <div class="mb-4">
+                {{!-- <div class="mb-4">
                     <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
                     <input type="text" id="modal-mac-add" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
+                </div> --}}
 
                 <div class="mb-4">
                         <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
@@ -120,10 +134,10 @@
             <h2 class="text-2xl font-bold mb-4 text-center">Edit Computer</h2>
             <form>
                 <!-- Documentation Title -->
-                <div class="mb-4">
+                {{!-- <div class="mb-4">
                     <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
                     <input type="text" id="modal-mac-edit" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div>
+                </div> --}}
 
                 <div class="mb-4">
                         <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
@@ -171,7 +185,7 @@
         let addmodel = document.getElementById('modal-model-add')
         let addSN = document.getElementById('modal-sn-add')
         let addtag = document.getElementById('modal-tag-add')
-        let addmac = document.getElementById('modal-mac-add')
+
         let addBuilding = document.getElementById('modal-building-add')
         let addRoom = document.getElementById('modal-room-add')
         let editID = 0
@@ -180,7 +194,7 @@
         let editmodel = document.getElementById('modal-model-edit')
         let editSN = document.getElementById('modal-sn-edit')
         let edittag = document.getElementById('modal-tag-edit')
-        let editmac = document.getElementById('modal-mac-edit')
+
         let editBuilding = document.getElementById('modal-building-edit')
         let editRoom = document.getElementById('modal-room-edit')
 
@@ -203,7 +217,6 @@
                 .then(data => {
                     console.log(data)
                     let obj = data[0]
-                    editmac.value = obj.mac
                     editSN.value = obj.sn
                     edittag.value = obj.tag
 
@@ -246,6 +259,13 @@
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
+
+                     let hddFree = obj.hdd.split('/')[1]
+                    let hddTotal = obj.hdd.split('/')[0]
+                    
+                    let ramFree = obj.ram.split('/')[1]
+                    let ramTotal = obj.ram.split('/')[0]
+
                     grid.innerHTML += `
                         <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
                             <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
@@ -255,14 +275,12 @@
                             <p class="col-span-2">${obj.model}</p>
                             <p class="font-semibold text-right col-span-1">SN:</p>
                             <p class="col-span-2">${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">Mac:</p>
-                            <p class="col-span-2">${obj.mac}</p>
                             <p class="font-semibold text-right col-span-1">IP:</p>
                             <p class="col-span-2">${obj.ip}</p>
                             <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${obj.ram} GB</p>
+                            <p class="col-span-2">${ramFree} GB used of ${ramTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${obj.hdd}</p>
+                            <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">OS:</p>
                             <p class="col-span-2">${obj.os}</p>
                                     <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
@@ -391,11 +409,7 @@
             }
 
         function addDesktop() {
-                if(addmac.value == '') {
-                    alert('Enter a Mac Address!')
-                }else {
 
-                }
                 
                 if(addmake.value == '') {
                     alert('Select a model!')
@@ -422,7 +436,6 @@
                     model: addmodel.value,
                     sn: addSN.value,
                     tag: addtag.value,
-                    mac: addmac.value,
                     building: addBuilding.value,
                     room: addRoom.value,
                     type: 'laptop',
@@ -439,22 +452,17 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'added') {
-                        addmac.value = ''
                         addSN.value = ''
                         addtag.value = ''
                         addModal.classList.add('hidden')
-                        showNotification('Computer was updated!', 'bg-orange-700')
-                        getDesktop()
+                        showAlertSuccess(`${addmake.value} ${addmodel.value} was added`)
+                        getDesktop(1)
                     }
                 });
         }
 
         function editDesktop() {
-                if(editmac.value == '') {
-                    alert('Enter a Mac Address!')
-                }else {
-
-                }
+                
                 
                 if(editmake.value == '') {
                     alert('Select a model!')
@@ -481,7 +489,7 @@
                     model: editmodel.value,
                     sn: editSN.value,
                     tag: edittag.value,
-                    mac: editmac.value,
+                    
                     building: editBuilding.value,
                     room: editRoom.value,
                     type: 'laptop',
@@ -498,12 +506,12 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'saved') {
-                        editmac.value = ''
+                        
                         editSN.value = ''
                         edittag.value = ''
                         editModal.classList.add('hidden')
                         editID = 0
-                        showNotification('Computer was updated!', 'bg-orange-700')
+                        showAlertSuccess(`${editmake.value} ${editmodel.value} was updated`)
                         getDesktop()
                     }
                 });
@@ -516,7 +524,7 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        showNotification(`${pc} was deleted`)
+                        showAlertSuccess(`${pc} was deleted`)
                         getDesktop()
                     }
                 });
@@ -541,6 +549,13 @@
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
+
+                     let hddFree = obj.hdd.split('/')[1]
+                    let hddTotal = obj.hdd.split('/')[0]
+                    
+                    let ramFree = obj.ram.split('/')[1]
+                    let ramTotal = obj.ram.split('/')[0]
+
                     grid.innerHTML += `
                         <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
                             <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
@@ -550,22 +565,17 @@
                             <p class="col-span-2">${obj.model}</p>
                             <p class="font-semibold text-right col-span-1">SN:</p>
                             <p class="col-span-2">${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">Mac:</p>
-                            <p class="col-span-2">${obj.mac}</p>
                             <p class="font-semibold text-right col-span-1">IP:</p>
                             <p class="col-span-2">${obj.ip}</p>
                             <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${obj.ram} GB</p>
+                            <p class="col-span-2">${ramFree} GB used of ${ramTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${obj.hdd}</p>
+                            <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">OS:</p>
                             <p class="col-span-2">${obj.os}</p>
                                     <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
                                     <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
                         </div>`
-
-
-
                 }
             })
             }

@@ -7,6 +7,19 @@ const logs = require("../utils/logs.js");
 
 const router = express.Router();
 
+const currentDate = new Date();
+const year = currentDate.getFullYear();
+const month = currentDate.getMonth() + 1; // Months are zero-based (0 = January)
+const day = currentDate.getDate();
+
+const hours = currentDate.getHours()
+const minutes = currentDate.getMinutes()
+
+const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`
+
+const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}-${year}`;
+
+
 router.get("/", session.validateSession, (req, res) => {
   res.render("docs");
 });
@@ -41,7 +54,7 @@ router.get("/", session.validateSession, (req, res) => {
     let data = {
       doc : req.body.doc,
       doc_body : req.body.body,
-      date : new Date().toDateString()
+      date : formattedDate
     }
     database.query(
       `INSERT INTO docs SET ?`, [data],
@@ -57,7 +70,7 @@ router.get("/", session.validateSession, (req, res) => {
     let data = {
       doc : req.body.doc,
       doc_body : req.body.body,
-      date : new Date().toDateString()
+      date : formattedDate
     }
     database.query(
       `UPDATE docs SET ? WHERE id = ?`, [data, req.body.id],

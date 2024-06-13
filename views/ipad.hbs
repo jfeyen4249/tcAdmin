@@ -178,8 +178,14 @@
                     
                 <div class="mb-4 mt-3">
                         <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
-                        <select name="modal-building" id="modal-building" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        <select name="modal-building" id="modal-building" oninput="getStaff()" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                          
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="modal-staff" class="block text-gray-600 text-sm font-medium mb-2">Assigned To</label>
+                        <select name="modal-staff" id="modal-staff" oninput="getStaffRoom()" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        {{!-- <input type="text" id="modal-staff" name="modal-staff" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" > --}}
                     </div>
 
                     <div class="mb-4">
@@ -187,10 +193,6 @@
                         <input type="text" id="modal-room" name="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
 
-                    <div class="mb-4">
-                        <label for="modal-staff" class="block text-gray-600 text-sm font-medium mb-2">Assigned To</label>
-                        <input type="text" id="modal-staff" name="modal-staff" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
-                    </div>
 
                  <div class="modal-btn mt-6">
                     
@@ -225,8 +227,6 @@
             fetch(`/ipad/ipad-details?id=${id}`)
   		    .then(response => response.json())
             .then(data => {
-                    console.log(id)
-                    console.log(data)
                     document.getElementById('modal').style.display = 'flex';
                     passid = id;
                     serialNumber.value = data[0].sn
@@ -234,9 +234,7 @@
                     //building.value = data[0].building
                     room.value = data[0].room
                     screenSize.value = data[0].screen
-                    staff.value = data[0].staff
-
-                    
+                    getEditStaff(data[0].building, data[0].staff, data[0].room)
 
                     var selectElement = document.getElementById("modal-model"); 
                     for (var i = 0; i < selectElement.options.length; i++) {
@@ -267,6 +265,57 @@
         })
         }
 
+        function getStaffRoom() {
+            room.value = ''
+            fetch(`/staff/room?name=${staff.value}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                room.value = data[0].room
+                });     
+            }
+        function getStaff() {
+                    staff.innerHTML = ``
+                    staff.innerHTML += `<option value="" >Select Staff Member</option>`
+                    
+                    fetch(`/staff/building?building=${building.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                staff.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            }
+                        });     
+            }
+        
+        function getEditStaff(building, staffmember, staffRoom) {
+                    staff.innerHTML = ``
+                    staff.innerHTML += `<option value="" >Select Staff Member</option>`
+                    
+                    fetch(`/staff/building?building=${building}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                staff.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            }
+
+                            var selectRoom = staff; 
+                            for (var i = 0; i < selectRoom.options.length; i++) {
+                                console.log(staffmember)
+                                var option = selectRoom.options[i];
+                                if (option.value === staffmember) {
+                                    option.selected = true;
+                                    break;
+                                }   
+
+                                room.value = staffRoom
+                            }
+                        });     
+            }
+
         function AddModal() {
             document.getElementById('modal').style.display = 'flex';
             document.getElementById('modal-add').classList.remove('hidden');
@@ -292,7 +341,6 @@
             })
                     .then(response => response.json())
                     .then(data => {
-                        
                         document.getElementById('password-table').innerHTML = '';
                         closeModal()
                     
@@ -388,8 +436,8 @@
                             for(let i = 0; i<data.length; i++) {
                                 let obj = data[i]
                                 building.innerHTML += `
-                                    <option value="${obj.name}">${obj.name}</option>`
-                                    localStorage.setItem(obj.name, obj.color)
+                                <option value="${obj.name}">${obj.name}</option>`
+                                localStorage.setItem(obj.name, obj.color)
                             }
                         });     
                 }

@@ -6,7 +6,7 @@ const crypto = require("crypto");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 const logs = require("../utils/logs.js");
-
+const axios = require('axios');
 const router = express.Router();
 
 
@@ -376,5 +376,23 @@ router.get("/log", session.validateSession, (req, res) => {
     }
     res.send(results);
   });
+});
+
+router.post("/slack", session.validateSession, async (req, res) => {
+
+  try {
+    const response = await axios.post(process.env.slack,
+      req.body,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    res.send(response.data);
+  } catch (error) {
+    res.status(500).send(error.message);
+  }
+
 });
 module.exports = router;

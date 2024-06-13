@@ -2,6 +2,7 @@ const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
 const router = express.Router();
+const axios = require('axios');
 
 router.get("/", session.validateSession, (req, res) =>{
     res.render("staff");
@@ -13,6 +14,24 @@ router.get("/list", session.validateSession,  (req, res) => {
     const offset = (page - 1) * limit;
     
     database.query(`SELECT * FROM staff WHERE view = 'true' ORDER BY building, room ASC, name ASC  LIMIT ?, ?`, [offset, limit],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/building", session.validateSession,  (req, res) => {
+    database.query(`SELECT name FROM staff WHERE view = 'true' AND building = ?`, [req.query.building],
+        function (error, results, fields) {
+        if (error) throw error;
+        res.send(results);
+        }
+    );
+});
+
+router.get("/room", session.validateSession,  (req, res) => {
+    database.query(`SELECT room FROM staff WHERE view = 'true' AND name = ?`, [req.query.name],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -84,5 +103,6 @@ router.get("/search", session.validateSession, (req, res) => {
         }
     );
 });
+
 
 module.exports = router;
