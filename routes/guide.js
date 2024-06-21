@@ -32,7 +32,7 @@ router.get("/", session.validateSession, (req, res) => {
     const offset = (page - 1) * limit;
     let id = req.query.id
     database.query(
-      `SELECT * FROM guides WHERE status = 'true' Limit ?, ?`,[offset, limit],
+      `SELECT id,name FROM guides WHERE status = 'true' Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);

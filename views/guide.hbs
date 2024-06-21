@@ -234,13 +234,13 @@ var DocView = new Quill('#show-doc-text', {
     }
 });
 
-function openModal(id) {
+ async function openModal(id) {
 
     // Ensure the modal is displayed correctly
     viewModal.style.display = 'inline';
     mview.style.display = 'inline';
 
-    fetch(`/guide/guide?id=${id}`)
+    await fetch(`/guide/guide?id=${id}`)
         .then(response => response.json())
         .then(data => {
             console.log('Fetched data:', data.name); // Log fetched data for debugging
@@ -306,12 +306,12 @@ function openModal(id) {
             addModalBTN.style.display = 'inline'
         }
 
-        function openEditDoc(id) {
+       async function openEditDoc(id) {
             viewModal.style.display = 'inline'
             editModalBTN.style.display = 'inline'
             madd.style.display = 'inline'
             docID = id
-            fetch(`/guide/guide?id=${id}`)
+           await fetch(`/guide/guide?id=${id}`)
             .then(response => response.json())
             .then(data => {
                 console.log('Fetched data:', data.name); // Log fetched data for debugging
