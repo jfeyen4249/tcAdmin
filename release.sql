@@ -162,6 +162,16 @@ CREATE TABLE `ipad` (
   UNIQUE KEY `sn_UNIQUE` (`sn`)
 ) ;
 
+
+CREATE TABLE `guides` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(45)  DEFAULT NULL,
+  `content` longblob,
+  `status` varchar(45)  DEFAULT 'true',
+  `link` longtext,
+  PRIMARY KEY (`id`)
+) ;
+
 CREATE TABLE `logs` (
   `id` int NOT NULL AUTO_INCREMENT,
   `date` varchar(45) COLLATE  DEFAULT NULL,
@@ -224,6 +234,7 @@ CREATE TABLE `networking` (
   `username` varchar(45) COLLATE  DEFAULT NULL,
   `password` varchar(255) COLLATE  DEFAULT NULL,
   `backup` varchar(45) COLLATE  DEFAULT '0',
+  `config` longblob,
   PRIMARY KEY (`id`)
 ) ;
 
