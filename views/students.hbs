@@ -50,6 +50,23 @@
     <title>Student Directory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -241,12 +258,12 @@
 
         function addStudent() {
             if(studentName.value.length == 0) {
-                alert('Enter the students full name')
+                showalertwarning('Enter the students full name')
                 return
             }
         
             if(gradYear.value.length == 0) {
-                alert('Enter the students graduation year')
+                showalertwarning('Enter the students graduation year')
                 return
             }
 
@@ -271,12 +288,12 @@
 
         function editStudent() {
             if(studentName.value.length == 0) {
-                alert('Enter the students full name')
+                showalertwarning('Enter the students full name')
                 return
             }
         
             if(gradYear.value.length == 0) {
-                alert('Enter the students graduation year')
+                showalertwarning('Enter the students graduation year')
                 return
             }
 
@@ -336,31 +353,6 @@
             reader.readAsText(file);
             getList();
         });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     
     </script>

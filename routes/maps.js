@@ -80,7 +80,7 @@ router.put("/image", session.validateSession, upload.single('file'), (req, res) 
         res.status(500).send('Internal Server Error');
         return;
       }
-      console.log(results);
+      logs.SystemLog(`${data.type} was added to maps`, req.cookies.username)
       res.send('added');
     }
   );
@@ -92,6 +92,7 @@ router.delete("/image", session.validateSession, (req, res) => {
     `UPDATE maps SET view = 'false' WHERE id = ?`, [id],
     function (error, results, fields) {
       if (error) throw error;
+      logs.SystemLog(`${data.type} was deleted to maps`, req.cookies.username)
       //console.log(results)
       res.send('deleted');
     }

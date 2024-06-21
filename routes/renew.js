@@ -80,7 +80,7 @@ router.post("/service", session.validateSession, (req, res) => {
 
 router.delete("/service", session.validateSession, (req, res) => {
     database.query(
-        `UPDATE renewals SET status = 'false' WHERE id = ?`, [req.query.id],
+        `UPDATE renewals SET status = 'Inactive' WHERE id = ?`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
         res.send('deleted');
@@ -89,9 +89,44 @@ router.delete("/service", session.validateSession, (req, res) => {
 });
 
 
+router.post("/renew", session.validateSession, (req, res) => {
+    database.query(
+        `SELECT * FROM renewals WHERE id = ?`, [req.body.id],
+        function (error, results, fields) {
+        if (error) throw error;
+
+        let renewal_date = results[0].renewal_date.split('-');
+        let newYear = Number(results[0].year) + 1
+        let data = {
+            service: results[0].service,
+            start: results[0].renewal_date,
+            renewal_date: renewal_date[0] + '-' + renewal_date[1] + '-' + newYear,
+            year: newYear,
+            cost: req.body.cost,
+            po: req.body.po
+        }
+
+        database.query(
+            `INSERT INTO renewals SET ?`, [data],
+            function (error, results, fields) {
+            if (error) throw error;
+                database.query(
+                    `UPDATE renewals SET status = 'false' WHERE id = ?`, [req.body.id],
+                    function (error, results, fields) {
+                    if (error) throw error;
+                        res.send('renewed')
+                    }
+                );
+            }
+        );
+        }
+    );
+});
+
+
 router.get("/search", session.validateSession, (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM students WHERE status = 'true' AND (student LIKE ? OR year LIKE ? ) ORDER BY year ASC, student ASC`, [`%${searchQuery}%`,`%${searchQuery}%`,],
+    database.query(`SELECT * FROM renewals WHERE status = 'active' AND (service LIKE ? OR cost LIKE ? OR po LIKE ?) ORDER BY service ASC`, [`%${searchQuery}%`,`%${searchQuery}%`, `%${searchQuery}%`,],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

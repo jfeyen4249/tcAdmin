@@ -1,10 +1,11 @@
+
 const express = require("express");
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
-
+const { decode } = require('html-entities');
 const logs = require("../utils/logs.js");
-
+const { v4: uuidv4 } = require('uuid');
 const router = express.Router();
 
 const currentDate = new Date();
@@ -21,7 +22,7 @@ const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${
 
 
 router.get("/", session.validateSession, (req, res) => {
-  res.render("docs");
+  res.render("guide");
 });
 
 
@@ -31,7 +32,7 @@ router.get("/", session.validateSession, (req, res) => {
     const offset = (page - 1) * limit;
     let id = req.query.id
     database.query(
-      `SELECT * FROM docs WHERE status = 'true' Limit ?, ?`,[offset, limit],
+      `SELECT * FROM guides WHERE status = 'true' Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -39,49 +40,89 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.get("/doc", session.validateSession, (req, res) => {
+  router.get("/guide", session.validateSession, (req, res) => {
     let id = req.query.id
+
     database.query(
-      `SELECT * FROM docs WHERE id = ? AND status = 'true'`, [id],
+      `SELECT * FROM guides WHERE id = ? AND status = 'true'`, [id],
       function (error, results, fields) {
         if (error) throw error;
-        const blobData = results[0].doc_body;
+        const blobData = results[0].content;
         const base64Data = blobData.toString('base64')
         let data = {
           id: results[0].id,
-          doc:results[0].doc,
-          doc_body: base64Data,
+          name:results[0].name,
+          content: base64Data,
+
         }
         res.json(data);
-
       }
     );
   });
 
-  router.put("/doc", session.validateSession, (req, res) => {
-    let data = {
-      doc : req.body.doc,
-      doc_body : req.body.body,
-      date : formattedDate
-    }
-    database.query(
-      `INSERT INTO docs SET ?`, [data],
+  router.get("/view/:id", (req, res) => {
+    let id = req.params.id;
+    console.log(id);
+
+    database.query(`SELECT * FROM guides WHERE link = ? AND status = 'true'`, [id],
       function (error, results, fields) {
         if (error) throw error;
-        logs.SystemLog(`${req.body.doc} was added to documentation.`, req.cookies.username)
+        const blobData = results[0].content;
+        const htmlContent = decode(blobData.toString('utf-8'));
+        const data = {
+          title: `${results[0].name}`,
+          description: htmlContent,
+      };
+      res.render('guide_view', data);
+      }
+    );
+  });
+  
+  
+
+  router.get("/link", session.validateSession, (req, res) => {
+    let id = req.query.id
+
+    database.query(`SELECT link FROM guides WHERE id = ? AND status = 'true'`, [id],
+      function (error, results, fields) {
+        if (error) throw error;
+        let fullLink = `http://${process.env.base_url}:5500/guide/view/${results[0].link}`
+        console.log(fullLink)
+        res.send(fullLink)
+      }
+    );
+  });
+
+
+
+
+
+
+  router.put("/guide", session.validateSession, (req, res) => {
+
+    let data = {
+      name : req.body.name,
+      content : req.body.content,
+      link: uuidv4()
+    }
+    database.query(
+      `INSERT INTO guides SET ?`, [data],
+      function (error, results, fields) {
+        if (error) throw error;
+        logs.SystemLog(`${req.body.name} was added to user guides.`, req.cookies.username)
+        console.log(data)
         res.send(results);
       }
     );
   });
 
-  router.post("/doc", session.validateSession, (req, res) => {
+  router.post("/guide", session.validateSession, (req, res) => {
     let data = {
-      doc : req.body.doc,
-      doc_body : req.body.body,
-      date : formattedDate
+      name : req.body.name,
+      content : req.body.content,
     }
     database.query(
-      `UPDATE docs SET ? WHERE id = ?`, [data, req.body.id],
+      `UPDATE guides SET ? WHERE id = ?`, [data, req.body.id],
       function (error, results, fields) {
         if (error) throw error;
         logs.SystemLog(`${req.body.doc} was updated.`, req.cookies.username)
@@ -90,13 +131,12 @@ router.get("/", session.validateSession, (req, res) => {
     );
   });
 
-  router.delete("/doc", session.validateSession, (req, res) => {
-    console.log(req.query.Name)
+  router.delete("/guide", session.validateSession, (req, res) => {
     database.query(
-      `UPDATE docs SET status = 'false' WHERE id = ?`, [req.query.id],
+      `UPDATE guides SET status = 'false' WHERE id = ?`, [req.query.id],
       function (error, results, fields) {
         if (error) throw error;
-        logs.SystemLog(`${req.query.Name} was delete from documentation.`, req.cookies.username)
+        logs.SystemLog(`User guide was delete from guides.`, req.cookies.username)
         res.send(results);
       }
     );
@@ -104,9 +144,8 @@ router.get("/", session.validateSession, (req, res) => {
 
   router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM docs WHERE status = 'true' AND (doc LIKE ? OR doc_body LIKE ? ) ORDER By doc ASC`,
+    database.query(`SELECT * FROM guides WHERE status = 'true' AND (name LIKE ?) ORDER By name ASC`,
       [
-        `%${searchQuery}%`,
         `%${searchQuery}%`,
       ],
       function (error, results, fields) {

@@ -367,6 +367,37 @@ router.post("/password", session.validateSession, (req, res) => {
   );
 });
 
+router.get("/down-devices", session.validateSession, (req, res) => {
+  database.query(`SELECT monitoring.name, alert_log.down_time FROM monitoring JOIN alert_log ON monitoring.log_id = alert_log.id WHERE monitoring.status = 'down';`,
+    function (error, results, fields) {
+      if (error) throw error;
+      const downDevices = results.map(result => {
+        const differenceInSeconds = Math.abs(Number(Math.floor(Date.now() / 1000)) - Number(result.down_time));
+        const down_hours = Math.floor(differenceInSeconds / 3600);
+        const down_minutes = Math.floor((differenceInSeconds % 3600) / 60);
+
+        function hours() {
+          if (down_hours == 0) {
+            return "";
+          } else if (down_hours == 1) {
+            return `${down_hours} hour`;
+          } else {
+            return `${down_hours} hours`;
+          }
+        }
+
+        return {
+          name: result.name,
+          down_time: hours(down_hours) + ' ' + down_minutes + ` minutes`
+        };
+      });
+
+      res.send(JSON.stringify(downDevices));
+    }
+  );
+});
+
+
 router.get("/log", session.validateSession, (req, res) => {
   logs.ReadLog((error, results) => {
     if (error) {
@@ -378,10 +409,32 @@ router.get("/log", session.validateSession, (req, res) => {
   });
 });
 
-router.post("/slack", session.validateSession, async (req, res) => {
 
+
+//  **********************************************************************************************************************
+// ***********************************************************************************************************************
+
+router.get("/slack", session.validateSession, (req, res) => {
+  database.query(`SELECT * FROM slack WHERE id = 1`, [req.query.id],
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    }
+  );
+});
+
+router.put("/slack", session.validateSession, (req, res) => {
+  database.query(`UPDATE slack SET ? WHERE id = 1`, [req.body],
+    function (error, results, fields) {
+      if (error) throw error;
+      res.send(results);
+    }
+  );
+});
+
+router.post("/slack", session.validateSession, async (req, res) => {
   try {
-    const response = await axios.post(process.env.slack,
+    const response = await axios.post(req.body.url,
       req.body,
       {
         headers: {

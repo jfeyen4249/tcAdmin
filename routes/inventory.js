@@ -46,6 +46,10 @@ router.get("/projectors",  (req, res) => {
     res.render("projectors");
 });
 
+router.get("/smartboards",  (req, res) => {
+    res.render("smartboard");
+});
+
 router.get("/phones",  (req, res) => {
     res.render("phones");
 });

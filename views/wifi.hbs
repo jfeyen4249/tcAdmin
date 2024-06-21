@@ -69,7 +69,7 @@
             alertify.set('notifier','position', 'top-center');
             alertify.success(text);
         }
-        function showAlertWarning(text) {
+        function showalertwarning(text) {
             alertify.set('notifier','delay', 6);
             alertify.set('notifier','position', 'top-center');
             alertify.error(text);
@@ -270,7 +270,7 @@
                             getWifi()
                             showAlertSuccess(`${ssidName.value} was added`)
                         } else {
-                            alert('Error adding Wifi password!')
+                            showalertwarning('Error adding Wifi password!')
                         }
                     });
         }
@@ -296,7 +296,7 @@
                             getWifi()
                             showAlertSuccess(ssidName.value + ' was updated')
                         } else {
-                            alert('Error adding Wifi password!')
+                            showalertwarning('Error adding Wifi password!')
                         }
                     });
         }

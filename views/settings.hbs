@@ -99,6 +99,23 @@
     <title>TC Admin Settings</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
     
     <div id="alerts" class="bg-gray-950 text-center text-white p-4 mr-12 mt-12 rounded-md shadow-md fixed min-w-64 right-0 top-0 rounded border-blue-800 hidden">
@@ -126,7 +143,6 @@
             <button class="tablink p-2" onclick="openTab('tab2')">PO Management</button>
             <button class="tablink p-2" onclick="openTab('tab3')">Inventory</button>
             <button class="tablink p-2" onclick="openTab('tab7')">Slack</button>
-            <button class="tablink p-2" onclick="openTab('tab8')">Monitoring</button>
             <button class="tablink p-2" onclick="openTab('tab4')">User management</button>
             <button class="tablink p-2 " onclick="openTab('tab5')">Logs</button>
         </div>
@@ -419,16 +435,36 @@
 
         <div id="tab7" class="tabcontent" style="display: none;">
              <h1 class="text-2xl font-bold mb-4 mt-2 text-center">Slack Integration</h1>
-             <button onclick="slack()">Test Slack</button>
+              <div class="p-8 mb-4">
+                    <label for="hook" class="block text-gray-600 text-sm font-medium mb-2">Slack Webhook URL</label>
+                    <div class="flex items-center">
+                        <input type="text" id="hook" name="grad-year" class="flex-grow px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <button class="bg-sky-500 text-white p-1 ml-2 rounded-md hover:bg-sky-600" onclick="slack()">Test</button>
+                        <button class="bg-green-500 text-white p-1 ml-2 rounded-md hover:bg-green-600" onclick="saveSlack()">Save</button>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <h3 class="text-l font-bold mb-4 mt-6 text-center">Notification Settings</h3>
+                        <label class="inline-flex items-center mr-4">
+                            <input type="checkbox" id="slackNetwork" class="form-checkbox">
+                            <span class="ml-2">Network Monitoring Alerts</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4 mr-4">
+                            <input type="checkbox" id="slackrenew" class="form-checkbox">
+                            <span class="ml-2">Service Renewal Alerts</span>
+                        </label>
+                        <label class="inline-flex items-center ml-4 mr-4">
+                            <input type="checkbox" id="slackperformance" class="form-checkbox">
+                            <span class="ml-2">Computer Preformance Alerts</span>
+                        </label>
+                    </div>
+                </div>
+
+
 
         </div>
 
              
         
-        <div id="tab8" class="tabcontent" style="display: none;">
-             <h1 class="text-2xl font-bold mb-4 mt-2 text-center">Network Monitoring</h1>
-
-        </div>
 
 
         </div>
@@ -464,6 +500,10 @@
         let editColor = document.getElementById('edit-color-select')
         let buildingID = 0
     
+        let slackURL = document.getElementById('hook')
+        let slackNetwork = document.getElementById('slackNetwork')
+        let slackrenew = document.getElementById('slackrenew')
+        let slackperformance = document.getElementById('slackperformance')
 
         function openTab(tabName) {
         var i, tabcontent, tablinks;
@@ -590,12 +630,12 @@
 
         function AddRoom() {
             if(addBuildingSelect.value == ''){
-                alert('Select a Building')
+                showalertwarning('Select a Building')
                 return
             }
 
             if(addRoom.value == ''){
-                alert('Enter a Room')
+                showalertwarning('Enter a Room')
                 return
             }
 
@@ -603,7 +643,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert('Added!')
+                    showa('Added!')
                     GetLog()
                 }
             })
@@ -612,12 +652,12 @@
         function EditRoom() {
             
             if(editRoomBuildingSelect.value == ''){
-                alert('Select a Building')
+                showalertwarning('Select a Building')
                 return
             }
 
             if(editRoom.value == ''){
-                alert('Enter a Room')
+                showalertwarning('Enter a Room')
                 return
             }
 
@@ -625,7 +665,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert('Added!')
+                    showalertwarning('Added!')
                     GetLog()
                 }
             })
@@ -638,7 +678,7 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        alert(`This room was deleted`)
+                        showalertwarning(`This room was deleted`)
                         GetLog()
                     }
                 });
@@ -653,7 +693,7 @@
 
         function AddBuilding() {
             if(addBuilding.value == ''){
-                alert('Select a Building')
+                showalertwarning('Select a Building')
                 return
             }
 
@@ -661,7 +701,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert('Added!')
+                    showAlertSuccess('Added!')
                     addBuilding.value = ''
                     getBuilding()
                     GetLog()
@@ -672,7 +712,7 @@
         function EditBuilding() {
 
             if(editBuildingText.value == ''){
-                alert('Enter a Building')
+                showalertwarning('Enter a Building')
                 return
             }
 
@@ -682,7 +722,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'updated'){
-                    alert('Updated!')
+                    showAlertSuccess('Updated!')
                     buildingID = 0
                     GetLog()
                 }
@@ -697,7 +737,7 @@
                 .then(data => {
                     console.log(data)
                     if(data == 'deleted') {
-                        alert(`This building was deleted`)
+                        showAlertSuccess(`This building was deleted`)
                         GetLog()
                     }
                 });
@@ -724,17 +764,17 @@
 
         function AddDevice() {
             if(AddDeviceMake.value == ''){
-                alert('Enter a Make')
+                showalertwarning('Enter a Make')
                 return
             }
             
             if(AddDeviceModel.value == ''){
-                alert('Enter a Model')
+                showalertwarning('Enter a Model')
                 return
             }
 
             if(addDeviceType.value == ''){
-                alert('Select a device Type')
+                showalertwarning('Select a device Type')
                 return
             }
 
@@ -742,7 +782,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert('Added!')
+                    showAlertSuccess('Added!')
                     getDevicesType()
                     getDevices()
                     GetLog()
@@ -755,17 +795,17 @@
 
         function EditDevice() {
             if(editDeviceMake.value == ''){
-                alert('Enter a make of device')
+                showalertwarning('Enter a make of device')
                 return
             }
             
             if(editDeviceModel.value == ''){
-                alert('Enter a Model')
+                showalertwarning('Enter a Model')
                 return
             }
 
             if(editDeviceType.value == ''){
-                alert('Select a device Type')
+                showalertwarning('Select a device Type')
                 return
             }
 
@@ -773,7 +813,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'updated'){
-                    alert('Updated!')
+                    showAlertSuccess('Updated!')
                     getDevicesType()
                     getDevices()
                     GetLog()
@@ -795,7 +835,7 @@
                         .then(data => {
                             console.log(data)
                             if(data == 'deleted') {
-                                alert(`This device was deleted`)
+                                showAlertSuccess(`This device was deleted`)
                                 getDevicesType()
                                 getDevices()
                                 GetLog()
@@ -855,27 +895,27 @@
 
       function AddChromebook() {
             if(addChromeMake.value == ''){
-                alert('Enter a Make')
+                showalertwarning('Enter a Make')
                 return
             }
             
             if(addChromeModel.value == ''){
-                alert('Enter a Model')
+                showalertwarning('Enter a Model')
                 return
             }
 
             if(addChromeScreen.value == ''){
-                alert('Enter screen size')
+                showalertwarning('Enter screen size')
                 return
             }
 
             if(addChromeCost.value == ''){
-                alert('Enter cost of chromebook')
+                showalertwarning('Enter cost of chromebook')
                 return
             }
 
             if(addChromeUpdates.value == ''){
-                alert('Enter when updates end for this chromebook')
+                showalertwarning('Enter when updates end for this chromebook')
                 return
             }
 
@@ -883,7 +923,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert('Added!')
+                    showAlertSuccess('Added!')
                     getChromeMakes()
                     GetLog()
                     addChromeMake.value = ''
@@ -897,27 +937,27 @@
 
         function EditChromebook() {
             if(editChromeMake.value == ''){
-                alert('Enter a Make')
+                showalertwarning('Enter a Make')
                 return
             }
             
             if(editChromeModel.value == ''){
-                alert('Enter a Model')
+                showalertwarning('Enter a Model')
                 return
             }
 
             if(editChromeScreen.value == ''){
-                alert('Enter screen size')
+                showalertwarning('Enter screen size')
                 return
             }
 
             if(editChromeCost.value == ''){
-                alert('Enter cost of chromebook')
+                showalertwarning('Enter cost of chromebook')
                 return
             }
 
             if(editChromeUpdates.value == ''){
-                alert('Enter when updates end for this chromebook')
+                showalertwarning('Enter when updates end for this chromebook')
                 return
             }
 
@@ -925,7 +965,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'updated'){
-                    alert('Updated!')
+                    showAlertSuccess('Updated!')
                     getChromeMakes()
                     GetLog()
                     editChromeMake.value = ''
@@ -949,7 +989,7 @@
                         .then(data => {
                             console.log(data)
                             if(data == 'deleted') {
-                                alert('Updated!')
+                                showAlertSuccess('Updated!')
                                 GetLog()
                                 getChromeMakes()
                                 editChromeMake.value = ''
@@ -1060,17 +1100,17 @@
 
     function AddUser() {
             if(addName.value == ''){
-                alert('Enter the users full name')
+                showalertwarning('Enter the users full name')
                 return
             }
             
             if(addUsername.value == ''){
-                alert('Enter username')
+                showalertwarning('Enter username')
                 return
             }
 
             if(addPhone.value == ''){
-                alert('Enter screen size')
+                showalertwarning('Enter screen size')
                 return
             }
 
@@ -1078,7 +1118,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    alert(`${addName.value}'s account has been added! The password for this account is the system default password and will need to be reset on login.`)
+                    showAlertSuccess(`${addName.value}'s account has been added! The password for this account is the system default password and will need to be reset on login.`)
                     addUsername.value = ''
                     addName.value = ''
                     addPhone.value = ''
@@ -1090,27 +1130,27 @@
 
     function EditUser() {
             if(editUserSelect.value == ''){
-                alert('Select a user account')
+                showalertwarning('Select a user account')
                 return
             }
 
             if(editFullName.value == ''){
-                alert('Enter the users full name')
+                showalertwarning('Enter the users full name')
                 return
             }
             
             if(editUsername.value == ''){
-                alert('Enter username')
+                showalertwarning('Enter username')
                 return
             }
 
             if(editPhone.value == ''){
-                alert('Enter phone number')
+                showalertwarning('Enter phone number')
                 return
             }
             
             if(editUserStatus.value == 'none'){
-                alert('Select account status')
+                showalertwarning('Select account status')
                 return
             }
 
@@ -1118,7 +1158,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'updated'){
-                    alert('Updated!')
+                    showAlertSuccess('Updated!')
                     getUserAccounts()
                     GetLog()
                 }
@@ -1127,7 +1167,7 @@
         
     function LogUserOut() {
             if(editUserSelect.value == ''){
-                alert('Select a user account')
+                showalertwarning('Select a user account')
                 return
             }
 
@@ -1135,7 +1175,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'logged out'){
-                    alert(`${editFullName.value}'s account has been logged out.`)
+                    showAlertSuccess(`${editFullName.value}'s account has been logged out.`)
                     getUserAccounts()
                     GetLog() 
                 }
@@ -1144,7 +1184,7 @@
 
     function ResetPassword() {
             if(editUserSelect.value == ''){
-                alert('Select a user account')
+                showalertwarning('Select a user account')
                 return
             }
 
@@ -1152,7 +1192,7 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'logged out'){
-                    alert(`${editFullName.value}'s account password has been reset to the system default password.`)
+                    showAlertSuccess(`${editFullName.value}'s account password has been reset to the system default password.`)
                     getUserAccounts()
                     GetLog() 
                 }
@@ -1189,24 +1229,97 @@
                     console.error('Error fetching log data:', error);
                 });
         }
+
+
+
+
+
+
+        //  **********************************************************************************************************************
+        // ***********************************************************************************************************************
+        // ****************************************            Slack Functions          ******************************************
+        // ***********************************************************************************************************************
+        // ***********************************************************************************************************************
        
        function slack() {
-  let data = {
-    text: 'Testing Looks TcAdmin.',
-  };
+            let data = {
+                text: 'Test slack webhook URL.',
+            };
 
-  fetch('/settings/slack', {
-    method: 'POST',
-    body: JSON.stringify(data),
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  })
-    .then((response) => response.text())
-    .then((data) => {
-      console.log(data);
-    });
-}
+            fetch('/settings/slack', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                console.log(data);
+                if(data == 'ok'){
+                    showAlertSuccess('Slack message sent!')
+                } else {
+                    showalertwarning('Slack message failed to send!')
+                }
+                });
+        }
+
+
+       function getSlack() {
+
+
+            fetch('/settings/slack', {
+                method: 'GET',
+               
+            })
+                .then((response) => response.json())
+                .then((data) => {
+                
+                    slackURL.value = data[0].hook 
+
+                    if(data[0].network == 1) {
+                        slackNetwork.checked = true
+                    } else {
+                        slackNetwork.checked = false
+                    }
+                    
+                    if(data[0].renewals == 1) {
+                        slackrenew.checked = true
+                    } else {
+                        slackrenew.checked = false
+                    }
+                    
+                    
+                    if(data[0].pc == 1) {
+                        slackperformance.checked = true
+                    } else {
+                        slackperformance.checked = false
+                    }
+                });
+        }
+       
+       function saveSlack() {
+
+            let data = {
+                hook: slackURL.value,
+                network: slackNetwork.checked,
+                renewals: slackrenew.checked,
+                pc: slackperformance.checked
+            };
+
+            fetch('/settings/slack', {
+                method: 'put',
+                body: JSON.stringify(data),
+                headers: {
+                'Content-Type': 'application/json',
+                },
+            })
+                .then((response) => response.text())
+                .then((data) => {
+                    showAlertSuccess('Slack settings updated!')
+                });
+
+        }
 
 
 
@@ -1220,6 +1333,7 @@
         getDevices()
         getChromeMakes()
         GetLog() 
+        getSlack()
     </script>
 
 </body>

@@ -14,6 +14,23 @@
     <title>TC Admin - Phone Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
     
     <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
@@ -400,33 +417,33 @@
 
         function addPhone() {
                 if(addmac.value == '') {
-                    alert('Enter a Mac Address!')
+                    showalertwarning('Enter a Mac Address!')
                 }else {
 
                 }
                 
                 if(addmake.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addmodel.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addEXT.value == "") {
-                    alert('Enter a extention!')
+                    showalertwarning('Enter a extention!')
                     return
                 }
 
                 if(addSN.value == "") {
-                    alert('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
                 if(addtag.value == '') {
-                    alert('Enter an asset tag!')
+                    showalertwarning('Enter an asset tag!')
                     return
                 }
 
@@ -456,7 +473,7 @@
                         addSN.value = ''
                         addtag.value = ''
                         addModal.classList.add('hidden')
-                        showNotification('Phone was added!', 'bg-orange-700')
+                        show('Phone was added!', 'bg-orange-700')
                         getPhone()
                     }
                 });
@@ -464,33 +481,33 @@
 
         function editPhone() {
                 if(editmac.value == '') {
-                    alert('Enter a Mac Address!')
+                    showalertwarning('Enter a Mac Address!')
                 }else {
 
                 }
                 
                 if(editmake.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editmodel.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editEXT.value == "") {
-                    alert('Enter a phone extention!')
+                    showalertwarning('Enter a phone extention!')
                     return
                 }
 
                 if(editSN.value == "") {
-                    alert('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
                 if(edittag.value == '') {
-                    alert('Enter an asset tag!')
+                    showalertwarning('Enter an asset tag!')
                     return
                 }
 
@@ -521,7 +538,7 @@
                         edittag.value = ''
                         editModal.classList.add('hidden')
                         editID = 0
-                        showNotification('Phone was updated!', 'bg-orange-700')
+                        showAlertSuccess('Phone was updated!')
                         getPhone()
                     }
                 });
@@ -534,7 +551,7 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        showNotification(`${pc} was deleted`)
+                        showAlertSuccess(`${pc} was deleted`)
                         getPhone()
                     }
                 });
