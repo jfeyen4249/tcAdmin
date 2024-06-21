@@ -14,6 +14,23 @@
     <title>TC Admin - Server Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
     
     <div id="notification" class="bg-gray-800 text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
@@ -296,23 +313,23 @@
 
         function addDesktop() {
                 if(addmac.value == '') {
-                    alert('Enter a Mac Address!')
+                    showalertwarning('Enter a Mac Address!')
                 }else {
 
                 }
                 
                 if(addmake.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addmodel.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addSN.value == "") {
-                    alert('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
@@ -339,7 +356,7 @@
                         addmac.value = ''
                         addSN.value = ''
                         addModal.classList.add('hidden')
-                        showNotification('Server was updated!', 'bg-orange-700')
+                        showAlertSuccess('Server was updated!', 'bg-orange-700')
                         getDesktop()
                     }
                 });
@@ -347,23 +364,23 @@
 
         function editDesktop() {
                 if(editmac.value == '') {
-                    alert('Enter a Mac Address!')
+                    showalertwarning('Enter a Mac Address!')
                 }else {
 
                 }
                 
                 if(editmake.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editmodel.value == '') {
-                    alert('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editSN.value == "") {
-                    alert('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
@@ -390,7 +407,7 @@
                         editSN.value = ''
                         editModal.classList.add('hidden')
                         editID = 0
-                        showNotification('Server was updated!', 'bg-orange-700')
+                        showAlertSuccess('Server was updated!', 'bg-orange-700')
                         getDesktop()
                     }
                 });
@@ -403,7 +420,7 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        showNotification(`${pc} was deleted`)
+                        showAlertSuccess(`${pc} was deleted`)
                         getDesktop()
                     }
                 });

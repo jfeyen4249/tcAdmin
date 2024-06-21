@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
      <script defer src=".././menu.js"></script>
-    <title>Desktop Inventory</title>
+    <title>TC Admin - Smartboard Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
 
@@ -52,7 +52,7 @@
        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
     <div class="flex items-center justify-between mb-4">
         <!-- Password Manager Passwords text -->
-        <h1 class="text-2xl font-bold mb-4">Desktop Inventory</h1>
+        <h1 class="text-2xl font-bold mb-4">Smartboard Inventory</h1>
 
         <!-- Search Box and Add New Password Button Container -->
         <div class="flex items-center">
@@ -67,42 +67,37 @@
     </div>
 
     <!-- Table -->
-    <div class="relative h-[72vh] overflow-y-auto">
-        <table class="w-full border-collapse border border-gray-800" >
-            
-            <div class="grid grid-cols-3 gap-2 mt-3 w-full text-center" id="grid">
-                    
-                </div>
-        </table>
-    </div>
-        
-         <div class="w-full text-right mt-4" id="pageBTN">
-            <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
-            <span id="pageIndicator">Page 1</span>
-            <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
-
+        <div class="relative h-[70vh] overflow-y-auto">
+            <table class="w-full border-collapse border border-gray-800" >
+                
+                <div class="grid grid-cols-3 gap-2 mt-3 w-full text-center" id="grid">
+                        
+                    </div>
+            </table>
         </div>
+        <div class="w-full text-right mt-4" id="pageBTN">
+    <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+    <span id="pageIndicator">Page 1</span>
+    <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+</div>
     </div>
 
     <!-- Modal -->
     <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
         <div class="wpc mx-auto mt-20 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-center">Add New Computer</h2>
-            <form>
+            <h2 class="text-2xl font-bold mb-4 text-center">Add New Smartboard</h2>
+            
                 <!-- Documentation Title -->
-                {{!-- <div class="mb-4">
-                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
-                    <input type="text" id="modal-mac-add" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div> --}}
+                
 
                 <div class="mb-4">
-                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
+                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">Smartboard Make</label>
                         <select name="modal-make" id="modal-make-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                         </select>
                 </div>
                
                <div class="mb-4">
-                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
+                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">Smartboard Model</label>
                         <select name="modal-model" id="modal-model-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                     </div>
 
@@ -126,81 +121,88 @@
                         <select name="modal-room" id="modal-room-add" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                          
                     </div>
-                <!-- Save Button -->
-                <button type="button" onclick="addDesktop()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Add Computer</button>
-                <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-            </form>
-        </div>
 
-    </div>
-
-    <!-- Modal -->
-    <div id="edit-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md">
-            <h2 class="text-2xl font-bold mb-4 text-center">Edit Computer</h2>
-            <form>
-                <!-- Documentation Title -->
-                {{!-- <div class="mb-4">
-                    <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
-                    <input type="text" id="modal-mac-edit" name="modal-title" placeholder="Enter as 1a:2b:3c:4d:5e:6f:aa:11" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
-                </div> --}}
-
-                <div class="mb-4">
-                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">PC Make</label>
-                        <select name="modal-make" id="modal-make-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
-                        </select>
-                </div>
-               
-               <div class="mb-4">
-                        <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">PC Model</label>
-                        <select name="modal-model" id="modal-model-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    <div class="mb-4">
+                        <label for="modal-title" class="block text-gray-600 text-sm font-medium mb-2">Screen Size</label>
+                        <input type="text" id="modal-size-add" name="modal-title" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
                     </div>
 
-                <div class="mb-4">
-                    <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
-                    <input type="text" id="modal-sn-edit" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                <!-- Save Button -->
+                <button type="button" onclick="addProjectors()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Add Smartboard</button>
+                <button type="button" onclick="document.getElementById('add-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
+            
+        </div>
+    </div> 
+
+    <div id="edit-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="wpc mx-auto mt-20 bg-white p-8 rounded shadow-md">
+        <h2 class="text-2xl font-bold mb-4 text-center">Edit Smartboard</h2>
+            <div class="mb-4">
+                    <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">Smartboard Make</label>
+                    <select name="modal-make" id="modal-make-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                    </select>
+            </div>
+           
+           <div class="mb-4">
+                    <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">Smartboard Model</label>
+                    <select name="modal-model" id="modal-model-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                 </div>
 
-                <div class="mb-4">
-                    <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
-                    <input type="text" id="modal-tag-edit" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+            <div class="mb-4">
+                <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
+                <input type="text" id="modal-sn-edit" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+            </div>
+
+            <div class="mb-4">
+                <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
+                <input type="text" id="modal-tag-edit" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+            </div>
+
+            <div class="mb-4 mt-3">
+                    <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
+                    <select name="modal-building" id="modal-building-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
                 </div>
 
                 <div class="mb-4 mt-3">
-                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
-                        <select name="modal-building" id="modal-building-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" ></select>
-                    </div>
+                    <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                    <select name="modal-room" id="modal-room-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                     
+                </div>
 
-                    <div class="mb-4 mt-3">
-                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
-                        <select name="modal-room" id="modal-room-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
-                         
-                    </div>
-                <!-- Save Button -->
-                <button type="button" onclick="editDesktop()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Save Computer</button>
-                <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
-            </form>
-        </div>
+                <div class="mb-4">
+                    <label for="modal-size-edit" class="block text-gray-600 text-sm font-medium mb-2">Screen Size</label>
+                    <input type="text" id="modal-size-edit" name="modal-size-edit" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+            <!-- Save Button -->
+            <button type="button" onclick="editProjectors()" class="w-half bg-green-500 text-white p-2 rounded-md hover:bg-blue-600">Edit Smartboard</button>
+            <button type="button" onclick="document.getElementById('edit-modal').classList.add('hidden')" class="w-half bg-red-500 text-white p-2 rounded-md hover:bg-red-600">Close</button>
+        
     </div>
+</div>
+
 
 
     <script defer>
         let grid = document.getElementById('grid')
         let addModal = document.getElementById('add-modal')
+
         let addmake = document.getElementById('modal-make-add')
         let addmodel = document.getElementById('modal-model-add')
         let addSN = document.getElementById('modal-sn-add')
         let addtag = document.getElementById('modal-tag-add')
-        //let addmac = document.getElementById('modal-mac-add')
+        let addbulb = document.getElementById('modal-size-add')
         let addBuilding = document.getElementById('modal-building-add')
         let addRoom = document.getElementById('modal-room-add')
+
         let editID = 0
+        
         let editModal = document.getElementById('edit-modal')
         let editmake = document.getElementById('modal-make-edit')
         let editmodel = document.getElementById('modal-model-edit')
         let editSN = document.getElementById('modal-sn-edit')
         let edittag = document.getElementById('modal-tag-edit')
-        // let editmac = document.getElementById('modal-mac-edit')
+        let editbulb = document.getElementById('modal-size-edit')
         let editBuilding = document.getElementById('modal-building-edit')
         let editRoom = document.getElementById('modal-room-edit')
 
@@ -211,19 +213,19 @@
         editBuilding.addEventListener("change", function() {getEditRoom()})
 
 
-
         function isValidMACAddress(macAddress) {
             var macRegex = /^([0-9A-Fa-f]{2}[:-]){7}[0-9A-Fa-f]{2}$/;
             return macRegex.test(macAddress);
         }
 
-        function getEditPc(id) {
+        function getEditProjector(id) {
             editID = id
-            fetch(`/desktop/computer?id=${id}`)
+            fetch(`/smartboards/smartboard?id=${id}`)
                 .then(response => response.json())
                 .then(data => {
                     console.log(data)
                     let obj = data[0]
+                    editbulb.value = obj.size
                     editSN.value = obj.sn
                     edittag.value = obj.tag
 
@@ -253,44 +255,37 @@
                 });
             editModal.classList.remove('hidden')
         }
-
+        
         let currentPage = 1;
-        const limit = 30; // Number of items per page
-        function getDesktop(page = 1) {
-            localStorage.clear()
+        const limit = 30;
+
+        function getProjectors(page = 1) {
             grid.innerHTML = ''
-            fetch(`/desktop/list?page=${page}&limit=${limit}`)
+            fetch(`/smartboards/list?page=${page}&limit=${limit}`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
-                    let hddFree = obj.hdd.split('/')[1]
-                    let hddTotal = obj.hdd.split('/')[0]
-                    
-                    let ramFree = obj.ram.split('/')[1]
-                    let ramTotal = obj.ram.split('/')[0]
-
                     grid.innerHTML += `
                         <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
-                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
-                            <p class="font-semibold text-right col-span-1">Make:</p>
-                            <p class="col-span-2">${obj.make}</p>
-                            <p class="font-semibold text-right col-span-1">Model:</p>
-                            <p class="col-span-2">${obj.model}</p>
+                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.make} ${obj.model}</h2>
                             <p class="font-semibold text-right col-span-1">SN:</p>
-                            <p class="col-span-2"id >${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">IP:</p>
-                            <p class="col-span-2">${obj.ip}</p>
-                            <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${ramFree} GB used of ${ramTotal} GB</p>
-                            <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
-                            <p class="font-semibold text-right col-span-1">OS:</p>
-                            <p class="col-span-2">${obj.os}</p>
-                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
-                                    <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
+                            <p class="col-span-2">${obj.sn}</p>
+                            <p class="font-semibold text-right col-span-1">Asset Tag:</p>
+                            <p class="col-span-2">${obj.tag}</p>
+                            <p class="font-semibold text-right col-span-1">Size:</p>
+                            <p class="col-span-2">${obj.size}</p>
+                            <p class="font-semibold text-right col-span-1">Building:</p>
+                            <p class="col-span-2">${obj.building}</p>
+                            <p class="font-semibold text-right col-span-1">Room:</p>
+                            <p class="col-span-2">${obj.room}</p>
+                            <p class="font-semibold text-right col-span-1">Screen Size:</p>
+                            <p class="col-span-2">${obj.size}</p>
+                            <p class="font-semibold text-right col-span-1">Installed:</p>
+                            <p class="col-span-2">${obj.date}</p>
+                            <button type="button" onclick="getEditProjector('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
+                            <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.make + " " + obj.model + " from " + obj.building}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
                         </div>`
                 }
             })
@@ -298,22 +293,22 @@
             document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
         }
 
-
         document.getElementById('prevButton').addEventListener('click', () => {
-            if (currentPage > 1) getDesktop(currentPage - 1);
+            if (currentPage > 1) getProjectors(currentPage - 1);
         });
 
         document.getElementById('nextButton').addEventListener('click', () => {
-            getDesktop(currentPage + 1); // You might want to check here if there are still more data
+            getProjectors(currentPage + 1); // You might want to check here if there are still more data
         });
-        
+ 
         function getAddMake() {
             document.getElementById('modal-make-add').innerHTML = 
             document.getElementById('modal-make-add').innerHTML = '<option value="">Select a Make</option>'
             editmake.innerHTML = '<option value="">Select a Make</option>'
-            fetch(`/desktop/make/`)
+            fetch(`/smartboards/make/`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     for(let i=0; i<data.length; i++) {
                     let obj = data[i];
                         document.getElementById('modal-make-add').innerHTML += `<option value="${obj.make}">${obj.make}</option>`;
@@ -323,7 +318,7 @@
         }
 
          function getAddModel() {
-            fetch(`/desktop/model?make=${addmake.value}`)
+            fetch(`/smartboards/model?make=${addmake.value}`)
                 .then(response => response.json())
                 .then(data => {
                     addmodel.innerHTML = '<option value="">Select a Model</option>'
@@ -336,7 +331,7 @@
         }
 
          function getEditModel(model) {
-            fetch(`/desktop/model?make=${editmake.value}`)
+            fetch(`/smartboards/model?make=${editmake.value}`)
                 .then(response => response.json())
                 .then(data => {
                     editmodel.innerHTML = '<option value="">Select a Model</option>'
@@ -360,6 +355,7 @@
         }
         
          function getBuildings() {
+                    localStorage.clear()
                     addBuilding.innerHTML = ``
                     addBuilding.innerHTML += `<option value="" >Select A Building</option>`
                     editBuilding.innerHTML += `<option value="" >Select A Building</option>`
@@ -417,24 +413,30 @@
                         });     
             }
 
-        function addDesktop() {                
+        function addProjectors() {
+                if(addbulb.value == '') {
+                    showalertwarning('Enter a screen size!')
+                }else {
+
+                }
+                
                 if(addmake.value == '') {
-                    showAlertWarning('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addmodel.value == '') {
-                    showAlertWarning('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(addSN.value == "") {
-                    showAlertWarning('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
                 if(addtag.value == '') {
-                    showAlertWarning('Enter an asset tag!')
+                    showalertwarning('Enter an asset tag!')
                     return
                 }
 
@@ -443,13 +445,14 @@
                     model: addmodel.value,
                     sn: addSN.value,
                     tag: addtag.value,
+                    size: addbulb.value,
                     building: addBuilding.value,
                     room: addRoom.value,
-                    type: 'desktop',
-                    view: 'true'
+                    view: 'true',
+                    date: formattedDate,
                 }
                 
-                fetch(`/desktop/computer`, {
+                fetch(`/smartboards/smartboard`, {
                 method: 'Put',
                 body : JSON.stringify(data),
                 headers: {
@@ -459,33 +462,40 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'added') {
+                        addbulb.value = ''
                         addSN.value = ''
                         addtag.value = ''
                         addModal.classList.add('hidden')
-                        showAlertSuccess('Computer was Added!')
-                        getDesktop()
+                        showAlertSuccess('Smartboard was updated!')
+                        getProjectors()
                     }
                 });
         }
 
-        function editDesktop() {                
+        function editProjectors() {
+                if(editbulb.value == '') {
+                    showalertwarning('Enter a screen size!')
+                }else {
+
+                }
+                
                 if(editmake.value == '') {
-                    showAlertWarning('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editmodel.value == '') {
-                    showAlertWarning('Select a model!')
+                    showalertwarning('Select a model!')
                     return
                 }
 
                 if(editSN.value == "") {
-                    showAlertWarning('Enter a Serial Number!')
+                    showalertwarning('Enter a Serial Number!')
                     return
                 }
 
                 if(edittag.value == '') {
-                    showAlertWarning('Enter an asset tag!')
+                    showalertwarning('Enter an asset tag!')
                     return
                 }
 
@@ -494,13 +504,14 @@
                     model: editmodel.value,
                     sn: editSN.value,
                     tag: edittag.value,
+                    size: editbulb.value,
                     building: editBuilding.value,
                     room: editRoom.value,
-                    type: 'desktop',
-                    view: 'true'
+                    view: 'true',
+                    date : formattedDate
                 }
                 
-                fetch(`/desktop/computer?id=${editID}`, {
+                fetch(`/smartboards/smartboard?id=${editID}`, {
                 method: 'POST',
                 body : JSON.stringify(data),
                 headers: {
@@ -510,12 +521,13 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'saved') {
+                        editbulb.value = ''
                         editSN.value = ''
                         edittag.value = ''
                         editModal.classList.add('hidden')
                         editID = 0
-                        showAlertSuccess('Computer was updated!')
-                        getDesktop()
+                        showAlertSuccess('Smartboard was updated!')
+                        getProjectors()
                     }
                 });
         }
@@ -523,59 +535,56 @@
         function deleteDesktop(id, pc) {
             var answer = prompt(`Do you want to delete ${pc}? (yes/no)`);
             if (answer === "yes") {
-                fetch(`/desktop/computer?id=${id}`, {method : 'delete'})
+                fetch(`/smartboards/smartboard?id=${id}`, {method : 'delete'})
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        showAlertSuccess(`${pc} was deleted`)
-                        getDesktop()
+                        showNotification(`${pc} was deleted`)
+                       getProjectors()
                     }
                 });
             } else if (answer === "no") {
-                getDesktop()
+                
             } else {
-                 getDesktop()
+                 
             }
+
+
+            
         }
 
         searchBox.addEventListener("input", () => {
             if(searchBox.length = 0) {
-                getDesktop(1)
+                getProjectors(1)
             } else {
                 grid.innerHTML = ''
-            fetch(`/desktop/search?search=${searchBox.value}`)
+            fetch(`/smartboards/search?search=${searchBox.value}`)
             .then(response => response.json())
             .then(data => {
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
-
-                    let hddFree = obj.hdd.split('/')[1]
-                    let hddTotal = obj.hdd.split('/')[0]
-                    
-                    let ramFree = obj.ram.split('/')[1]
-                    let ramTotal = obj.ram.split('/')[0]
-
                     grid.innerHTML += `
                         <div class="${localStorage.getItem(obj.building)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">
-                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.name}</h2>
-                            <p class="font-semibold text-right col-span-1">Make:</p>
-                            <p class="col-span-2">${obj.make}</p>
-                            <p class="font-semibold text-right col-span-1">Model:</p>
-                            <p class="col-span-2">${obj.model}</p>
+                            <h2 class="col-span-3 text-lg font-semibold mb-2 text-center" id="name">${obj.make} ${obj.model}</h2>
                             <p class="font-semibold text-right col-span-1">SN:</p>
-                            <p class="col-span-2"id >${obj.sn}</p>
-                            <p class="font-semibold text-right col-span-1">IP:</p>
-                            <p class="col-span-2">${obj.ip}</p>
-                            <p class="font-semibold text-right col-span-1">Ram:</p>
-                            <p class="col-span-2">${ramFree} GB used of ${ramTotal} GB</p>
-                            <p class="font-semibold text-right col-span-1">HDD:</p>
-                            <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
-                            <p class="font-semibold text-right col-span-1">OS:</p>
-                            <p class="col-span-2">${obj.os}</p>
-                                    <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
-                                    <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
+                            <p class="col-span-2">${obj.sn}</p>
+                            <p class="font-semibold text-right col-span-1">Asset Tag:</p>
+                            <p class="col-span-2">${obj.tag}</p>
+                            <p class="font-semibold text-right col-span-1">Size:</p>
+                            <p class="col-span-2">${obj.size}</p>
+                            <p class="font-semibold text-right col-span-1">Building:</p>
+                            <p class="col-span-2">${obj.building}</p>
+                            <p class="font-semibold text-right col-span-1">Room:</p>
+                            <p class="col-span-2">${obj.room}</p>
+                            <p class="font-semibold text-right col-span-1">Screen Size:</p>
+                            <p class="col-span-2">${obj.size}</p>
+                            <p class="font-semibold text-right col-span-1">Installed:</p>
+                            <p class="col-span-2">${obj.date}</p>
+                            <button type="button" onclick="getEditProjector('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
+                            <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.make + " " + obj.model + " from " + obj.building}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
                         </div>`
+
                 }
             })
             }
@@ -584,7 +593,7 @@
 
 
         getBuildings()
-        getDesktop(1)
+        getProjectors(1)
         getAddMake()
         
     </script>

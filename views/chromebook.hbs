@@ -107,6 +107,23 @@
     <title>TC Admin: Chromebook Inventory</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -545,15 +562,15 @@
         
         function addChromebook() {
             if(addmake.value == '') {
-                alert('Select a Make & Model')
+                showalertwarning('Select a Make & Model')
                 return
             }
             if(addSN.value == '') {
-                alert('Enter a Serial Number')
+                showalertwarning('Enter a Serial Number')
                 return
             }
             if(addBuilding.value == '') {
-                alert('Select a building')
+                showalertwarning('Select a building')
                 return
             }
 
@@ -580,7 +597,7 @@
                         addSN.value = ''
                         addtag.value = ''
                         addModal.classList.add('hidden')
-                        //showNotification('Computer was updated!', 'bg-orange-700')
+                        showAlertSuccess(`Chromebook (sn: ${addSN.value}) was added.`)
                         AddModalClose()
                         getChromebook()
                     }
@@ -589,15 +606,15 @@
 
         function addAnotherChromebook() {
             if(addmake.value == '') {
-                alert('Select a Make & Model')
+                showalertwarning('Select a Make & Model')
                 return
             }
             if(addSN.value == '') {
-                alert('Enter a Serial Number')
+                showalertwarning('Enter a Serial Number')
                 return
             }
             if(addBuilding.value == '') {
-                alert('Select a building')
+                showalertwarning('Select a building')
                 return
             }
 
@@ -625,6 +642,7 @@
                             addtag.value = ''
                             addSN.focus();
                             //addModal.classList.add('hidden')
+                            showAlertSuccess(`Chromebook (sn: ${addSN.value}) was added.`)
                             //showNotification('Computer was updated!', 'bg-orange-700')
                             //AddModalClose()
                             //getChromebook()
@@ -634,15 +652,15 @@
 
         function editChromebook() {
             if(addmake.value == '') {
-                alert('Select a Make & Model')
+                showalertwarning('Select a Make & Model')
                 return
             }
             if(addSN.value == '') {
-                alert('Enter a Serial Number')
+                showalertwarning('Enter a Serial Number')
                 return
             }
             if(addBuilding.value == '') {
-                alert('Select a building')
+                showalertwarning('Select a building')
                 return
             }
 
@@ -665,7 +683,8 @@
                         addSN.value = ''
                         addtag.value = ''
                         addModal.classList.add('hidden')
-                        //showNotification('Computer was updated!', 'bg-orange-700')
+                        showAlertSuccess(`Chromebook (sn: ${addSN.value}) was updated.`)
+
                         AddModalClose()
                         getChromebook()
                     }
@@ -680,7 +699,8 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'deleted') {
-                        alert(`This chromebook was deleted`)
+                        
+                        showAlertSuccess(`Chromebook was deleted.`)
                         AddModalClose()
                         getChromebook()
                     }
@@ -770,6 +790,7 @@
                 .then(data => {
                     if(data == 'updated') {
                         logChomebook(editID, 'Assigned to Student', `Assigned to ${addStudent.value}.`)
+                        showAlertSuccess(`${addStudent.value} was assigned.`)
                     }
                 });
         }
@@ -830,10 +851,10 @@
                 .then(data => {
                     console.log(data);
                     if(data.status === "success") {
-                        alert("Ticket Submitted Successfully!");
+                        showAlertSuccess("Ticket Submitted Successfully!");
                         ticketNumber = data.ticketNumber;
                     } else {
-                        alert("ERROR! Look at console for detailed error message.");
+                        showAlertWarning("ERROR! Look at console for detailed error message.");
                         console.log(data);
                     }
                 });

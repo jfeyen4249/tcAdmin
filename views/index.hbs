@@ -73,6 +73,23 @@
     <title>TC Admin - Dashboard</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -157,12 +174,11 @@
                 <table class="w-full border-collapse border border-gray-800">
                     <thead>
                         <tr class="bg-gray-800 text-white">
-                            <th class="py-2 px-4 border">Event</th>
-                            <th class="py-2 px-4 border">Date</th>
-                            <th class="py-2 px-4 border">Location</th>
+                            <th class="py-2 px-4 border">Device</th>
+                            <th class="py-2 px-4 border">Down Time</th>
                         </tr>
                     </thead>
-                    <tbody class="text-center" id="event-table">
+                    <tbody class="text-center" id="device-table">
                     
                     </tbody>
                 </table>
@@ -190,7 +206,6 @@
         document.addEventListener("DOMContentLoaded", async function () {
            await updateRepairs();
         });
-
 
         async function updateRepairs() {
             // Fetch data for Chromebook repairs
@@ -288,7 +303,37 @@
                     });
                 });
         };
-        
+         
+    let getDownDevices = () => {
+    document.getElementById('device-table').innerHTML = '';
+    fetch(`/settings/down-devices`)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data); // Log the data to inspect its structure
+            if (Array.isArray(data)) {
+                data.forEach(obj => {
+                    let row = `
+                        <tr>
+                            <td class="py-2 px-4 border">${obj.name}</td>
+                            <td class="py-2 px-4 border">${obj.down_time}</td>                        
+                        </tr>`;
+                    document.getElementById('device-table').innerHTML += row;
+                });
+            } else if (typeof data === 'object' && data !== null) {
+                let row = `
+                    <tr>
+                        <td class="py-2 px-4 border">${data.name}</td>
+                        <td class="py-2 px-4 border">${data.down_time}</td>                        
+                    </tr>`;
+                document.getElementById('device-table').innerHTML += row;
+            } else {
+                console.error('Unexpected response format:', data);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching down devices:', error);
+        });
+};
 
          let getComputer = () => {
             function calc(data) {
@@ -317,6 +362,7 @@
 
         getRenewals()
         getComputer()
+        getDownDevices()
     </script>
 </body>
 </html>

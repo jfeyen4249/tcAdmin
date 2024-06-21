@@ -50,6 +50,23 @@
     <title>iPad</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -211,7 +228,6 @@
     <script src="https://unpkg.com/quill-html-edit-button@2.2.7/dist/quill.htmlEditButton.min.js"></script>
     
     <script defer>
-        const dateString = new Date().toDateString();
         let passid = 0;
         let infoEditor;
         let modelList = document.getElementById('modal-model')
@@ -342,6 +358,7 @@
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('password-table').innerHTML = '';
+                        showAlertSuccess(`${modelList.value} (${serialNumber.value}) was added.`)
                         closeModal()
                     
                     });
@@ -368,6 +385,7 @@
                     .then(response => response.json())
                     .then(data => {
                         document.getElementById('password-table').innerHTML = '';
+                        showAlertSuccess(`${modelList.value} (${serialNumber.value}) was updated.`)
                         closeModal()
                     });
         }

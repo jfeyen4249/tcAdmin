@@ -28,6 +28,23 @@
       }
 
     </style>
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
   </head>
   <div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
         <span id="noteText"></span>
@@ -150,7 +167,7 @@
               }else if(data == 'change'){
                 openModal()
               }else {
-                alert(data)
+                showalertwarning(data)
               }
            });
           }
@@ -168,12 +185,12 @@
       function changePassword() {
         
         if(newPass.value !== newPass2.value) {
-          alert('Passwords do not match')
+          showAlertWarning('Passwords do not match')
           return
         }
 
         if(newPass.value.length < 8) {
-          alert('Passwords is to short')
+          showAlertWarning('Passwords is to short')
           return
         }
 
@@ -188,7 +205,7 @@
               if(data == 'updated') {
                  window.location.href = '/login'
               }else {
-                alert("Password Change Failed!")
+                showAlertWarning("Password Change Failed!")
               }
            });
       }

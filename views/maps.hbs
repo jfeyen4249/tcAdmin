@@ -52,6 +52,23 @@
     <title>TC Admin - Building Maps</title>
     <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
 </head>
 
 <div id="notification" class="text-white p-4 mr-12 mt-36 rounded-md shadow-md fixed min-w-64 right-0 top-0 hidden animate-slide-in-right">
@@ -210,17 +227,17 @@
             const file = fileInput.files[0];
 
             if (!file) {
-                alert('Please select a file!');
+                showalertwarning('Please select a file!');
                 return;
             }
 
             if (buildingNameInput.value.length == 0) {
-                alert('Please select a building!');
+                showalertwarning('Please select a building!');
                 return;
             }
 
             if (descriptionInput.value.length == 0) {
-                alert('Please add a map name!');
+                showalertwarning('Please add a map name!');
                 return;
             }
 
@@ -244,12 +261,12 @@
                     getMapType()
                     Modal.style.display = 'none'
                 } else {
-                    alert("Failed!")
+                    showalertwarning("Failed!")
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Failed to upload file');
+                showalertwarning('Failed to upload file');
             });
                 
         }
@@ -267,7 +284,7 @@
                     if(data == "deleted") {
                         getMapType()
                     } else {
-                        alert('Error deleting this map!')
+                        showalertwarning('Error deleting this map!')
                     }
                 }); 
                
