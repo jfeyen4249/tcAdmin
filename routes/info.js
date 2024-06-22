@@ -26,30 +26,39 @@ const router = express.Router();
 
 const unixTime = Math.floor(Date.now() / 1000);
 
-async function slack(text) {
-  let hook = ''
-  database.query(
-    `SELECT hook FROM slack WHERE id = '1'`,
-    function (error, results, fields) {
-      hook = results[0].hook
-    }
-  );
-
-      try {
-        const response = await axios.post(
-          hook,
-          { text: text },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        );
-        return response.data;
-      } catch (error) {
-        console.log('Slack Error:', error.response ? error.response.data : error.message);
+async function getSlackHook() {
+  return new Promise((resolve, reject) => {
+    database.query(
+      `SELECT hook FROM slack WHERE id = '1'`,
+      function (error, results, fields) {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(results[0].hook);
+        }
       }
- }
+    );
+  });
+}
+
+async function slack(text) {
+  try {
+    const hook = await getSlackHook();
+    const response = await axios.post(
+      hook,
+      { text: text },
+      {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.log('Slack Error:', error.response ? error.response.data : error.message);
+  }
+}
+
 
 function getMake(make) {
 
