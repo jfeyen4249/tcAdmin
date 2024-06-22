@@ -27,9 +27,17 @@ const router = express.Router();
 const unixTime = Math.floor(Date.now() / 1000);
 
 async function slack(text) {
+  let hook = ''
+  database.query(
+    `SELECT hook FROM slack WHERE id = '1'`, [getMake(req.body.make), req.body.model],
+    function (error, results, fields) {
+      hook = results[0].hook
+    }
+  );
+
       try {
         const response = await axios.post(
-          process.env.slack,
+          hook,
           { text: text },
           {
             headers: {
