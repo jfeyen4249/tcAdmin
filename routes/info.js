@@ -29,7 +29,7 @@ const unixTime = Math.floor(Date.now() / 1000);
 async function slack(text) {
   let hook = ''
   database.query(
-    `SELECT hook FROM slack WHERE id = '1'`, [getMake(req.body.make), req.body.model],
+    `SELECT hook FROM slack WHERE id = '1'`,
     function (error, results, fields) {
       hook = results[0].hook
     }
