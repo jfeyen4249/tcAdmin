@@ -31,7 +31,7 @@ router.get("/", session.validateSession, (req, res) => {
     const offset = (page - 1) * limit;
     let id = req.query.id
     database.query(
-      `SELECT * FROM docs WHERE status = 'true' Limit ?, ?`,[offset, limit],
+      `SELECT id,doc,date FROM docs WHERE status = 'true' Limit ?, ?`,[offset, limit],
       function (error, results, fields) {
         if (error) throw error;
         res.send(results);
