@@ -317,7 +317,7 @@ router.post("/monitor", (req, res) => {
           database.query(`SELECT * FROM slack WHERE id = '1'`, function (error, results, fields) {
             
             if(results[0].network == 1) {
-              slack(`${device_info[0].name} is not responding.`)
+              slack(`${device_info.name} is not responding.`)
             } else {
               console.log('Slack alert are not enabled!')
             }
@@ -381,7 +381,7 @@ router.post("/monitor", (req, res) => {
               database.query(`SELECT * FROM slack WHERE id = '1'`, function (error, results, fields) {
             
                 if(results[0].network == 1) {
-                  slack(`${device_info[0].name} is backing up and responding. Total downtime: ${down_hours} hours and ${down_minutes} minutes.`);
+                  slack(`${device_info.name} is backing up and responding. Total downtime: ${down_hours} hours and ${down_minutes} minutes.`);
                 } else {
                   console.log('Slack alert are not enabled!')
                 }
