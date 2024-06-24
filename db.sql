@@ -3,54 +3,54 @@ CREATE TABLE `alert_log` (
   `id` int NOT NULL AUTO_INCREMENT,
   `down_time` int DEFAULT NULL,
   `up_time` int DEFAULT NULL,
-  `total` varchar(45) COLLATE  DEFAULT NULL,
-  `device_id` varchar(45) COLLATE  DEFAULT NULL,
+  `total` varchar(45)  DEFAULT NULL,
+  `device_id` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ); 
 
 CREATE TABLE `ap` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `mac` varchar(45) COLLATE  DEFAULT NULL,
-  `name` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `installed` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `mac` varchar(45)  DEFAULT NULL,
+  `name` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `installed` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `buildings` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `acronymn` varchar(105) COLLATE  NOT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
-  `name` varchar(45) COLLATE  NOT NULL,
-  `return_building` varchar(45) COLLATE  NOT NULL DEFAULT 'false',
-  `building_code` varchar(45) COLLATE  NOT NULL,
-  `color` varchar(45) COLLATE  DEFAULT 'bg-white',
+  `acronymn` varchar(105)  NOT NULL,
+  `view` varchar(45)  DEFAULT NULL,
+  `name` varchar(45)  NOT NULL,
+  `return_building` varchar(45)  NOT NULL DEFAULT 'false',
+  `building_code` varchar(45)  NOT NULL,
+  `color` varchar(45)  DEFAULT 'bg-white',
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `chromebook_log` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `chromebook_id` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `log` longtext COLLATE ,
-  `action` longtext COLLATE  NOT NULL,
+  `chromebook_id` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `log` longtext ,
+  `action` longtext  NOT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `Chromebook_makes` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `screen` varchar(45) COLLATE  DEFAULT NULL,
-  `cost` varchar(45) COLLATE  DEFAULT NULL,
-  `updates` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `screen` varchar(45)  DEFAULT NULL,
+  `cost` varchar(45)  DEFAULT NULL,
+  `updates` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
@@ -58,28 +58,28 @@ CREATE TABLE `Chromebook_makes` (
 
 CREATE TABLE `chromebook_repairs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `serial` varchar(45) COLLATE  NOT NULL,
-  `school` varchar(45) COLLATE  NOT NULL,
-  `reasonLong` varchar(45) COLLATE  NOT NULL,
-  `reason` varchar(45) COLLATE  NOT NULL,
-  `comment` longtext COLLATE ,
-  `explaination` longtext COLLATE ,
-  `isReturned` varchar(45) COLLATE  NOT NULL DEFAULT 'False',
-  `schoolName` varchar(45) COLLATE  NOT NULL,
+  `serial` varchar(45)  NOT NULL,
+  `school` varchar(45)  NOT NULL,
+  `reasonLong` varchar(45)  NOT NULL,
+  `reason` varchar(45)  NOT NULL,
+  `comment` longtext ,
+  `explaination` longtext ,
+  `isReturned` varchar(45)  NOT NULL DEFAULT 'False',
+  `schoolName` varchar(45)  NOT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `Chromebooks` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model_id` int NOT NULL,
-  `date_added` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `device_status` varchar(45) COLLATE  DEFAULT NULL,
-  `student` varchar(245) COLLATE  DEFAULT NULL,
-  `student_year` varchar(45) COLLATE  DEFAULT NULL,
+  `date_added` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'true',
+  `sn` varchar(45)  DEFAULT NULL,
+  `device_status` varchar(45)  DEFAULT NULL,
+  `student` varchar(245)  DEFAULT NULL,
+  `student_year` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Chromebooks_model_id_fkey` (`model_id`),
   CONSTRAINT `Chromebooks_model_id_fkey` FOREIGN KEY (`model_id`) REFERENCES `Chromebook_makes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
@@ -87,44 +87,44 @@ CREATE TABLE `Chromebooks` (
 
 CREATE TABLE `computers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE  DEFAULT 'N/A',
-  `mac` varchar(255) COLLATE  DEFAULT 'N/A',
-  `hdd` varchar(45) COLLATE  DEFAULT 'N/A',
-  `ram` varchar(45) COLLATE  DEFAULT 'N/A',
-  `os` varchar(255) COLLATE  DEFAULT 'N/A',
-  `view` varchar(45) COLLATE  DEFAULT 'true',
-  `building` varchar(45) COLLATE  DEFAULT 'N/A',
-  `room` varchar(45) COLLATE  DEFAULT 'N/A',
-  `processor` varchar(255) COLLATE  DEFAULT 'N/A',
-  `sn` varchar(45) COLLATE  DEFAULT 'N/A',
-  `type` varchar(45) COLLATE  DEFAULT 'N/A',
-  `tag` varchar(45) COLLATE  DEFAULT 'N/A',
-  `ip` varchar(45) COLLATE  DEFAULT 'N/A',
-  `make` varchar(45) COLLATE  DEFAULT 'N/A',
-  `model` varchar(45) COLLATE  DEFAULT 'N/A',
-  `alert` varchar(45) COLLATE  DEFAULT '0',
+  `name` varchar(255)  DEFAULT 'N/A',
+  `mac` varchar(255)  DEFAULT 'N/A',
+  `hdd` varchar(45)  DEFAULT 'N/A',
+  `ram` varchar(45)  DEFAULT 'N/A',
+  `os` varchar(255)  DEFAULT 'N/A',
+  `view` varchar(45)  DEFAULT 'true',
+  `building` varchar(45)  DEFAULT 'N/A',
+  `room` varchar(45)  DEFAULT 'N/A',
+  `processor` varchar(255)  DEFAULT 'N/A',
+  `sn` varchar(45)  DEFAULT 'N/A',
+  `type` varchar(45)  DEFAULT 'N/A',
+  `tag` varchar(45)  DEFAULT 'N/A',
+  `ip` varchar(45)  DEFAULT 'N/A',
+  `make` varchar(45)  DEFAULT 'N/A',
+  `model` varchar(45)  DEFAULT 'N/A',
+  `alert` varchar(45)  DEFAULT '0',
   PRIMARY KEY (`id`)
 ); 
 
 CREATE TABLE `contacts` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(245) COLLATE  DEFAULT NULL,
-  `company` varchar(245) COLLATE  DEFAULT NULL,
-  `title` varchar(245) COLLATE  DEFAULT NULL,
-  `website` varchar(45) COLLATE  DEFAULT NULL,
-  `email` varchar(45) COLLATE  DEFAULT NULL,
-  `phone` varchar(45) COLLATE  DEFAULT NULL,
-  `cell` varchar(45) COLLATE  DEFAULT NULL,
-  `fax` varchar(45) COLLATE  DEFAULT NULL,
-  `info` longtext COLLATE ,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `name` varchar(245)  DEFAULT NULL,
+  `company` varchar(245)  DEFAULT NULL,
+  `title` varchar(245)  DEFAULT NULL,
+  `website` varchar(45)  DEFAULT NULL,
+  `email` varchar(45)  DEFAULT NULL,
+  `phone` varchar(45)  DEFAULT NULL,
+  `cell` varchar(45)  DEFAULT NULL,
+  `fax` varchar(45)  DEFAULT NULL,
+  `info` longtext ,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `devices` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `device` varchar(115) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `device` varchar(115)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
@@ -138,26 +138,26 @@ UNLOCK TABLES;
 
 CREATE TABLE `docs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `doc` varchar(255) COLLATE  DEFAULT NULL,
+  `doc` varchar(255)  DEFAULT NULL,
   `doc_body` longblob,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `date` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
 
 CREATE TABLE `ipad` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `staff` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
-  `storage` varchar(45) COLLATE  DEFAULT NULL,
-  `screen` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `staff` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
+  `storage` varchar(45)  DEFAULT NULL,
+  `screen` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `sn_UNIQUE` (`sn`)
 ) ;
@@ -174,66 +174,66 @@ CREATE TABLE `guides` (
 
 CREATE TABLE `logs` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `time` varchar(45) COLLATE  DEFAULT NULL,
-  `log` longtext COLLATE ,
-  `user` varchar(45) COLLATE  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `time` varchar(45)  DEFAULT NULL,
+  `log` longtext ,
+  `user` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `makes` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `View` varchar(45) COLLATE  DEFAULT NULL,
-  `type` varchar(45) COLLATE  DEFAULT NULL,
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `View` varchar(45)  DEFAULT NULL,
+  `type` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
 CREATE TABLE `maps` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `file` varchar(255) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `type` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT 'true',
+  `file` varchar(255)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `type` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
 
 CREATE TABLE `monitoring` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `port` varchar(45) COLLATE  DEFAULT 'none',
-  `ip` varchar(45) COLLATE  DEFAULT NULL,
+  `port` varchar(45)  DEFAULT 'none',
+  `ip` varchar(45)  DEFAULT NULL,
   `trys` int DEFAULT '3',
-  `view` varchar(45) COLLATE  DEFAULT 'true',
+  `view` varchar(45)  DEFAULT 'true',
   `alerted` int DEFAULT '0',
-  `alert_time` varchar(45) COLLATE  DEFAULT NULL,
-  `time` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'up',
+  `alert_time` varchar(45)  DEFAULT NULL,
+  `time` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'up',
   `count` int DEFAULT '1',
-  `log_id` varchar(45) COLLATE  DEFAULT NULL,
-  `name` varchar(45) COLLATE  DEFAULT NULL,
-  `type` varchar(45) COLLATE  DEFAULT 'ping',
+  `log_id` varchar(45)  DEFAULT NULL,
+  `name` varchar(45)  DEFAULT NULL,
+  `type` varchar(45)  DEFAULT 'ping',
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `networking` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `type` varchar(200) COLLATE  DEFAULT NULL,
-  `ip` varchar(45) COLLATE  DEFAULT NULL,
-  `hostname` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT 'true',
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `username` varchar(45) COLLATE  DEFAULT NULL,
-  `password` varchar(255) COLLATE  DEFAULT NULL,
-  `backup` varchar(45) COLLATE  DEFAULT '0',
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `type` varchar(200)  DEFAULT NULL,
+  `ip` varchar(45)  DEFAULT NULL,
+  `hostname` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT 'true',
+  `room` varchar(45)  DEFAULT NULL,
+  `username` varchar(45)  DEFAULT NULL,
+  `password` varchar(255)  DEFAULT NULL,
+  `backup` varchar(45)  DEFAULT '0',
   `config` longblob,
   PRIMARY KEY (`id`)
 ) ;
@@ -241,7 +241,7 @@ CREATE TABLE `networking` (
 
 CREATE TABLE `password_cat` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `category` varchar(145) COLLATE  NOT NULL,
+  `category` varchar(145)  NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `category_UNIQUE` (`category`)
 ) ;
@@ -256,10 +256,10 @@ UNLOCK TABLES;
 CREATE TABLE `password_history` (
   `id` int NOT NULL AUTO_INCREMENT,
   `password_id` int DEFAULT NULL,
-  `password` longtext COLLATE ,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `time` varchar(45) COLLATE  DEFAULT NULL,
-  `user` varchar(45) COLLATE  DEFAULT NULL,
+  `password` longtext ,
+  `date` varchar(45)  DEFAULT NULL,
+  `time` varchar(45)  DEFAULT NULL,
+  `user` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
@@ -268,74 +268,74 @@ DROP TABLE IF EXISTS `passwords`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `passwords` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `service` varchar(255) COLLATE  DEFAULT NULL,
-  `url` varchar(255) COLLATE  DEFAULT NULL,
-  `username` varchar(255) COLLATE  DEFAULT NULL,
-  `password` longtext COLLATE ,
-  `otp` varchar(200) COLLATE  DEFAULT 'none',
-  `category` varchar(255) COLLATE  DEFAULT NULL,
-  `updated` varchar(40) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
-  `info` longtext COLLATE ,
+  `service` varchar(255)  DEFAULT NULL,
+  `url` varchar(255)  DEFAULT NULL,
+  `username` varchar(255)  DEFAULT NULL,
+  `password` longtext ,
+  `otp` varchar(200)  DEFAULT 'none',
+  `category` varchar(255)  DEFAULT NULL,
+  `updated` varchar(40)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
+  `info` longtext ,
   PRIMARY KEY (`id`)
 );
 
 
 CREATE TABLE `phones` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `mac` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
-  `extention` varchar(45) COLLATE  DEFAULT NULL,
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `mac` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
+  `extention` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `printers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE  DEFAULT NULL,
-  `make` varchar(145) COLLATE  DEFAULT NULL,
-  `model` varchar(145) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
-  `mac` varchar(45) COLLATE  DEFAULT NULL,
-  `ip` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
+  `name` varchar(255)  DEFAULT NULL,
+  `make` varchar(145)  DEFAULT NULL,
+  `model` varchar(145)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
+  `mac` varchar(45)  DEFAULT NULL,
+  `ip` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 
 CREATE TABLE `projectors` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `bulb` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
-  `date` varchar(45) COLLATE  DEFAULT NULL,
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `bulb` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
+  `date` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 
 CREATE TABLE `renewals` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `start` varchar(45) COLLATE  DEFAULT NULL,
-  `renewal_date` varchar(45) COLLATE  DEFAULT NULL,
-  `cost` varchar(45) COLLATE  DEFAULT NULL,
-  `po` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'Active',
-  `service` varchar(45) COLLATE  DEFAULT NULL,
-  `year` varchar(45) COLLATE  DEFAULT NULL,
+  `start` varchar(45)  DEFAULT NULL,
+  `renewal_date` varchar(45)  DEFAULT NULL,
+  `cost` varchar(45)  DEFAULT NULL,
+  `po` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'Active',
+  `service` varchar(45)  DEFAULT NULL,
+  `year` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
@@ -344,8 +344,8 @@ DROP TABLE IF EXISTS `repair_reasons`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `repair_reasons` (
   `id` int NOT NULL,
-  `reason` varchar(45) COLLATE  NOT NULL,
-  `value` varchar(45) COLLATE  NOT NULL,
+  `reason` varchar(45)  NOT NULL,
+  `value` varchar(45)  NOT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
@@ -360,9 +360,9 @@ DROP TABLE IF EXISTS `rooms`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `rooms` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT 'true',
+  `room` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
@@ -372,24 +372,24 @@ DROP TABLE IF EXISTS `servers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `servers` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(145) COLLATE  DEFAULT NULL,
-  `mac` varchar(45) COLLATE  DEFAULT NULL,
-  `ip` varchar(45) COLLATE  DEFAULT NULL,
-  `hdd` varchar(45) COLLATE  DEFAULT NULL,
-  `ram` varchar(45) COLLATE  DEFAULT NULL,
-  `os` varchar(45) COLLATE  DEFAULT NULL,
-  `role` longtext COLLATE ,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
+  `name` varchar(145)  DEFAULT NULL,
+  `mac` varchar(45)  DEFAULT NULL,
+  `ip` varchar(45)  DEFAULT NULL,
+  `hdd` varchar(45)  DEFAULT NULL,
+  `ram` varchar(45)  DEFAULT NULL,
+  `os` varchar(45)  DEFAULT NULL,
+  `role` longtext ,
+  `view` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 
 CREATE TABLE `slack` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `hook` varchar(225) COLLATE  DEFAULT NULL,
-  `network` varchar(10) COLLATE  DEFAULT 'false',
-  `renewals` varchar(45) COLLATE  DEFAULT 'fales',
-  `pc` varchar(45) COLLATE  DEFAULT 'false',
+  `hook` varchar(225)  DEFAULT NULL,
+  `network` varchar(10)  DEFAULT 'false',
+  `renewals` varchar(45)  DEFAULT 'fales',
+  `pc` varchar(45)  DEFAULT 'false',
   PRIMARY KEY (`id`)
 ) ;
 
@@ -402,43 +402,43 @@ UNLOCK TABLES;
 
 CREATE TABLE `smartboards` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `make` varchar(45) COLLATE  DEFAULT NULL,
-  `model` varchar(45) COLLATE  DEFAULT NULL,
-  `sn` varchar(45) COLLATE  DEFAULT NULL,
-  `tag` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `size` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT 'true',
-  `date` varchar(45) COLLATE  DEFAULT NULL,
+  `make` varchar(45)  DEFAULT NULL,
+  `model` varchar(45)  DEFAULT NULL,
+  `sn` varchar(45)  DEFAULT NULL,
+  `tag` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `size` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT 'true',
+  `date` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `staff` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) COLLATE  DEFAULT NULL,
-  `building` varchar(45) COLLATE  DEFAULT NULL,
-  `room` varchar(45) COLLATE  DEFAULT NULL,
-  `view` varchar(45) COLLATE  DEFAULT NULL,
+  `name` varchar(45)  DEFAULT NULL,
+  `building` varchar(45)  DEFAULT NULL,
+  `room` varchar(45)  DEFAULT NULL,
+  `view` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `students` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `student` varchar(245) COLLATE  DEFAULT NULL,
-  `year` varchar(45) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `student` varchar(245)  DEFAULT NULL,
+  `year` varchar(45)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
 
 CREATE TABLE `users` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(245) COLLATE  DEFAULT NULL,
-  `password` varchar(245) COLLATE  DEFAULT '$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W',
-  `name` varchar(245) COLLATE  DEFAULT NULL,
-  `phone` varchar(45) COLLATE  DEFAULT NULL,
-  `session` varchar(245) COLLATE  DEFAULT NULL,
-  `status` varchar(45) COLLATE  DEFAULT NULL,
+  `username` varchar(245)  DEFAULT NULL,
+  `password` varchar(245)  DEFAULT '$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W',
+  `name` varchar(245)  DEFAULT NULL,
+  `phone` varchar(45)  DEFAULT NULL,
+  `session` varchar(245)  DEFAULT NULL,
+  `status` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `username_UNIQUE` (`username`),
   UNIQUE KEY `phone_UNIQUE` (`phone`)
@@ -453,8 +453,8 @@ UNLOCK TABLES;
 
 CREATE TABLE `wifi` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ssid` longtext COLLATE ,
-  `password` longtext COLLATE ,
-  `status` varchar(45) COLLATE  DEFAULT 'true',
+  `ssid` longtext ,
+  `password` longtext ,
+  `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
