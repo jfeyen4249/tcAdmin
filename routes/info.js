@@ -458,6 +458,7 @@ router.post("/renewal",  (req, res) => {
             function (error, results, fields) {
             if (error) throw error;
               slack(`${results[0].service} will expire in ${req.body.days_left} days.`)
+              console.log(`${results[0].service} will expire in ${req.body.days_left} days.`)
               res.json('sent');
             }
         );
