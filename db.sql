@@ -128,12 +128,19 @@ CREATE TABLE `devices` (
   PRIMARY KEY (`id`)
 ) ;
 
+INSERT INTO `devices` VALUES 
+(1,'Desktop','true'),
+(2,'Laptop','true'),
+(3,'mac','true'),
+(4,'smartboard','true'),
+(5,'chromebook','true'),
+(6,'ap','true'),
+(7,'phone','true'),
+(8,'printer','true'),
+(9,'server','true'),
+(10,'networking','true'),
+(11,'projector','true');
 
-LOCK TABLES `devices` WRITE;
-/*!40000 ALTER TABLE `devices` DISABLE KEYS */;
-INSERT INTO `devices` VALUES (1,'Desktop','true'),(2,'Laptop','true'),(3,'mac','true'),,(4,'smartboard','true'),(5,'chromebook','true'),(6,'ap','true'),(7,'phone','true'),(8,'printer','true'),(9,'server','true'),(9,'networking','true'),(10,'projector','true');
-/*!40000 ALTER TABLE `devices` ENABLE KEYS */;
-UNLOCK TABLES;
 
 
 CREATE TABLE `docs` (
@@ -246,12 +253,22 @@ CREATE TABLE `password_cat` (
   UNIQUE KEY `category_UNIQUE` (`category`)
 ) ;
 
+INSERT INTO `password_cat` VALUES 
+(7,'AD'),
+(8,'Backup'),
+(13,'Desktop Software'),
+(10,'DNS'),
+(6,'Firewall'),
+(5,'Printers'),
+(12,'Remote Desktop'),
+(9,'Security'),
+(1,'Server'),
+(2,'Switch'),
+(4,'Voice Gateway'),
+(11,'Website'),
+(3,'Wireless');
 
-LOCK TABLES `password_cat` WRITE;
-/*!40000 ALTER TABLE `password_cat` DISABLE KEYS */;
-INSERT INTO `password_cat` VALUES (7,'AD'),(8,'Backup'),(13,'Desktop Software'),(10,'DNS'),(6,'Firewall'),(5,'Printers'),(12,'Remote Desktop'),(9,'Security'),(1,'Server'),(2,'Switch'),(4,'Voice Gateway'),(11,'Website'),(3,'Wireless');
-/*!40000 ALTER TABLE `password_cat` ENABLE KEYS */;
-UNLOCK TABLES;
+
 
 CREATE TABLE `password_history` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -263,9 +280,7 @@ CREATE TABLE `password_history` (
   PRIMARY KEY (`id`)
 ) ;
 
-DROP TABLE IF EXISTS `passwords`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `passwords` (
   `id` int NOT NULL AUTO_INCREMENT,
   `service` varchar(255)  DEFAULT NULL,
@@ -339,9 +354,7 @@ CREATE TABLE `renewals` (
   PRIMARY KEY (`id`)
 ) ;
 
-DROP TABLE IF EXISTS `repair_reasons`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `repair_reasons` (
   `id` int NOT NULL,
   `reason` varchar(45)  NOT NULL,
@@ -349,15 +362,28 @@ CREATE TABLE `repair_reasons` (
   PRIMARY KEY (`id`)
 ) ;
 
-LOCK TABLES `repair_reasons` WRITE;
-/*!40000 ALTER TABLE `repair_reasons` DISABLE KEYS */;
-INSERT INTO `repair_reasons` VALUES (1,'Display - Dark/Broken/Cuts Out','104'),(2,'Audio Jack - Broken','107'),(3,'Camera - failure','39'),(4,'Case/Hinge - Damage','105'),(5,'Charging Port - Broken/Does Not Charge','40'),(6,'Display - Dead','23'),(7,'Fan - Dead','42'),(8,'Hard Drive - Failure','43'),(9,'Keyboard - Does Not Respond','25'),(10,'Keyboard - Missing Keys','26'),(11,'Liquid Damage','390'),(12,'Loss/Theft','71'),(13,'Microphone - Failure','430'),(14,'Stylus - Not Functional','515'),(15,'System - No Power/Freezes/Shuts Down','102'),(16,'Touchpad - Does Not Respond','30'),(17,'TPM Error','106'),(18,'Wireless - Does Not Connect','31');
-/*!40000 ALTER TABLE `repair_reasons` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `repair_reasons` VALUES 
+(1,'Display - Dark/Broken/Cuts Out','104'),
+(2,'Audio Jack - Broken','107'),
+(3,'Camera - failure','39'),
+(4,'Case/Hinge - Damage','105'),
+(5,'Charging Port - Broken/Does Not Charge','40'),
+(6,'Display - Dead','23'),
+(7,'Fan - Dead','42'),
+(8,'Hard Drive - Failure','43'),
+(9,'Keyboard - Does Not Respond','25'),
+(10,'Keyboard - Missing Keys','26'),
+(11,'Liquid Damage','390'),
+(12,'Loss/Theft','71'),
+(13,'Microphone - Failure','430'),
+(14,'Stylus - Not Functional','515'),
+(15,'System - No Power/Freezes/Shuts Down','102'),
+(16,'Touchpad - Does Not Respond','30'),
+(17,'TPM Error','106'),
+(18,'Wireless - Does Not Connect','31');
 
-DROP TABLE IF EXISTS `rooms`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
+
 CREATE TABLE `rooms` (
   `id` int NOT NULL AUTO_INCREMENT,
   `room` varchar(45)  DEFAULT NULL,
@@ -367,9 +393,7 @@ CREATE TABLE `rooms` (
 ) ;
 
 
-DROP TABLE IF EXISTS `servers`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
+
 CREATE TABLE `servers` (
   `id` int NOT NULL AUTO_INCREMENT,
   `name` varchar(145)  DEFAULT NULL,
@@ -393,11 +417,7 @@ CREATE TABLE `slack` (
   PRIMARY KEY (`id`)
 ) ;
 
-LOCK TABLES `slack` WRITE;
-/*!40000 ALTER TABLE `slack` DISABLE KEYS */;
-INSERT INTO `slack` VALUES (,'','0','0','0');
-/*!40000 ALTER TABLE `slack` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO `slack` VALUES (1, '', '0', '0', '0');
 
 
 CREATE TABLE `smartboards` (
@@ -444,11 +464,9 @@ CREATE TABLE `users` (
   UNIQUE KEY `phone_UNIQUE` (`phone`)
 ) ;
 
-LOCK TABLES `users` WRITE;
-/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+
 INSERT INTO `users` VALUES (1,'tcadmin','$2a$10$i9.PCv3J2GhXBSJuKI6lt.tekoijyCPf0mKLWneGFuuYWuSh3EG/W','Admin','608-348-9000','d4f6dd88-4d20-4818-98d2-c4df1305b3dd','Active');
-/*!40000 ALTER TABLE `users` ENABLE KEYS */;
-UNLOCK TABLES;
+
 
 
 CREATE TABLE `wifi` (
