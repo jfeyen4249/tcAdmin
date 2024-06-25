@@ -63,7 +63,8 @@ router.put("/buildings", session.validateSession, (req, res) => {
     name : req.query.building,
     view : 'true',
     color : req.query.color,
-    acronymn : ""
+    acronymn : "",
+    building_code : ''
   }
   database.query(
     `INSERT INTO buildings SET ?`, [data],
@@ -81,6 +82,7 @@ router.post("/buildings", session.validateSession, (req, res) => {
     view : 'true',
     color : req.query.color,
     acronymn : "",
+    building_code : ''
   }
 
   database.query(
