@@ -75,7 +75,7 @@ function updateTime(id) {
   database.query(
     `UPDATE monitoring SET time = ? WHERE id = ''`, [unixTime, id],
     function (error, results, fields) {
-      console.log('Time Updated')
+      console.log(results)
     }
   );
 }
