@@ -24,7 +24,8 @@ const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${
 
 const router = express.Router();
 
-const unixTime = Math.floor(Date.now() / 1000);
+const localTime = new Date();
+const unixTime = Math.floor(localTime.getTime() / 1000);
 
 async function getSlackHook() {
   return new Promise((resolve, reject) => {
@@ -391,7 +392,7 @@ router.post("/monitor", (req, res) => {
                   console.error('Database update error:', updateError);
                   return;
                 }
-                console.log('Alert log updated successfully');
+                //console.log('Alert log updated successfully');
               });
               
 
