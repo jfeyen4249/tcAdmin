@@ -43,7 +43,7 @@ CREATE TABLE `chromebook_log` (
   PRIMARY KEY (`id`)
 ) ;
 
-CREATE TABLE `Chromebook_makes` (
+CREATE TABLE `chromebook_makes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `make` varchar(45)  DEFAULT NULL,
   `model` varchar(45)  DEFAULT NULL,
@@ -69,7 +69,7 @@ CREATE TABLE `chromebook_repairs` (
   PRIMARY KEY (`id`)
 ) ;
 
-CREATE TABLE `Chromebooks` (
+CREATE TABLE `chromebooks` (
   `id` int NOT NULL AUTO_INCREMENT,
   `model_id` int NOT NULL,
   `date_added` varchar(45)  DEFAULT NULL,
