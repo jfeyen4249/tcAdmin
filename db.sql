@@ -81,8 +81,8 @@ CREATE TABLE `chromebooks` (
   `student` varchar(245)  DEFAULT NULL,
   `student_year` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `Chromebooks_model_id_fkey` (`model_id`),
-  CONSTRAINT `Chromebooks_model_id_fkey` FOREIGN KEY (`model_id`) REFERENCES `Chromebook_makes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+  KEY `chromebooks_model_id_fkey` (`model_id`),
+  CONSTRAINT `chromebooks_model_id_fkey` FOREIGN KEY (`model_id`) REFERENCES `chromebook_makes` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
 ) ;
 
 CREATE TABLE `computers` (
