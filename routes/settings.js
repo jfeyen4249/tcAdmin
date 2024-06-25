@@ -62,7 +62,8 @@ router.put("/buildings", session.validateSession, (req, res) => {
   let data = {
     name : req.query.building,
     view : 'true',
-    color : req.query.color
+    color : req.query.color,
+    acronymn : ""
   }
   database.query(
     `INSERT INTO buildings SET ?`, [data],
@@ -78,7 +79,8 @@ router.post("/buildings", session.validateSession, (req, res) => {
   let data = {
     name : req.query.name,
     view : 'true',
-    color : req.query.color
+    color : req.query.color,
+    acronymn : "",
   }
 
   database.query(
