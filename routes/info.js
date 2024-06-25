@@ -23,7 +23,6 @@ const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}:${seconds}`
 const formattedDate = `${month < 10 ? '0' : ''}${month}-${day < 10 ? '0' : ''}${day}-${year}`;
 
 const router = express.Router();
-
 const localTime = new Date();
 const unixTime = Math.floor(localTime.getTime() / 1000);
 
@@ -70,6 +69,15 @@ function getMake(make) {
     return make
   }
 
+}
+
+function updateTime(id) {
+  database.query(
+    `UPDATE monitoring SET time = ? WHERE id = ''`, [unixTime, id],
+    function (error, results, fields) {
+      console.log('Time Updated')
+    }
+  );
 }
 
 router.get("/");
@@ -288,7 +296,7 @@ router.post("/monitor", (req, res) => {
       let data = {
         alerted: 0,
         count: 1,
-        time: unixTime,
+        alert_time: ''
 
       }
 
@@ -304,7 +312,7 @@ router.post("/monitor", (req, res) => {
       
       let data1 = {
         count: device_info.count + 1,
-        time: unixTime,
+
       }
 
       database.query(`UPDATE monitoring SET ? WHERE id = ?`, [data1, req.body.id], function (error, results, fields) {
@@ -324,7 +332,6 @@ router.post("/monitor", (req, res) => {
           let data = {
             alerted: 1,
             count: device_info.count + 1,
-            time: unixTime,
             alert_time: unixTime,
             status: 'down',
             log_id: results.insertId
@@ -353,8 +360,8 @@ router.post("/monitor", (req, res) => {
       let data4 = {
         alerted: 0,
         count: 1,
+        alert_time: '',
         log_id: '',
-        time: unixTime,
         status: 'up'
       }
 
@@ -370,7 +377,7 @@ router.post("/monitor", (req, res) => {
       
           if (results.length > 0) {
             const down_time = results[0].down_time;
-            console.log('Databaste down_time: ' +down_time);
+            //console.log('Databaste down_time: ' + down_time);
       
             // Ensure down_time and unixTime are valid numbers before proceeding
             if (down_time && unixTime) {
@@ -379,7 +386,7 @@ router.post("/monitor", (req, res) => {
               const down_minutes = Math.floor((differenceInSeconds % 3600) / 60);
               
               const total_down_time = `${down_hours}:${down_minutes}`;
-              console.log(`Difference: ${down_hours} hours and ${down_minutes} minutes`);
+              //console.log(`Difference: ${down_hours} hours and ${down_minutes} minutes`);
       
               const data = {
                 up_time: Math.floor(Date.now() / 1000),
@@ -423,13 +430,16 @@ router.post("/monitor", (req, res) => {
       
       let data1 = {
         count: device_info.count + 1,
-        time: unixTime,
       }
 
       database.query(`UPDATE monitoring SET ? WHERE id = ?`, [data1, req.body.id], function (error, results, fields) {
 
       });
     }
+      
+
+
+    updateTime(req.body.id);
       res.send('Updated');
 });
 
