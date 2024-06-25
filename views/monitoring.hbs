@@ -239,6 +239,7 @@
         let addBTN = document.getElementById('modal-add')
         let saveBTN = document.getElementById('modal-save')
         let deleteBTN = document.getElementById('modal-delete')
+        
 
         
         
@@ -364,10 +365,9 @@
 
         let getList = (page = 1) => {
             function time(unixTime) {
-                // Example Unix timestamp
-                let unix_timestamp = unixTime;
+                let unix_timestamp = unixTime; 
                 let date = new Date(unix_timestamp * 1000);
-                let formatted_date = date.toLocaleString('en-US', { timeZone: 'UTC' });
+                let formatted_date = date.toLocaleString('en-US', { timeZone: 'America/Chicago' });
                 return formatted_date;
             }
 
