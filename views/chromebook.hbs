@@ -854,8 +854,9 @@
                         showAlertSuccess("Ticket Submitted Successfully!");
                         ticketNumber = data.ticketNumber;
                     } else {
-                        showAlertWarning("ERROR! Look at console for detailed error message.");
+                        alert(data.Error);
                         console.log(data);
+                        return;
                     }
                 });
 

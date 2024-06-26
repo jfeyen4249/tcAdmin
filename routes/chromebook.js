@@ -7,6 +7,19 @@ const logs = require("../utils/logs.js");
 
 const router = express.Router();
 
+
+let FEATURE_ENABLED = 0;
+
+const featureQuery = database.query("SELECT * FROM settings WHERE settingName = 'chromebookRepairs'",
+    function(error, results) {
+        if(error) throw error;
+        FEATURE_ENABLED = results[0].enabled;
+        if(FEATURE_ENABLED) { 
+            console.log("CHROMEBOOK REPAIRS ARE ENABLED");
+        }
+    });
+
+
 router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
