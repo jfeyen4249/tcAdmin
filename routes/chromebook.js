@@ -15,7 +15,7 @@ router.get("/list", session.validateSession,  (req, res) => {
     const offset = (page - 1) * limit;
     database.query(
         `SELECT chromebooks.id, chromebooks.model_id, chromebooks.date_added, chromebooks.tag, chromebooks.building, chromebooks.status, chromebooks.sn, chromebooks.device_status, chromebook_makes.make, chromebook_makes.model, chromebook_makes.screen, chromebook_makes.cost, chromebook_makes.updates
-        FROM Chromebooks.INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
+        FROM chromebooks INNER JOIN chromebook_makes ON chromebooks.model_id = chromebook_makes.id
         WHERE chromebooks.status = 'true' ORDER BY chromebooks.building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
@@ -80,7 +80,7 @@ router.get("/search", session.validateSession,  (req, res) => {
 
 router.get("/chromebook", session.validateSession,  (req, res) => {
     database.query(
-        `SELECT * FROM chromebooks.WHERE id = ? LIMIT 1`, [req.query.id],
+        `SELECT * FROM chromebooks WHERE id = ? LIMIT 1`, [req.query.id],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -89,7 +89,7 @@ router.get("/chromebook", session.validateSession,  (req, res) => {
 });
 
 router.post("/chromebook", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks.SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+    database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
         logs.SystemLog(`Chromebook was updated in the chromebook inventory.`, req.cookies.username)
         res.send('updated');
@@ -99,7 +99,7 @@ router.post("/chromebook", session.validateSession,  (req, res) => {
 
 router.put("/chromebook", session.validateSession,  (req, res) => {
     database.query(
-        `INSERT INTO chromebooks.SET ?`, [req.body],
+        `INSERT INTO chromebooks SET ?`, [req.body],
         function (error, results, fields) {
         if (error) throw error;
         logs.SystemLog(`A chromebook was added to the chromebook inventory.`, req.cookies.username)
@@ -112,7 +112,7 @@ router.put("/chromebook", session.validateSession,  (req, res) => {
 router.delete("/chromebook", session.validateSession, (req, res) => {
     // Update the row
     database.query(
-        `UPDATE chromebooks.SET status = 'false' WHERE id = ?`, [req.query.id],
+        `UPDATE chromebooks SET status = 'false' WHERE id = ?`, [req.query.id],
         function (error, updateResults, fields) {
             if (error) {
                 throw error;
@@ -138,7 +138,7 @@ router.delete("/chromebook", session.validateSession, (req, res) => {
 
 
 router.post("/student", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks.SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
+    database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
         res.send('updated');
         }
@@ -166,7 +166,7 @@ router.put("/log", session.validateSession,  (req, res) => {
 });
 
 router.put("/repair", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks.SET device_status = 'Out for Repair' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+    database.query(`UPDATE chromebooks SET device_status = 'Out for Repair' WHERE id = ?`, [req.query.id], function (error, results, fields) {
         if (error) throw error;
         res.send('updated');
         }
@@ -174,7 +174,7 @@ router.put("/repair", session.validateSession,  (req, res) => {
 });
 
 router.post("/repair", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks.SET device_status = 'In Use' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+    database.query(`UPDATE chromebooks SET device_status = 'In Use' WHERE id = ?`, [req.query.id], function (error, results, fields) {
         if (error) throw error;
         res.send('updated');
         }

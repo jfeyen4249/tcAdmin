@@ -407,6 +407,12 @@ CREATE TABLE `servers` (
   PRIMARY KEY (`id`)
 ) ;
 
+CREATE TABLE `tcadmin`.`settings` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `settingName` VARCHAR(255) NOT NULL,
+  `enabled` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`));
+
 
 CREATE TABLE `slack` (
   `id` int NOT NULL AUTO_INCREMENT,
