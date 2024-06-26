@@ -124,7 +124,8 @@
         <div class="w-half h-half float-left border rounded-lg p-2 move">
             <table class="w-full border-collapse border rounded-md border-gray-800">
                 <h1 class="text-center chart-title">Chromebook Out For Repair</h1>
-                <canvas id="chromebookChart1" class="w-full h-full mb-8"></canvas>
+                <h3 id="chromebookRepairHeader" class="text-center font-bold">Total: </h3>
+                <canvas id="chromebookChart1" class="w-2 h-2 mb-20"></canvas>
             </table>
         </div>
 
@@ -193,13 +194,35 @@
 
     <!-- JavaScript to toggle submenus and close them on outside click -->
     <script>
-        async function fetchRepairData() {
+        async function fetchTotalRepairs() {
+            let repairHeader = document.getElementById("chromebookRepairHeader");
             try {
                 const totalRepairs = await fetch(`/chromebook/getAllRepairs`);
                 const data = await totalRepairs.json();
-                return data;
+                repairHeader.innerText += " " + data.allRepairs;
             }  catch (error) {
+                console.log('Error fetching data:', error);
+            }
+        }
+
+        async function fetchSchoolNames() {
+            try {
+                const schoolNames = await fetch(`/chromebook/getSchoolNames`);
+                const data = await schoolNames.json();
+                return data;
+            } catch(error) {
                 console.error('Error fetching data:', error);
+            }
+        }
+        
+        async function fetchRepairTotal(schoolName) {
+            let repairs = [];
+            try {
+                    schoolName = schoolName.replaceAll(" ", "*");
+                    const total = await fetch(`/chromebook/getRepairsBySchool/?school=${schoolName}`);
+                    return await total.json();
+            } catch(error) {
+                console.error('Error fetching data:',error);
             }
         }
 
@@ -209,73 +232,22 @@
 
         async function updateRepairs() {
             // Fetch data for Chromebook repairs
-            const awaitingPickupCount = 10; // Replace with actual data fetching
-            const outForRepairCount = 5; // Replace with actual data fetching
-            const totalRepairs = await fetchRepairData();
-
-            let abeRepairs = totalRepairs.abe;
-            let nsRepairs = totalRepairs.northside;
-            let psRepairs = totalRepairs.parkside;
-            let msRepairs = totalRepairs.middleschool;
-            let hsRepairs = totalRepairs.highschool;
-            console.log("Northside: " + nsRepairs);
-            //Need to use fetch to get all chromebooks from the database in json and parse it out.
-
-            // Create doughnut chart
-            // var ctx1 = document.getElementById('chromebookChart1').getContext('2d');
-            // var chromebookChart1 = new Chart(ctx1, {
-            //     type: 'doughnut',
-            //     data: {
-            //         labels: ['Abe', 'Northside', 'Parkside', 'MS', 'HS'],
-            //         datasets: [{
-            //             label: 'Chromebook Repairs',
-            //             data: ['5', '1', '4', '14', '5'],
-            //             backgroundColor: [
-            //                 'rgba(255, 99, 132, 0.5)',
-            //                 'rgba(54, 162, 235, 0.5)',
-            //                 'rgb(60, 179, 113)',
-            //                 'rgb(255, 165, 0)',
-            //                 'rgb(238, 130, 238)'
-            //             ],
-            //             borderColor: [
-            //                 'rgba(255, 99, 132, 1)',
-            //                 'rgba(54, 162, 235, 1)',
-            //                 'rgb(60, 179, 113)',
-            //                 'rgb(255, 165, 0)',
-            //                 'rgb(238, 130, 238)'
-            //             ],
-            //             borderWidth: 1
-            //         }]
-            //     },
-            //     options: {
-            //         responsive: true,
-            //         maintainAspectRatio: false
-            //     }
-            // });
+            await fetchTotalRepairs()
+            const schoolNames = await fetchSchoolNames();
+            const schoolRepairTotals = []
+            for(let i = 0; i < schoolNames.length; i++) {
+                schoolRepairTotals.push(await fetchRepairTotal(schoolNames[i]));
+            }
 
             // Create second doughnut chart
             var ctx2 = document.getElementById('chromebookChart1').getContext('2d');
             var chromebookChart2 = new Chart(ctx2, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Abe', 'Northside', 'Parkside', 'Middle School', 'High School'],
+                    labels: schoolNames,
                     datasets: [{
                         label: 'Chromebook Repairs',
-                        data: [abeRepairs, nsRepairs, psRepairs, msRepairs, hsRepairs],
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.5)',
-                            'rgba(54, 162, 235, 0.5)',
-                            'rgb(60, 179, 113)',
-                            'rgb(255, 165, 0)',
-                            'rgb(238, 130, 238)'
-                        ],
-                        borderColor: [
-                            'rgba(255, 99, 132, 1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgb(60, 179, 113)',
-                            'rgb(255, 165, 0)',
-                            'rgb(238, 130, 238)'
-                        ],
+                        data: schoolRepairTotals,
                         borderWidth: 1
                     }]
                 },
