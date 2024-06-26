@@ -100,7 +100,7 @@ router.get("/chromebook", session.validateSession,  (req, res) => {
         }
     );
 });
-
+//gh
 router.post("/chromebook", session.validateSession,  (req, res) => {
     database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
