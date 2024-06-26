@@ -60,6 +60,7 @@
             
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="document.getElementById('add-modal').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Add</button>
+            
         </div>
     </div>
 
@@ -253,12 +254,14 @@
                 grid.innerHTML = ''
                 for(let i = 0; i<data.length; i++) {
                     let obj =data[i];
+                    console.log(data)
 
                     let hddFree = obj.hdd.split('/')[1]
                     let hddTotal = obj.hdd.split('/')[0]
                     
                     let ramFree = obj.ram.split('/')[1]
                     let ramTotal = obj.ram.split('/')[0]
+
                 
                     grid.innerHTML += `
                         <div class="${localStorage.getItem(obj.name)} p-4 rounded-md text-left grid grid-cols-3 gap-x-4">

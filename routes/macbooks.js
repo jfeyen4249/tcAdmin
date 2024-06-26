@@ -16,6 +16,7 @@ router.get("/list", session.validateSession,  (req, res) => {
         `SELECT * FROM computers WHERE view = 'true' AND type = 'mac' ORDER BY building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
+        console.log(results)
         res.send(results);
         }
     );

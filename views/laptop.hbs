@@ -60,6 +60,7 @@
             
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="document.getElementById('add-modal').classList.remove('hidden')"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-amber-500 text-white px-4 py-2 rounded-md ml-4" onclick="dlTools()"><i class="fa-solid fa-floppy-disk"></i> Download</button>
         </div>
     </div>
 
@@ -581,7 +582,14 @@
             }
         })
 
+        function DonwloadTools() { 
+            window.location.href = '/pctools/Windows_tools.zip'
+        }
 
+         function dlTools() {
+            alertify.confirm('TcAdmin PC Tool Download', 'Contanted in the zip file is the powershell script and an XML file to imort into Windows Task Scheduler. \n  You will need to change the server address for your server. If you are using Window Task Scheduler, copy the powershell script to C drive.', function(){ downloadFile('/pctools/Windows_tools.zip', 'Windows_tools.zip'); }
+                , function(){ alertify.error('Cancel')});
+        }
 
         getBuildings()
         getDesktop(1)
