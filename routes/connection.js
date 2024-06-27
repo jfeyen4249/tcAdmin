@@ -66,18 +66,15 @@ router.post("/login", async (req, res) => {
                                   return res.status(500).send("Internal server error.");
                               } else {
                                   if (password !== "P@$$Word") {
-                                      const currentDate = new Date();
-                                      // Add one year
-                                      currentDate.setFullYear(currentDate.getFullYear() + 1);
-                                      // Set the session ID as a cookie with the name 'session_id' and max-age set to never expire
+                                    const sessionDuration = 4 * 60 * 60 * 1000;
                                       res.cookie("session_id", sessionID, {
-                                          maxAge: currentDate,
+                                          maxAge: sessionDuration,
                                           httpOnly: true,
                                           secure: false,
                                           sameSite: "strict",
                                       });
                                       res.cookie("username", username, {
-                                          maxAge: currentDate,
+                                          maxAge: sessionDuration,
                                           httpOnly: true,
                                           secure: false,
                                           sameSite: "strict",
