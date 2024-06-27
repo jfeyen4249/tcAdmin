@@ -163,11 +163,8 @@
             <tr class="bg-gray-800 text-white">
                 <th class="py-2 px-4 border">Make</th>
                 <th class="py-2 px-4 border">Model</th>
-                <th class="py-2 px-4 border">Screen Size</th>
                 <th class="py-2 px-4 border">Serial Number</th>
                 <th class="py-2 px-4 border">Tag</th>
-                <th class="py-2 px-4 border">Cost</th>
-                <th class="py-2 px-4 border">Updates</th>
                 <th class="py-2 px-4 border">Building</th>
                 <th class="py-2 px-4 border">Device Status</th>
             </tr>
@@ -353,11 +350,8 @@
                         <tr class="hover:bg-blue-400 ${localStorage.getItem(obj.building)}" onclick="EditModal('${obj.id}')">
                         <td class="py-2 px-4 border">${obj.make}</td>
                         <td class="py-2 px-4 border">${obj.model}</td>
-                        <td class="py-2 px-4 border">${obj.screen} inch</td>
                         <td class="py-2 px-4 border">${obj.sn}</td>
                         <td class="py-2 px-4 border">${obj.tag}</td>
-                        <td class="py-2 px-4 border">$${obj.cost}</td>
-                        <td class="py-2 px-4 border">${obj.updates}</td>
                         <td class="py-2 px-4 border">${obj.building}</td>
                         <td class="py-2 px-4 border">${obj.device_status}</td>
                          </tr>`;
@@ -711,9 +705,8 @@
                  getChromebook()
             }
         }
-
+        let timeout
         searchBox.addEventListener("input", () => {
-            let timeout
             clearTimeout(timeout)
 
             timeout = setTimeout( () => {
@@ -729,20 +722,15 @@
             .then(data => {
                
                 for(let i = 0; i<data.length; i++) {
-                    let obj =data[i];
+                    let obj = data[i];
                     let row = `
                         <tr class="hover:bg-blue-400 ${localStorage.getItem(obj.building)}" onclick="EditModal('${obj.id}')">
                         <td class="py-2 px-4 border">${obj.make}</td>
                         <td class="py-2 px-4 border">${obj.model}</td>
-                        <td class="py-2 px-4 border">${obj.screen} inch</td>
                         <td class="py-2 px-4 border">${obj.sn}</td>
                         <td class="py-2 px-4 border">${obj.tag}</td>
-                        <td class="py-2 px-4 border">$${obj.cost}</td>
-                        <td class="py-2 px-4 border">${obj.updates}</td>
                         <td class="py-2 px-4 border">${obj.building}</td>
                         <td class="py-2 px-4 border">${obj.device_status}</td>
-                        
-                        
                          </tr>`;
                     document.getElementById('password-table').innerHTML += row;
                 }
@@ -756,23 +744,21 @@
         })
 
         function chromebookLog(id) {
-                    document.getElementById('repair-table').innerHTML = '';
-                    fetch(`/chromebook/log?id=${id}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                let row = `
-                                        <tr class="hover:bg-blue-400">
-                                        <td class="py-2 px-4 border">${obj.action}</td>
-                                        <td class="py-2 px-4 border">${obj.date}</td>
-                                        <td class="py-2 px-4 border">${obj.log}</td>
-                                        
-                                        </tr>`;
-                                    document.getElementById('repair-table').innerHTML += row;
-                            }
-                        });   
+            document.getElementById('repair-table').innerHTML = '';
+            fetch(`/chromebook/log?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                    for(let i = 0; i<data.length; i++) {
+                        let obj = data[i]
+                        let row = `
+                                <tr class="hover:bg-blue-400">
+                                <td class="py-2 px-4 border">${obj.action}</td>
+                                <td class="py-2 px-4 border">${obj.date}</td>
+                                <td class="py-2 px-4 border">${obj.log}</td>
+                                </tr>`;
+                            document.getElementById('repair-table').innerHTML += row;
+                    }
+                });   
         }
 
         function AssignStudent() {

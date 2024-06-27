@@ -54,6 +54,12 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+
+        {{!-- <script defer src=".././dymo.js"></script> --}}
+    <script defer src=".././menu.js"></script>
+    <script defer src=".././label.js"></script> 
+
+    <script src="https://qajavascriptsdktests.azurewebsites.net/JavaScript/dymo.connect.framework.js"></script>
     <script>
 
         function showAlertSuccess(text) {
@@ -139,6 +145,7 @@
                  
                     
                 <button type="button" id="add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 mt-2 hidden" onclick="addStudent()">Add Student</button>
+                <button type="button" id="print" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 mt-2 hidden" onclick="printStudentLabel(document.getElementById('student-name').value, document.getElementById('grad-year').value);">Print Label</button>
                 <button type="button" id="edit" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 mt-2 hidden" onclick="editStudent()">Update Student</button>
                 <button type="button" id="delete" class="w-full bg-red-500 text-white p-2 rounded-md hover:bg-red-700 mb-4 mt-2 hidden" onclick="deleteStudent()">Delete Student</button>
                  
@@ -157,6 +164,7 @@
         let gradYear = document.getElementById('grad-year')
         let modal = document.getElementById('modal')
         let addBTN = document.getElementById('add')
+        let printBTN = document.getElementById('print')
         let editBTN = document.getElementById('edit')
         let deleteBTN = document.getElementById('delete')
         let importBTN = document.getElementById('import')
@@ -171,6 +179,7 @@
                 editid = id
                 modal.classList.remove('hidden')
                 editBTN.classList.remove('hidden')
+                printBTN.classList.remove('hidden');
                 deleteBTN.classList.remove('hidden')
                 fetch(`/students/student?id=${editid}`)
                 .then(response => response.json())
