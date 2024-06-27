@@ -8,7 +8,7 @@
         }
 
         .h-70 {
-            height: 55%;
+            height: 40%;
         }
         #modal {
             align-items: center;
@@ -74,6 +74,12 @@
             alertify.set('notifier','position', 'top-center');
             alertify.error(text);
         }
+
+        function showScanAlert(text) {
+            alertify.set('notifier','delay', 305);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
     </script>
 </head>
 <body class="bg-slate-800 h-screen flex">
@@ -102,6 +108,7 @@
             
             <!-- Add New Password Button -->
             <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            <button class="bg-sky-500 text-white px-4 py-2 rounded-md ml-4" onclick="getIP()"><i class="fa-solid fa-magnifying-glass"></i> Scan</button>
             
             {{!-- <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button> --}}
         </div>
@@ -145,7 +152,7 @@
                     <!-- URL -->
                     <div class="mb-4">
                        <label for="modal-type" class="block text-gray-600 text-sm font-medium mb-2">Monitoring Type</label>
-                        <select name="modal-type" id="modal-type" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                        <select name="modal-type" id="modal-type" oninput="portBox()" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
                             <option value="ping">Select monitoring type</option>
                             <option value="ping">Ping</option>
                             <option value="http">HTTP Request</option>
@@ -154,8 +161,8 @@
                     </div>
 
                     <!-- Username/Email -->
-                    <div class="mb-4">
-                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2">Port (if applicable)</label>
+                    <div class="mb-4 hidden" id="modal-port-box">
+                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2">Port(Use a comma between multiple ports. Ex: 80,53,443)</label>
                         <input type="text" id="modal-port" name="modal-port" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
                     </div>
 
@@ -196,20 +203,36 @@
                     </div> --}}
 
                 
-                    <button class="absolute top-4 right-4 mr-6 text-gray-600" onclick="toggleModal()">
+                    {{!-- <button class="absolute top-4 right-4 mr-6 text-gray-600"  onclick="toggleModal()">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </button>
                     <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
                         <i class="fas fa-times"></i>
-                    </button>
+                    </button> --}}
             </div>
         </div>
         </div>
        
        
         <div id="modal-history" class="hidden">
-                gfds
-                    <button class="absolute top-4 right-4 mr-6 text-gray-600" onclick="toggleModal()">
+                <div class="relative h-[40vh] overflow-y-auto bg-gray-800`">
+                    <table class="w-full border-collapse border border-gray-800 p-4 mt-12">
+                        <thead>
+                            <tr class="bg-gray-800 text-white">
+                                <th class="py-2 px-4 border">Time Down</th>
+                                <th class="py-2 px-4 border">Time Up</th>
+                                <th class="py-2 px-4 border">Total Time Down</th>
+                                <th class="py-2 px-4 border">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-center" id="history-table">
+                        
+                        </tbody>
+                    </table>
+                    </div>
+                    
+                </div>
+                    <button class="absolute top-4 right-4 mr-6 text-gray-600" id="historyBTN" onclick="toggleModal()">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </button>
                     <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
@@ -231,32 +254,58 @@
         let modalIP = document.getElementById('modal-ip')
         let modalName = document.getElementById('modal-name')
         let modalRetry = document.getElementById('modal-retry')
+        let modalPortBox = document.getElementById('modal-port-box')
 
 
         let modalDevice = document.getElementById('modal-device')
         let modalHistory = document.getElementById('modal-history')
+        let historyTable = document.getElementById('history-table')
+        let historyBTN = document.getElementById('historyBTN')
 
         let addBTN = document.getElementById('modal-add')
         let saveBTN = document.getElementById('modal-save')
         let deleteBTN = document.getElementById('modal-delete')
         
 
-        
+        function portBox() {
+            if (modalType.value == 'ping')  {
+                modalPortBox.classList.add('hidden')
+            } else if (modalType.value == 'http') {
+                modalPortBox.classList.add('hidden') 
+            } else if (modalType.value == 'scan') {
+                modalPortBox.classList.remove('hidden')
+            } else {
+                modalPortBox.classList.add('hidden')
+            }
+
+        }
         
 
         function openModal(id) {
+            function downTime(unixTime) {
+                let unix_timestamp = unixTime; 
+                let date = new Date(unix_timestamp * 1000);
+                let formatted_date = date.toLocaleString('en-US', { timeZone: 'America/Chicago' });
+                return formatted_date;
+                }
             fetch(`/monitoring/device?id=${id}`, { method: 'post' })
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    //console.log(data);
                     document.getElementById('modal').style.display = 'flex';
+                    
                     deviceid = id;
+                    //console.log(deviceid)
                     modalPort.value = data[0].port;
                     modalIP.value = data[0].ip;
                     modalName.value = data[0].name;
                     modalRetry.value = data[0].trys;
                     saveBTN.classList.remove('hidden');
                     deleteBTN.classList.remove('hidden');
+
+                    if(data[0].type == 'scan') {
+                        modalPortBox.classList.remove('hidden')
+                    }
 
                     for (let i = 0; i < modalType.options.length; i++) {
                         if (modalType.options[i].value === data[0].type) {
@@ -265,22 +314,32 @@
                         }
                     }
                 });
+
+            fetch(`/monitoring/device-history?id=${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data);
+                    for(let i = 0; i < data.length; i++) {
+                        let obj = data[i];
+                        historyTable.innerHTML += `<tr>
+                        <td class="py-2 px-4 border">${downTime(obj.down_time)}</td>
+                        <td class="py-2 px-4 border">${downTime(obj.up_time)}</td>
+                        <td class="py-2 px-4 border">${obj.total}</td>
+                        <td class="py-2 px-4 border">${obj.info}</td>
+                        </tr>`
+                    }
+                });
         }
 
+        // Toggle the visibility of the modal between device and history views
         function toggleModal() {
-            if(modalView == 1) {
-                modalDevice.classList.add('hidden')
-                modalHistory.classList.remove('hidden')
-                modalView = 0
-            } else if(modalView == 0){
-                modalDevice.classList.remove('hidden')
-                modalHistory.classList.add('hidden')
-                modalView = 1
-            }
+            modalDevice.classList.toggle('hidden');
+            modalHistory.classList.toggle('hidden');
         }
 
         function AddModal() {
            document.getElementById('modal').style.display = 'flex';
+            historyBTN.classList.add('hidden')
            addBTN.classList.remove('hidden');
         }
 
@@ -358,6 +417,11 @@
             addBTN.classList.add('hidden')
             saveBTN.classList.add('hidden')
             deleteBTN.classList.add('hidden')
+            historyTable.innerHTML = ''
+            modalHistory.classList.add('hidden')
+            modalDevice.classList.remove('hidden')
+            historyBTN.classList.remove('hidden')
+            modalPortBox.classList.add('hidden')
         }
 
         let currentPage = 1;
@@ -374,6 +438,8 @@
             function isDown(status) {
                 if (status == 'down') {
                     return 'bg-red-500';
+                } else if (status == 'degraded') {
+                    return 'bg-yellow-500';
                 } else {
                     return
                 }
@@ -414,9 +480,11 @@
                 getList(1)
             } else {
                 
-            function isDown(status) {
+             function isDown(status) {
                 if (status == 'down') {
                     return 'bg-red-500';
+                } else if (status == 'degraded') {
+                    return 'bg-yellow-500';
                 } else {
                     return
                 }
@@ -440,7 +508,33 @@
             }
         }
 
+        function getIP() {
+            alertify.prompt('Enter an IP Address to Scan', '', (event, value) => {
+                if (event) {
+                    showScanAlert(`Scanning ${value}... Please wait... This can take over 5 minutes to complete. Do not leave this page!`)
+                    scanIP(value)
+                }
+            })
+        }
 
+        async function scanIP(ip) {
+            let data = {
+                    ip: ip,
+                }
+
+            fetch(`/monitoring/scan`,{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        {{!-- console.log(data) --}}
+                        alertify.alert('Scanning result of ' + ip + '', data);
+                    });
+        }
     getList(1)
     </script>
 
