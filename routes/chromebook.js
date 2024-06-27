@@ -7,6 +7,19 @@ const logs = require("../utils/logs.js");
 
 const router = express.Router();
 
+
+let FEATURE_ENABLED = 0;
+
+const featureQuery = database.query("SELECT * FROM settings WHERE settingName = 'chromebookRepairs'",
+    function(error, results) {
+        if(error) throw error;
+        FEATURE_ENABLED = results[0].enabled;
+        if(FEATURE_ENABLED) { 
+            console.log("CHROMEBOOK REPAIRS ARE ENABLED");
+        }
+    });
+
+
 router.get("/");
 
 router.get("/list", session.validateSession,  (req, res) => {
@@ -14,9 +27,9 @@ router.get("/list", session.validateSession,  (req, res) => {
     const page = parseInt(req.query.page, 10) || 1;
     const offset = (page - 1) * limit;
     database.query(
-        `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
-        FROM Chromebooks INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
-        WHERE Chromebooks.status = 'true' ORDER BY Chromebooks.building ASC Limit ?, ?`,[offset, limit],
+        `SELECT chromebooks.id, chromebooks.model_id, chromebooks.date_added, chromebooks.tag, chromebooks.building, chromebooks.status, chromebooks.sn, chromebooks.device_status, chromebook_makes.make, chromebook_makes.model, chromebook_makes.screen, chromebook_makes.cost, chromebook_makes.updates
+        FROM chromebooks INNER JOIN chromebook_makes ON chromebooks.model_id = chromebook_makes.id
+        WHERE chromebooks.status = 'true' ORDER BY chromebooks.building ASC Limit ?, ?`,[offset, limit],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -57,12 +70,12 @@ router.get("/makes", session.validateSession,  (req, res) => {
 router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
     database.query(
-    `SELECT Chromebooks.id, Chromebooks.model_id, Chromebooks.date_added, Chromebooks.tag, Chromebooks.building, Chromebooks.status, Chromebooks.sn, Chromebooks.device_status, Chromebook_makes.make, Chromebook_makes.model, Chromebook_makes.screen, Chromebook_makes.cost, Chromebook_makes.updates
-    FROM Chromebooks
-    INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
-    WHERE Chromebooks.status = 'true'
-    AND (Chromebooks.tag LIKE ? OR Chromebook_makes.make LIKE ? OR Chromebook_makes.model LIKE ? OR Chromebooks.sn LIKE ? OR Chromebooks.building LIKE ? OR Chromebooks.device_status LIKE ?)
-    ORDER BY Chromebooks.building ASC Limit 30`,
+    `SELECT chromebooks.id, chromebooks.model_id, chromebooks.date_added, chromebooks.tag, chromebooks.building, chromebooks.status, chromebooks.sn, chromebooks.device_status, chromebook_makes.make, chromebook_makes.model, chromebook_makes.screen, chromebook_makes.cost, chromebook_makes.updates
+    FROM chromebooks
+    INNER JOIN chromebook_makes ON chromebooks.model_id = chromebook_makes.id
+    WHERE chromebooks.status = 'true'
+    AND (chromebooks.tag LIKE ? OR chromebook_makes.make LIKE ? OR chromebook_makes.model LIKE ? OR chromebooks.sn LIKE ? OR chromebooks.building LIKE ? OR chromebooks.device_status LIKE ?)
+    ORDER BY chromebooks.building ASC Limit 30`,
     [
         `%${searchQuery}%`,
         `%${searchQuery}%`,
@@ -87,7 +100,7 @@ router.get("/chromebook", session.validateSession,  (req, res) => {
         }
     );
 });
-
+//gh
 router.post("/chromebook", session.validateSession,  (req, res) => {
     database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
         if (error) throw error;
@@ -119,10 +132,10 @@ router.delete("/chromebook", session.validateSession, (req, res) => {
             }
 
             database.query(
-                `SELECT  Chromebooks.sn, Chromebook_makes.make, Chromebook_makes.model
+                `SELECT  chromebooks.sn, Chromebook_makes.make, chromebook_makes.model
                 FROM Chromebooks
-                INNER JOIN Chromebook_makes ON Chromebooks.model_id = Chromebook_makes.id
-                WHERE Chromebooks.id = ?`,[req.query.id],
+                INNER JOIN chromebook_makes ON chromebooks.model_id = chromebook_makes.id
+                WHERE chromebooks.id = ?`,[req.query.id],
                 function (error, selectResults, fields) {
                     if (error) {
                         throw error;
@@ -135,7 +148,7 @@ router.delete("/chromebook", session.validateSession, (req, res) => {
         }
     );
 });
-
+//hh
 
 router.post("/student", session.validateSession,  (req, res) => {
     database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
@@ -194,42 +207,67 @@ router.get("/repairInfo/:serial", session.validateSession, async (req, res) => {
     );
 });
 
-router.get("/getAllRepairs", session.validateSession, async (req, res) => {
-    let allRepairs = database.query(`SELECT * FROM chromebooks WHERE device_status = 'Out for Repair'`,
-        function (error, results, fields) {
-        if (error) throw error;
-        var returnData = {
-            northside: 0,
-            parkside: 0,
-            abe: 0,
-            highschool: 0,
-            middleschool: 0,
-        }
-        for(let i = 0; i < results.length; i++) {
-            let school = results[i].building;
-            switch(school) {
-                case "Monroe High School":
-                    returnData.highschool += 1;
-                    break;
-                case "Monroe Middle School":
-                    returnData.middleschool += 1;
-                    break;
-                case "Northside School":
-                    returnData.northside += 1;
-                    break;
-                case "Abe School":
-                    returnData.abe += 1;
-                    break;
-                case "Parkside School":
-                    returnData.parkside += 1;
-                    break;
-                default:
-                    break;
-            }
-        }
-            res.send(returnData);
-    })
+// router.get("/getAllRepairs", session.validateSession, async (req, res) => {
+//     let repairData = [];
+//     let repairCounts = database.query(`SELECT count(*) FROM chromebook_repairs WHERE isReturned = 'False'`,
+//         function (error, results, fields) {
+//         if (error) throw error;
+//         var returnData = {
+//             northside: 0,
+//             parkside: 0,
+//             abe: 0,
+//             highschool: 0,
+//             middleschool: 0,
+//         }
+//         for(let i = 0; i < results.length; i++) {
+//             let school = results[i].schoolName;
+//             switch(school) {
+//                 case "Monroe High School":
+//                     returnData.highschool += 1;
+//                     break;
+//                 case "Monroe Middle School":
+//                     returnData.middleschool += 1;
+//                     break;
+//                 case "Northside School":
+//                     returnData.northside += 1;
+//                     break;
+//                 case "Abe School":
+//                     returnData.abe += 1;
+//                     break;
+//                 case "Parkside School":
+//                     returnData.parkside += 1;
+//                     break;
+//                 default:
+//                     break;
+//             }
+//         }
+//             res.send(returnData);
+//     })
 
+// });
+
+router.get("/getRepairsBySchool", session.validateSession, async(req, res) => {
+    let returnData = [];
+    let schoolName = req.query.school.replaceAll("*", " ");
+    const dbQuery = database.query(`SELECT count(*) as count FROM chromebook_repairs WHERE schoolName = ? AND isReturned = 'False'`, [schoolName],
+        function(error, results) {
+            if(error) throw error;
+            returnData.push(results[0].count);
+
+            res.send(returnData);
+        });
+});
+
+router.get("/getSchoolNames", session.validateSession, async (req, res) => {
+    const schoolNames = [];
+    const dbQuery = database.query(`SELECT DISTINCT schoolName FROM chromebook_repairs WHERE isReturned = 'False'`,
+        function (error, results) {
+            if (error) throw error;
+            for(let i = 0; i < results.length; i++) {
+                schoolNames.push(results[i].schoolName);
+            }
+            res.send(schoolNames);
+        });
 });
 
 
