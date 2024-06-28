@@ -452,4 +452,29 @@ router.post("/slack", session.validateSession, async (req, res) => {
   }
 
 });
+
+
+//  **********************************************************************************************************************
+//  Feature Disable/Enable
+// ***********************************************************************************************************************
+
+router.put("/toggleRepairFeature", session.validateSession, async (req,res) =>{
+  const featureQuery = database.query("SELECT * FROM settings WHERE settingName = 'chromebookRepairs'",
+    function(error, results) {
+        if(error) throw error;
+        FEATURE_ENABLED = results[0].enabled;
+        if(FEATURE_ENABLED) { 
+            const updateQuery = database.query("UPDATE settings SET enabled = 0 WHERE settingName = 'chromebookRepairs'",
+            function(error, results) {
+              if(error) throw error;
+          });
+        } else {
+          const updateQuery = database.query("UPDATE settings SET enabled = 0 WHERE settingName = 'chromebookRepairs'",
+          function(error, results) {
+            if(error) throw error;
+          });
+        }
+    });
+});
+
 module.exports = router;
