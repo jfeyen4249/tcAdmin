@@ -1,0 +1,8 @@
+db_database = tcadmin
+db_host =	localhost
+db_password	 = 	
+db_user	= tcadmin
+
+key = 
+
+base_url = 

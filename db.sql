@@ -490,3 +490,11 @@ CREATE TABLE `wifi` (
   `status` varchar(45)  DEFAULT 'true',
   PRIMARY KEY (`id`)
 ) ;
+
+CREATE TABLE `tcadmin`.`settings` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `settingName` VARCHAR(255) NOT NULL,
+  `enabled` INT NULL DEFAULT 0,
+  PRIMARY KEY (`id`));
+
+INSERT INTO `tcadmin`.`settings` (`settingName`, `enabled`) VALUES ('chromebookRepairs', '1');
