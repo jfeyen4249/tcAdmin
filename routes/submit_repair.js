@@ -9,11 +9,11 @@ const router = express.Router();
 
 let FEATURE_ENABLED = 0;
 
-const featureQuery = database.query("SELECT * FROM settings WHERE settingName = 'chromebookRepairs'",
-    function(error, results) {
-        if(error) throw error;
-        FEATURE_ENABLED = results[0].enabled;
-    });
+// const featureQuery = database.query("SELECT * FROM settings WHERE settingName = 'chromebookRepairs'",
+//     function(error, results) {
+//         if(error) throw error;
+//         FEATURE_ENABLED = results[0].enabled;
+//     });
 
 router.get("/");
 
