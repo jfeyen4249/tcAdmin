@@ -31,7 +31,7 @@ router.get("/building", session.validateSession,  (req, res) => {
 });
 
 router.get("/room", session.validateSession,  (req, res) => {
-    database.query(`SELECT room FROM roos WHERE view = 'true' AND buildings ?`, [req.query.name],
+    database.query(`SELECT room FROM rooms WHERE view = 'true' AND buildings ?`, [req.query.name],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
