@@ -243,9 +243,9 @@ var DocView = new Quill('#show-doc-text', {
     await fetch(`/guide/guide?id=${id}`)
         .then(response => response.json())
         .then(data => {
-            console.log('Fetched data:', data.name); // Log fetched data for debugging
+            console.log('Fetched data:', data); // Log fetched data for debugging
             document.getElementById('show-doc-title').innerText = data.name;
-            var decodedContent = atob(data.doc_body);
+            var decodedContent = atob(data.content);
             DocView.root.innerHTML = decodedContent;
 
         })
