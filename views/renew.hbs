@@ -107,6 +107,8 @@
         <thead>
             <tr class="bg-gray-800 text-white">
                 <th class="py-2 px-4 border">Service</th>
+                <th class="py-2 px-4 border">Company</th>
+                <th class="py-2 px-4 border">Contact</th>
                 <th class="py-2 px-4 border">Start Date</th>
                 <th class="py-2 px-4 border">Renewal Date</th>
                 <th class="py-2 px-4 border">Cost</th>
@@ -129,7 +131,7 @@
  
     <!-- Modal -->
     <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-    <div class="relative bg-white rounded shadow-md flex flex-col">
+    <div class="relative bg-white rounded shadow-md flex flex-col mt-[-30vh]">
         <div class="grid grid-cols-1 flex-grow">
             <div class="col-span-1 bg-white p-8 rounded-l">
                
@@ -138,6 +140,17 @@
                         <label for="student-name" class="block text-gray-600 text-sm font-medium mb-2">Service</label>
                         <input type="text" id="service" name="student-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" > 
                     </div>
+                    
+                    <div class="mb-4">
+                        <label for="company" class="block text-gray-600 text-sm font-medium mb-2">Company</label>
+                        <input type="text" id="company" name="company" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+                   
+                    <div class="mb-4">
+                        <label for="contact" class="block text-gray-600 text-sm font-medium mb-2">Contact</label>
+                        <input type="text" id="contact" name="contact" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+                   
                    
                     <div class="mb-4">
                         <label for="grad-year" class="block text-gray-600 text-sm font-medium mb-2">Starting Date  (format: 12-25-2024)</label>
@@ -244,6 +257,8 @@
         let renewTable = document.getElementById('renew-table')
         let modal = document.getElementById('modal')
         let service = document.getElementById('service')
+        let company = document.getElementById('company')
+        let contact = document.getElementById('contact')
         let start = document.getElementById('start')
         let renew = document.getElementById('renew')
         let cost = document.getElementById('cost')
@@ -283,6 +298,8 @@
                        let row = `
                             <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
                                 <td class="py-2 px-4 border">${obj.service}</td>
+                                <td class="py-2 px-4 border">${obj.company}</td>
+                                <td class="py-2 px-4 border">${obj.contact}</td>
                                 <td class="py-2 px-4 border">${obj.start}</td>
                                 <td class="py-2 px-4 border">${obj.renewal_date}</td>
                                 <td class="py-2 px-4 border">$${obj.cost}</td>
@@ -321,6 +338,8 @@
                         let obj = data[0];
                         service.value = obj.service
                         start.value = obj.start
+                        company.value = obj.company
+                        contact.value = obj.contact
                         renew.value = obj.renewal_date
                         cost.value = obj.cost
                         po.value = obj.po
@@ -370,6 +389,8 @@
         function AddRenewal() {
             let data = {
                     service : service.value,
+                    company : company.value,
+                    contact : contact.value,
                     start : start.value,
                     renewal_date: renew.value,
                     cost: cost.value,
@@ -395,10 +416,13 @@
 
         function EditRenewal() {
             let data = {
-                    service : service.value,
+                     service : service.value,
+                    company : company.value,
+                    contact : contact.value,
                     start : start.value,
                     renewal_date: renew.value,
                     cost: cost.value,
+                    year : year,
                     po: po.value,
                 }
                 
@@ -440,7 +464,6 @@
                     }
                 });
         }
-
 
         function DeleteRenewal() {
              var answer = prompt(`Do you want to delete ${deleteService.options[deleteService.selectedIndex ].text}? (yes/no)`);
@@ -532,6 +555,8 @@
                             <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
                                 <td class="py-2 px-4 border">${obj.service}</td>
                                 <td class="py-2 px-4 border">${obj.start}</td>
+                                <td class="py-2 px-4 border">${obj.company}</td>
+                                <td class="py-2 px-4 border">${obj.contact}</td>
                                 <td class="py-2 px-4 border">${obj.renewal_date}</td>
                                 <td class="py-2 px-4 border">$${obj.cost}</td>
                                 <td class="py-2 px-4 border">${obj.po}</td>
@@ -561,8 +586,6 @@
             reader.readAsText(file);
             
         });
-    
-
     
         getRenewals(1)
     </script>
