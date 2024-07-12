@@ -70,7 +70,7 @@
             alertify.set('notifier','position', 'top-center');
             alertify.success(text);
         }
-        function showaƒlertwarning(text) {
+        function showalertwarning(text) {
             alertify.set('notifier','delay', 6);
             alertify.set('notifier','position', 'top-center');
             alertify.error(text);
@@ -358,7 +358,7 @@
                 }
             }
 
-            if(searchBox.length = 0) {
+            if(searchBox.length == 0) {
                 document.getElementById('wifi-grid').innerHTML = ''
                 getContact(1)
             } else {
