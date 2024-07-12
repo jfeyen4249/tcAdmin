@@ -185,11 +185,17 @@
 
 
     <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-    <div class="wpc tab-width mx-auto mt-2 bg-white p-8 rounded shadow-md">
+        <div class="wpc tab-width mx-auto mt-2 bg-white p-8 rounded shadow-md">
+            <div class="flex justify-end">
+                <button class="text-gray-600" onclick="AddModalClose()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
         <div class="tabs">
             <button class="tablink p-2 ml-2 active" onclick="openTab('tab1')">Chromebook Details</button>
-            <button class="tablink p-2" onclick="openTab('tab2')">Chromebook Repairs</button>
-            <button class="tablink p-2" onclick="openTab('tab3')" id="tab3-btn">Chromebook History</button>
+<!--            <button class="tablink p-2" onclick="openTab('tab2')">Chromebook Repairs</button>-->
+            <button class="tablink p-2" onclick="openTab('tab3')" id="tab3-btn">Manual Repairs</button>
+            <button class="tablink p-2" onclick="openTab('tab4')" id="tab4-btn">Chromebook History</button>
         </div>
         <div id="tab1" class="tabcontent">
             <div class="wpc mx-auto mt-1 bg-white p-8 rounded">
@@ -233,7 +239,7 @@
                 <!-- Save Button -->
                <div class="grid grid-flow-col justify-stretch">
                 <button type="button" onclick="addChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Chromebook</button>
-               <button type="button" onclick="addAnotherChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Create and Add Another</button>
+                <button type="button" onclick="addAnotherChromebook()" id="add-another-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Create and Add Another</button>
                 <button type="button" onclick="editChromebook()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
                 <button type="button" onclick="deleteChromebook()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
                 <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
@@ -247,7 +253,7 @@
             <h2 class="text-2xl font-bold  text-center">Chromebook Repairs</h2>
             <div class="grid grid-cols-2 flex-grow">
                 <div class="col-span-1" id="repair">
-                    
+
                     <div class="mb-2 p-2 mr-8">
                         <label for="modal-repairReason" class="block text-gray-600 text-sm font-medium">Repair Reasons</label>
                         <select name="modal-repairReason" id="modal-repairReason-add" class="w-full py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
@@ -264,32 +270,51 @@
                     </div>
 
                 </div>
-                
+
                 <div class="mb-2">
                     <label for="explaination" class="block text-gray-600 text-sm font-medium mt-6">Reason for repair</label>
                     <textarea id="explaination" rows="20" cols="30" name="explaination" class="w-full px-3 py-2 border rounded-md" placeholder="Explaination of Damages"></textarea>
                 </div>
+
             </div>
             <div class="grid grid-flow-col justify-stretch">
                 <button type="button" onclick="sendChromebook()" id="send-repair" class="w-half bg-red-500 text-white p-1 m-3 rounded-md hover:bg-red-800 hidden">Submit Repair</button>
                 <button type="button" onclick="returnChromebook()" id="close-repair" class="w-half bg-green-500 text-white p-1 m-3 rounded-md hover:bg-green-800 hidden">Returned from Repair</button>
             </div>
         </div>
+
         <div id="tab3" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
-    <table class="w-full border-collapse">
-        <thead>
-            <tr class="orange-background text-white">
-                <th class="py-2 px-4 border">Action</th>
-                <th class="py-2 px-4 border">Date</th>
-                <th class="py-2 px-4 border">Details</th>
-            </tr>
-        </thead>
-        <tbody class="text-center border-collapse" id="repair-table">
-            <!-- Table content goes here -->
-        </tbody>
-    </table>
-</div>
-    
+            <!-- Insert Shit here -->
+            <h2 class="text-2xl font-bold  text-center">Chromebook Repairs</h2>
+            <div class="grid grid-cols-6 flex-grow">
+                <div class="col-span-4 col-start-2" id="repair">
+
+                    <div class="mb-10">
+                        <label for="modal-repairedPart" class="block text-gray-600 text-sm font-medium">Part To Repair</label>
+                        <select name="modal-repairedPart" id="modal-repairedPart-add" class="w-full py-1 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <div class="grid grid-flow-col justify-stretch">
+                        <button type="button" onclick="finishRepair()" id="manual-repair" class="w-half bg-red-500 text-white rounded-md py-1 hover:bg-red-800">Repair</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab4" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
+            <table class="w-full border-collapse">
+                <thead>
+                    <tr class="orange-background text-white">
+                        <th class="py-2 px-4 border">Action</th>
+                        <th class="py-2 px-4 border">Date</th>
+                        <th class="py-2 px-4 border">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="text-center border-collapse" id="repair-table">
+                    <!-- Table content goes here -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -304,6 +329,7 @@
         let addYear = document.getElementById('modal-year-add')
         let addStudent = document.getElementById('modal-student-add')
         let addBtn = document.getElementById('add-btn')
+        let addAnotherBtn = document.getElementById('add-another-btn')
         let editBtn = document.getElementById('edit-btn')
         let delBtn = document.getElementById('del-btn')
         let repairText = document.getElementById('explaination')
@@ -334,6 +360,7 @@
             event.currentTarget.className += " active";
 
             getRepairInfo(deviceStatus);
+            getPartNames();
         }
        
         let currentPage = 1;
@@ -377,12 +404,14 @@
             addDate.value = formattedDate
             addBuilding.selectedIndex = 0
             addmake.selectedIndex = 0
+            addAnotherBtn.classList.remove('hidden');
         }
 
         function EditModal(id) {
             addModal.classList.remove('hidden')
             editID = id
             addBtn.classList.add('hidden')
+            addAnotherBtn.classList.add('hidden');
             editBtn.classList.remove('hidden')
             delBtn.classList.remove('hidden')
             addBuilding.selectedIndex = -1
@@ -437,7 +466,7 @@
                         return
                     }
 
-                });  
+                });
         }
 
         function AddModalClose() {
@@ -540,19 +569,18 @@
         }
 
         function getMakeModel() {
-                    addmake.innerHTML = ``
-                    addmake.innerHTML += `<option value="" >Select Chromebook Make & Model</option>`
-                    
-                    fetch(`/chromebook/makes`)
-                    .then(response => response.json())
-                    .then(data => {
-                        //console.log(data)
-                            for(let i = 0; i<data.length; i++) {
-                                let obj = data[i]
-                                addmake.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
-                            }
-                        });     
-            }
+            addmake.innerHTML = ``
+            addmake.innerHTML += `<option value="" >Select Chromebook Make & Model</option>`
+
+            fetch(`/chromebook/makes`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i]
+                    addmake.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
+                }
+            });
+        }
         
         function addChromebook() {
             if(addmake.value == '') {
@@ -712,7 +740,7 @@
             timeout = setTimeout( () => {
 
             document.getElementById('password-table').innerHTML = ''
-            if(searchBox.length = 0) {
+            if(searchBox.length == 0) {
                 getChromebook(1)
                 return
             } else {
@@ -738,9 +766,6 @@
             }
 
             },1500)
-
-
-            
         })
 
         function chromebookLog(id) {
@@ -775,32 +800,32 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'updated') {
-                        logChomebook(editID, 'Assigned to Student', `Assigned to ${addStudent.value}.`)
+                        logChromebook(editID, 'Assigned to Student', `Assigned to ${addStudent.value}.`)
                         showAlertSuccess(`${addStudent.value} was assigned.`)
                     }
                 });
         }
 
-        function logChomebook(id, action, info) {
+        function logChromebook(id, action, info) {
+            let currentDate = new Date();
             let data = {
                     chromebook_id: id,
                     action: action,
                     log: info,
-                    date: addDate.value,
+                    date: currentDate.toLocaleDateString(),
                 }
                 
-                fetch(`/chromebook/log`, {
-                method: 'Put',
-                body : JSON.stringify(data),
-                headers: {"Content-Type": "application/json",}
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'added') {
-                       chromebookLog(id)
-                    }
-                });
-
+            fetch(`/chromebook/log`, {
+            method: 'Put',
+            body : JSON.stringify(data),
+            headers: {"Content-Type": "application/json",}
+            })
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added') {
+                   chromebookLog(id)
+                }
+            });
         }
 
         async function sendChromebook() {
@@ -851,16 +876,67 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'updated') {
-                        logChomebook(editID, 'Sent For Repair', ticketNumber)
+                        logChromebook(editID, 'Sent For Repair', ticketNumber)
                         document.getElementById('repair-table').innerHTML = '';
                         sendBtn.classList.add('hidden')
                         returnBtn.classList.remove('hidden')
                         repairText.value = ''
                         repairStatus = 1
-                        document.getElementById('tab3-btn').click()
+                        document.getElementById('tab4-btn').click()
                     }
                 });
                 
+        }
+
+        function finishRepair() {
+            const partRepairedSelect = document.getElementById("modal-repairedPart-add");
+            const partRepairedValue = partRepairedSelect.value;
+            const partRepairedText = partRepairedSelect.options[partRepairedSelect.selectedIndex].text;
+
+
+            fetch(`/parts/usePart/${editID}?id=${partRepairedValue}`, { method: 'Put' })
+                .then(response => response.text())
+                .then(data => {
+                    if(data === 'used') {
+                        logChromebook(editID, 'Repaired', `@@@ repaired the ${partRepairedText}`)
+                        logPartUsage(partRepairedValue, 'Repair', `@@@ repaired ${addSN.value}`)
+                        showAlertSuccess(`${partRepairedText} has been repaired.`)
+                        AddModalClose()
+                        getChromebook()
+                    }
+                });
+        }
+
+        function logPartUsage(id, action, info) {
+            let currentDate = new Date();
+            let data = {
+                part_id: id,
+                action: action,
+                log: info,
+                date: currentDate.toLocaleDateString(),
+            }
+
+            fetch(`/parts/log`, {
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+            });
+        }
+
+        function getPartNames() {
+            const partRepairedSelect = document.getElementById("modal-repairedPart-add");
+            partRepairedSelect.innerHTML = '';
+
+            fetch(`/parts/list`)
+                .then(response => response.json())
+                .then(data => {
+                    for(let i = 0; i < data.length; i++) {
+                        let part = data[i]
+                        if(part.partCount > 0) {
+                            partRepairedSelect.innerHTML += `<option value="${part.id}">${part.partName}</option>`
+                        }
+                    }
+                });
         }
 
         function returnChromebook() {
@@ -869,14 +945,14 @@
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'updated') {
-                        logChomebook(editID, 'Returned From Repair', "This chromebook was returned from repair")
+                        logChromebook(editID, 'Returned From Repair', "This chromebook was returned from repair")
                         document.getElementById('repair-table').innerHTML = '';
                         //chromebookLog(editID)
                         //repairText.readonly = 'true'
                         sendBtn.classList.remove('hidden')
                         returnBtn.classList.add('hidden')
                         repairStatus = 2
-                        document.getElementById('tab3-btn').click()
+                        document.getElementById('tab4-btn').click()
                     }
                 });
 

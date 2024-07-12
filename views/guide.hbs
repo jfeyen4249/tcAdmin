@@ -323,7 +323,7 @@ var DocView = new Quill('#show-doc-text', {
         }
 
         searchBox.addEventListener("input", () => {
-            if(searchBox.length = 0) {
+            if(searchBox.length == 0) {
                 document.getElementById('docs-table').innerHTML = ''
                 getDocs(1)
             } else {

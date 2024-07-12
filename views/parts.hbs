@@ -228,7 +228,7 @@
 
 
         </div>
-        <div id="tab3" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
+        <div id="tab2" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
     <table class="w-full border-collapse">
         <thead>
             <tr class="orange-background text-white">
@@ -237,11 +237,12 @@
                 <th class="py-2 px-4 border">Details</th>
             </tr>
         </thead>
-        <tbody class="text-center border-collapse" id="repair-table">
+        <tbody class="text-center border-collapse" id="partHistory-table">
             <!-- Table content goes here -->
         </tbody>
     </table>
 </div>
+    </div>
     
     </div>
 </div>
@@ -260,6 +261,8 @@
         let partCountBox = document.getElementById('modal-count')
         let partUrlBox = document.getElementById('modal-url')
 
+        let partHistory = document.getElementById("partHistory-table")
+
         let editID = 0
         let searchBox = document.getElementById('search')
         let tabModal = document.getElementById('tab-modal')
@@ -277,7 +280,9 @@
             document.getElementById(tabName).style.display = "block";
             event.currentTarget.className += " active";
 
-            getRepairInfo(deviceStatus);
+            if(tabName === 'tab2') {
+                getPartHistory();
+            }
         }
        
         let currentPage = 1;
@@ -292,20 +297,34 @@
         });
 
         function AddModal() {
-            addModal.classList.remove('hidden')
-            addDate.value = formattedDate
-            addBuilding.selectedIndex = 0
-            addmake.selectedIndex = 0
+            addModal.classList.remove('hidden');
+            modelSelect.selectIndex = 0;
+            loadComputerModels();
+        }
+
+        function loadComputerModels() {
+            modelSelect.innerHTML = ``
+            modelSelect.innerHTML += `<option value="" >Select A Computer Model</option>`
+
+            fetch(`/chromebook/makes`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i < data.length; i++) {
+                    let obj = data[i]
+                    modelSelect.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
+                }
+            });
         }
 
         function EditModal(id) {
-            console.log("Edit clicked");
             addModal.classList.remove('hidden')
             delBtn.classList.remove('hidden')
             editBtn.classList.remove('hidden')
             addBtn.classList.add('hidden')
-            editID = id
-            console.log(editID);
+            editID = id;
+
+            loadComputerModels()
+
             fetch(`/parts/getById?id=${editID}`)
             .then(response => response.json())
             .then(data => {
@@ -334,6 +353,47 @@
                 partUrlBox.value = '';
                 modelSelect.selectedIndex = 0;
             }
+        }
+
+        function getPartHistory() {
+            document.getElementById('partHistory-table').innerHTML = '';
+
+            fetch(`/parts/log?id=${editID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        for(let i = 0; i < data.length; i++) {
+                            let partHistory = data[i]
+                            let row = `
+                                <tr class="hover:bg-blue-400">
+                                <td class="py-2 px-4 border">${partHistory.action}</td>
+                                <td class="py-2 px-4 border">${partHistory.date}</td>
+                                <td class="py-2 px-4 border">${partHistory.log}</td>
+                                </tr>`;
+                            document.getElementById('partHistory-table').innerHTML += row;
+                        }
+                    });
+        }
+
+        function logPart(id, action, info) {
+            let currentDate = new Date();
+            let data = {
+                part_id: id,
+                action: action,
+                log: info,
+                date: currentDate.toLocaleDateString(),
+            }
+
+            fetch(`/parts/log`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            getPartHistory(id)
+                        }
+                    });
         }
 
         function getParts(page = 1) {
@@ -520,37 +580,6 @@
             },1500)
         })
 
-        function chromebookLog(id) {
-            document.getElementById('repair-table').innerHTML = '';
-            fetch(`/chromebook/log?id=${id}`)
-            .then(response => response.json())
-            .then(data => {
-                    for(let i = 0; i<data.length; i++) {
-                        let obj = data[i]
-                        let row = `
-                                <tr class="hover:bg-blue-400">
-                                <td class="py-2 px-4 border">${obj.action}</td>
-                                <td class="py-2 px-4 border">${obj.date}</td>
-                                <td class="py-2 px-4 border">${obj.log}</td>
-                                </tr>`;
-                            document.getElementById('repair-table').innerHTML += row;
-                    }
-                });   
-        }
-
-        function getMakeModel() {
-            modelSelect.innerHTML = ``
-            modelSelect.innerHTML += `<option value="" >Select Chromebook Make & Model</option>`
-            
-            fetch(`/chromebook/makes`)
-            .then(response => response.json())
-            .then(data => {
-                    for(let i = 0; i<data.length; i++) {
-                        let obj = data[i]
-                        modelSelect.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
-                    }
-            });     
-        }
 
         function selectIndexByName(name) {
             allModelOptions = modelSelect.options;
@@ -563,7 +592,6 @@
             return 0;
         }
 
-    getMakeModel();
     getParts(1)
     </script>
 </body>
