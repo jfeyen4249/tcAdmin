@@ -70,5 +70,9 @@ router.get("/parts", (req,res) => {
     res.render("parts");
 })
 
+router.get("/misc", (req, res) => {
+    res.render("misc");
+})
+
 
 module.exports = router;
