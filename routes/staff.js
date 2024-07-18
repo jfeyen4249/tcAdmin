@@ -22,7 +22,7 @@ router.get("/list", session.validateSession,  (req, res) => {
 });
 
 router.get("/building", session.validateSession,  (req, res) => {
-    database.query(`SELECT name FROM staff WHERE view = 'true' AND building = ?`, [req.query.building],
+    database.query(`SELECT name FROM buildings WHERE view = 'true' AND building = ?`, [req.query.building],
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);
@@ -31,9 +31,9 @@ router.get("/building", session.validateSession,  (req, res) => {
 });
 
 router.get("/room", session.validateSession,  (req, res) => {
-    database.query(`SELECT room FROM staff WHERE view = 'true' AND name = ?`, [req.query.name],
+    database.query(`SELECT * FROM rooms WHERE view = 'true' AND building = ?`, [req.query.name],
         function (error, results, fields) {
-        if (error) throw error;
+        if (error) throw error; 
         res.send(results);
         }
     );

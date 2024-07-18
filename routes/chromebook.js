@@ -143,7 +143,6 @@ router.delete("/chromebook", session.validateSession, (req, res) => {
         }
     );
 });
-//hh
 
 router.post("/student", session.validateSession,  (req, res) => {
     database.query(`UPDATE chromebooks SET ? WHERE id = ?`, [req.body, req.query.id], function (error, results, fields) {
@@ -164,8 +163,12 @@ router.get("/log", session.validateSession,  (req, res) => {
 });
 
 router.put("/log", session.validateSession,  (req, res) => {
+
+    const reqBody = req.body;
+    reqBody.log = reqBody.log.replace("@@@", req.cookies.username);
+
     database.query(
-        `INSERT INTO chromebook_log SET ?`, [req.body],
+        `INSERT INTO chromebook_log SET ?`, [reqBody],
         function (error, results, fields) {
         if (error) throw error;
         res.send('added');
@@ -235,6 +238,17 @@ router.get("/getSchoolNames", session.validateSession, async (req, res) => {
             res.send(schoolNames);
         });
 });
+
+router.get("/getSerialNumber", session.validateSession, (req, res) => {
+    const chromebookID = req.query.id;
+    database.query(
+        'SELECT sn FROM chromebooks WHERE id = ?', [chromebookID],
+        function (error, results, fields) {
+            if(error) throw error;
+            res.send(results[0]);
+        }
+    );
+})
 
 
 

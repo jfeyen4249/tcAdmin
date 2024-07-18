@@ -253,6 +253,25 @@ CREATE TABLE `networking` (
   PRIMARY KEY (`id`)
 ) ;
 
+CREATE TABLE `parts` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `partName` varchar(255) NOT NULL,
+  `partSKU` varchar(255) NOT NULL,
+  `partCount` int NOT NULL DEFAULT '0',
+  `partUrl` mediumtext NOT NULL,
+  `partComputerModel` varchar(45) NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE `parts_log` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `part_id` varchar(45) DEFAULT NULL,
+  `date` varchar(45) DEFAULT NULL,
+  `log` longtext,
+  `action` longtext NOT NULL,
+  PRIMARY KEY (`id`)
+);
+
 
 CREATE TABLE `password_cat` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -359,6 +378,8 @@ CREATE TABLE `renewals` (
   `status` varchar(45)  DEFAULT 'Active',
   `service` varchar(45)  DEFAULT NULL,
   `year` varchar(45)  DEFAULT NULL,
+  `company` varchar(45)  DEFAULT NULL,
+  `contact` varchar(45)  DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ;
 

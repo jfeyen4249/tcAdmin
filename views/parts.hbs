@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 75%;
+        }
+
+        .h-70 {
+            height: 75%;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+        .modal-width {
+            max-width: 30vw;
+            width: 30vw;
+        }
+
+        .tab-width {
+            max-width: 90vw;
+            width: 90vw;
+
+        }
+
+        .tablink {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .tabcontent {
+            border: #F35D07 4px solid;
+            border-radius: 10px;
+            min-height: 85vh;
+            max-height: 85vh;
+        }
+
+        .active {
+            background-color: #F35D07;
+            color: white;
+        }
+
+
+        
+        .repair-reason {
+            width: 10%;
+        }
+        
+        .repair-info {
+            width: 85%;
+        }
+        
+        .repair-date {
+            width: 10%;
+        }
+
+        .orange-background {
+            background-color: #F35D07;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        #explaination {
+            
+            width: 95%;
+        }
+
+
+    </style>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <link rel="manifest" href="../fav/site.webmanifest">
+    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script defer src=".././menu.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TC Admin: Chromebook Inventory</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showAlertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
+</head>
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Chromebook Parts Inventory</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            
+        </div>
+    </div>
+
+    <!-- Table -->
+
+<div class="relative h-[70vh] overflow-y-auto">
+    <table class="w-full border-collapse border border-gray-800">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Model</th>
+                <th class="py-2 px-4 border">Name</th>
+                <th class="py-2 px-4 border">Count</th>
+                <th class="border size-0.5"></th>
+            </tr>
+        </thead>
+    
+        <tbody class="text-center" id="parts-table">
+           
+        </tbody>
+    </table>
+    </div>
+    <div class="w-full text-right mt-4" id="pageBTN">
+    <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+    <span id="pageIndicator">Page 1</span>
+    <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+</div>
+</div>
+ 
+
+
+    <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="wpc tab-width mx-auto mt-2 bg-white p-8 rounded shadow-md">
+        <div class="tabs">
+            <button class="tablink p-2 ml-2 active" onclick="openTab('tab1')">Part Details</button>
+            <button class="tablink p-2" onclick="openTab('tab2')" id="tab2-btn">Parts History</button>
+        </div>
+        <div id="tab1" class="tabcontent">
+            <div class="wpc mx-auto mt-1 bg-white p-8 rounded">
+            
+                <div class="mb-2">
+                    <label for="modal-computerModel" class="block text-gray-600 text-sm font-medium mb-2">Model of Computer</label>
+                    <select name="modal-computerModel" id="modal-computerModel" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-name" class="block text-gray-600 text-sm font-medium mb-2">Part Name</label>
+                    <input name="modal-name" id="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-sku" class="block text-gray-600 text-sm font-medium mb-2">Part Number/SKU</label>
+                    <input type="text" id="modal-sku" name="modal-sku" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-count" class="block text-gray-600 text-sm font-medium mb-2">Count</label>
+                    <input type="number" id="modal-count" name="modal-count" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-url" class="block text-gray-600 text-sm font-medium mb-2">Part Website</label>
+                    <input type="text" id="modal-url" name="modal-url" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required>
+                </div>
+
+                <!-- Save Button -->
+               <div class="grid grid-flow-col justify-stretch">
+                <button type="button" onclick="addPart()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Part</button>
+                <button type="button" onclick="updatePart()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
+                <button type="button" onclick="deletePart()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
+                <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
+           
+               </div>
+        </div>
+
+
+        </div>
+        <div id="tab2" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="orange-background text-white">
+                <th class="py-2 px-4 border">Action</th>
+                <th class="py-2 px-4 border">Date</th>
+                <th class="py-2 px-4 border">Details</th>
+            </tr>
+        </thead>
+        <tbody class="text-center border-collapse" id="partHistory-table">
+            <!-- Table content goes here -->
+        </tbody>
+    </table>
+</div>
+    </div>
+    
+    </div>
+</div>
+
+    <script defer>
+
+        let addModal = document.getElementById('add-modal')
+
+        let addBtn = document.getElementById('add-btn')
+        let editBtn = document.getElementById('edit-btn')
+        let delBtn = document.getElementById('del-btn')
+
+        let modelSelect = document.getElementById('modal-computerModel')
+        let partNameBox = document.getElementById('modal-name')
+        let partSKUBox = document.getElementById('modal-sku')
+        let partCountBox = document.getElementById('modal-count')
+        let partUrlBox = document.getElementById('modal-url')
+
+        let partHistory = document.getElementById("partHistory-table")
+
+        let editID = 0
+        let searchBox = document.getElementById('search')
+        let tabModal = document.getElementById('tab-modal')
+
+        function openTab(tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+
+            if(tabName === 'tab2') {
+                getPartHistory();
+            }
+        }
+       
+        let currentPage = 1;
+        const limit = 30; // Number of items per page
+        
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getChromebook(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getChromebook(currentPage + 1); // You might want to check here if there are still more data
+        });
+
+        function AddModal() {
+            addModal.classList.remove('hidden');
+            modelSelect.selectIndex = 0;
+            loadComputerModels();
+        }
+
+        function loadComputerModels() {
+            modelSelect.innerHTML = ``
+            modelSelect.innerHTML += `<option value="" >Select A Computer Model</option>`
+
+            fetch(`/chromebook/makes`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i < data.length; i++) {
+                    let obj = data[i]
+                    modelSelect.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
+                }
+            });
+        }
+
+        function EditModal(id) {
+            addModal.classList.remove('hidden')
+            delBtn.classList.remove('hidden')
+            editBtn.classList.remove('hidden')
+            addBtn.classList.add('hidden')
+            editID = id;
+
+            loadComputerModels()
+
+            fetch(`/parts/getById?id=${editID}`)
+            .then(response => response.json())
+            .then(data => {
+                let obj = data[0];
+                partNameBox.value = obj.partName;
+                partSKUBox.value = obj.partSKU;
+                partCountBox.value = obj.partCount;
+                partUrlBox.value = obj.partUrl;
+                selectIndexByName(obj.partComputerModel)
+            })
+        }
+
+        function AddModalClose() {
+            if(editBtn == 0) {
+                addModal.classList.add('hidden')
+            } else {
+                addModal.classList.add('hidden')
+                addBtn.classList.remove('hidden')
+                editBtn.classList.add('hidden')
+                delBtn.classList.add('hidden')
+                editID = 0
+
+                partNameBox.value = '';
+                partSKUBox.value = '';
+                partCountBox.value = '';
+                partUrlBox.value = '';
+                modelSelect.selectedIndex = 0;
+            }
+        }
+
+        function getPartHistory() {
+            document.getElementById('partHistory-table').innerHTML = '';
+
+            fetch(`/parts/log?id=${editID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        for(let i = 0; i < data.length; i++) {
+                            let partHistory = data[i]
+                            let row = `
+                                <tr class="hover:bg-blue-400">
+                                <td class="py-2 px-4 border">${partHistory.action}</td>
+                                <td class="py-2 px-4 border">${partHistory.date}</td>
+                                <td class="py-2 px-4 border">${partHistory.log}</td>
+                                </tr>`;
+                            document.getElementById('partHistory-table').innerHTML += row;
+                        }
+                    });
+        }
+
+        function logPart(id, action, info) {
+            let currentDate = new Date();
+            let data = {
+                part_id: id,
+                action: action,
+                log: info,
+                date: currentDate.toLocaleDateString(),
+            }
+
+            fetch(`/parts/log`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            getPartHistory(id)
+                        }
+                    });
+        }
+
+        function getParts(page = 1) {
+            localStorage.clear()
+            document.getElementById('parts-table').innerHTML = ''
+            fetch(`/parts/list`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                    let row = `
+                        <tr class="hover:bg-blue-400" onclick="EditModal('${obj.id}')">
+                        <td class="py-2 px-4 border">${obj.partComputerModel}</td>
+                        <td class="py-2 px-4 border">${obj.partName}</td>`
+                        if(obj.partCount <= 1) {
+                           row += `<td class="py-2 px-4 border bg-red-500">${obj.partCount}</td>`
+                        } else {
+                            row += `<td class="py-2 px-4 border">${obj.partCount}</td>`
+                        }
+                        row += `<td class="py-2 px-4 border"><button class="bg-blue-500 text-white px-4 rounded-md" onclick="openUrl('${obj.partUrl}')">Order</button></td></tr>`;
+                    document.getElementById('parts-table').innerHTML += row;
+                });
+                
+            })
+            currentPage = page;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
+
+        }
+
+        function openUrl(url) {
+            event.stopPropagation()
+            window.open(
+                url,
+                '_blank'
+            );
+        }
+
+
+        function addPart() {
+            if(modelSelect.value == '') {
+                showAlertwarning("Please select a computer model.");
+                return;
+            }
+            if(partNameBox.value == '') {
+                showAlertwarning('Enter the name of this part.')
+                return;
+            }
+            if(partSKUBox.value == '') {
+                showAlertwarning('Enter a part SKU <br> Enter \'NA\' if you don\'t know')
+                return;
+            }
+            if(partCountBox.value == '') {
+                showAlertwarning('Enter how many of this part you have.');
+                return;
+            }
+            if(partUrlBox.value == '') {
+                showAlertwarning('Enter where you bought this part.');
+                return;
+            }
+
+            let data = { 
+                partName: partNameBox.value,
+                partSKU: partSKUBox.value,
+                partCount: partCountBox.value,
+                partUrl: partUrlBox.value,
+                partComputerModel: modelSelect.options[modelSelect.selectedIndex].text,
+            };
+
+            fetch('/parts/addPart', {
+                method: 'Post',
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}
+            })
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added') {
+                    showAlertSuccess("Part has been successfully added!");
+                    AddModalClose()
+                    getParts(1);
+                }
+            })
+
+        }
+
+        function updatePart() {
+            if(modelSelect.value == '') {
+                showAlertwarning("Please select a computer model.");
+                return;
+            }
+
+            if(partNameBox.value == '') {
+                showAlertwarning('Enter the name of this part.')
+                return;
+            }
+
+            if(partSKUBox.value == '') {
+                showAlertwarning('Enter a part SKU <br> Enter \'NA\' if you don\'t know')
+                return;
+            }
+
+            if(partCountBox.value == '') {
+                showAlertwarning('Enter how many of this part you have.');
+                return;
+            }
+
+            if(partUrlBox.value == '') {
+                showAlertwarning('Enter where you bought this part.');
+                return;
+            }
+
+            let data = { 
+                partName: partNameBox.value,
+                partSKU: partSKUBox.value,
+                partCount: partCountBox.value,
+                partUrl: partUrlBox.value,
+                partComputerModel: modelSelect.options[modelSelect.selectedIndex].text,
+            };
+
+            fetch(`/parts/updatePart?id=${editID} `, {
+                method: 'Put',
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}
+            })
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated') {
+                    showAlertSuccess("Part has been successfully updated!");
+                    AddModalClose()
+                    getParts(1);
+                }
+            })
+        }
+        
+        function deletePart() {
+            var answer = prompt(`Do you want to delete this Part? (yes/no)`);
+            if (answer === "yes") {
+               fetch(`/parts/deletePart?id=${editID}`, {
+                method: 'delete'
+               })
+               .then(response => response.text())
+               .then(data => {
+                console.log(data);
+                    if(data == 'removed') {
+                        showAlertSuccess("Part has been deleted!");
+                        AddModalClose();
+                        getParts(1);
+                    }
+               });
+            }
+        }
+
+        let timeout;
+        searchBox.addEventListener("input", () => {
+            clearTimeout(timeout)
+
+            timeout = setTimeout( () => {
+
+            document.getElementById('parts-table').innerHTML = ''
+            if(searchBox.length = 0) {
+                getChromebook(1)
+                return
+            } else {
+                
+            fetch(`/parts/list?search=${searchBox.value}`)
+            .then(response => response.json())
+            .then(data => {
+               
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i];
+                    let row = `
+                        <tr class="hover:bg-blue-400" onclick="EditModal('${obj.id}')">
+                        <td class="py-2 px-4 border">${obj.partComputerModel}</td>
+                        <td class="py-2 px-4 border">${obj.partName}</td>`
+                        if(obj.partCount <= 1) {
+                           row += `<td class="py-2 px-4 border bg-red-500">${obj.partCount}</td>`
+                        } else {
+                            row += `<td class="py-2 px-4 border">${obj.partCount}</td>`
+                        }
+                        row += `<td class="py-2 px-4 border"><button class="bg-blue-500 text-white px-4 rounded-md" onclick="openUrl('${obj.partUrl}')">Order</button></td></tr>`;
+                    document.getElementById('parts-table').innerHTML += row;
+                }
+            })
+            }
+
+            },1500)
+        })
+
+
+        function selectIndexByName(name) {
+            allModelOptions = modelSelect.options;
+            for(let i = 0; i < allModelOptions.length; i++) {
+                if(allModelOptions[i].innerText == name) {
+                    allModelOptions.selectedIndex = i;
+                    return;
+                }
+            }
+            return 0;
+        }
+
+    getParts(1)
+    </script>
+</body>
+</html>
