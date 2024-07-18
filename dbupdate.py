@@ -288,6 +288,32 @@ def main():
                 PRIMARY KEY (`id`)
             );
         """,
+        "misc_inventory": """
+        create table misc_inventory
+        (
+            id           int auto_increment
+                primary key,
+            assignedUser varchar(255) null,
+            itemName     varchar(255) not null,
+            assetTag     varchar(255) not null,
+            serialNumber varchar(255) not null,
+            info         longtext     null
+        );
+        """,
+        "misc_inventory_logs": """
+        create table misc_inventory_logs
+        (
+            id      int auto_increment
+                primary key,
+            misc_id int         not null,
+            date    varchar(45) not null,
+            log     longtext    null,
+            action  longtext    not null,
+            constraint table_name_misc_inventory_id_fk
+                foreign key (misc_id) references misc_inventory (id)
+                    on delete cascade
+        );
+        """,
         "parts": """
             CREATE TABLE `parts` (
                 `id` int NOT NULL AUTO_INCREMENT,
