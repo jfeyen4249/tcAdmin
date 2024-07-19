@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 75%;
+        }
+
+        .h-70 {
+            height: 75%;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+        .modal-width {
+            max-width: 30vw;
+            width: 30vw;
+        }
+
+        .tab-width {
+            max-width: 90vw;
+            width: 90vw;
+
+        }
+
+        .tablink {
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
+        }
+
+        .tabcontent {
+            border: #F35D07 4px solid;
+            border-radius: 10px;
+            min-height: 85vh;
+            max-height: 85vh;
+        }
+
+        .active {
+            background-color: #F35D07;
+            color: white;
+        }
+
+
+        
+        .repair-reason {
+            width: 10%;
+        }
+        
+        .repair-info {
+            width: 85%;
+        }
+        
+        .repair-date {
+            width: 10%;
+        }
+
+        .orange-background {
+            background-color: #F35D07;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        #explaination {
+            
+            width: 95%;
+        }
+
+
+    </style>
+
+    <link rel="apple-touch-icon" sizes="180x180" href="../fav/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+    <link rel="manifest" href="../fav/site.webmanifest">
+    <link rel="mask-icon" href="../fav/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <script defer src=".././menu.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>TC Admin: Chromebook Inventory</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showAlertWarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
+</head>
+<body class="bg-slate-800 h-screen flex">
+
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Miscellaneous Inventory</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <input type="text" id="search" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            
+        </div>
+    </div>
+
+    <!-- Table -->
+
+<div class="relative h-[70vh] overflow-y-auto">
+    <table class="w-full border-collapse border border-gray-800">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Name</th>
+                <th class="py-2 px-4 border">Asset Tag</th>
+                <th class="py-2 px-4 border">Serial Number</th>
+                <th class="py-2 px-4 border">Assigned User</th>
+            </tr>
+        </thead>
+    
+        <tbody class="text-center" id="misc-table">
+           
+        </tbody>
+    </table>
+    </div>
+    <div class="w-full text-right mt-4" id="pageBTN">
+    <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+    <span id="pageIndicator">Page 1</span>
+    <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+</div>
+</div>
+ 
+
+
+    <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="wpc tab-width mx-auto mt-2 bg-white p-8 rounded shadow-md">
+        <div class="tabs">
+            <button class="tablink p-2 ml-2 active" onclick="openTab('tab1')">Misc Details</button>
+            <button class="tablink p-2" onclick="openTab('tab2')" id="tab2-btn">Misc History</button>
+        </div>
+        <div id="tab1" class="tabcontent">
+            <div class="wpc mx-auto mt-1 bg-white p-8 rounded">
+            
+                <div class="mb-2">
+                    <label for="modal-itemName" class="block text-gray-600 text-sm font-medium mb-2">Name</label>
+                    <input name="modal-itemName" id="modal-itemName" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></input>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-assetTag" class="block text-gray-600 text-sm font-medium mb-2">Asset Tag</label>
+                    <input name="modal-assetTag" id="modal-assetTag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-serialNumber" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
+                    <input name="modal-serialNumber" id="modal-serialNumber" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" required></select>
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-assignedUser" class="block text-gray-600 text-sm font-medium mb-2">Assigned User</label>
+                    <input type="text" id="modal-assignedUser" name="modal-assignedUser" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                </div>
+
+                <div class="mb-2">
+                    <label for="modal-info" class="block text-gray-600 text-sm font-medium mb-2">Info</label>
+                    <input type="text" id="modal-info" name="modal-info" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                </div>
+
+                <!-- Save Button -->
+               <div class="grid grid-flow-col justify-stretch">
+                <button type="button" onclick="addMiscItem()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add misc</button>
+                <button type="button" onclick="updateMiscItem()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
+                <button type="button" onclick="deleteMisc()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
+                <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
+           
+               </div>
+        </div>
+
+
+        </div>
+        <div id="tab2" class="tabcontent p-4" style="display: none; overflow-y: auto; max-height: 300px;">
+    <table class="w-full border-collapse">
+        <thead>
+            <tr class="orange-background text-white">
+                <th class="py-2 px-4 border">Action</th>
+                <th class="py-2 px-4 border">Date</th>
+                <th class="py-2 px-4 border">Details</th>
+            </tr>
+        </thead>
+        <tbody class="text-center border-collapse" id="miscHistory-table">
+            <!-- Table content goes here -->
+        </tbody>
+    </table>
+</div>
+    </div>
+    
+    </div>
+</div>
+
+    <script defer>
+
+        let addModal = document.getElementById('add-modal')
+
+        let addBtn = document.getElementById('add-btn')
+        let editBtn = document.getElementById('edit-btn')
+        let delBtn = document.getElementById('del-btn')
+
+        let miscNameBox = document.getElementById('modal-itemName')
+        let miscAssetTagBox = document.getElementById('modal-assetTag')
+        let miscSerialNumberBox = document.getElementById('modal-serialNumber')
+        let miscAssignedUserBox = document.getElementById('modal-assignedUser')
+        let miscInfoBox = document.getElementById('modal-info')
+
+        let miscHistory = document.getElementById("miscHistory-table")
+
+        let editID = 0
+        let searchBox = document.getElementById('search')
+        let tabModal = document.getElementById('tab-modal')
+
+        function openTab(tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            event.currentTarget.className += " active";
+
+            if(tabName === 'tab2') {
+                getMiscHistory();
+            }
+        }
+       
+        let currentPage = 1;
+        const limit = 30; // Number of items per page
+        
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getChromebook(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getChromebook(currentPage + 1); // You might want to check here if there are still more data
+        });
+
+        function AddModal() {
+            addModal.classList.remove('hidden');
+            // modelSelect.selectIndex = 0;
+            // loadComputerModels();
+        }
+
+        // function loadComputerModels() {
+        //     modelSelect.innerHTML = ``
+        //     modelSelect.innerHTML += `<option value="" >Select A Computer Model</option>`
+        //
+        //     fetch(`/chromebook/makes`)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         for(let i = 0; i < data.length; i++) {
+        //             let obj = data[i]
+        //             modelSelect.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`
+        //         }
+        //     });
+        // }
+
+        function EditModal(id) {
+            addModal.classList.remove('hidden')
+            delBtn.classList.remove('hidden')
+            editBtn.classList.remove('hidden')
+            addBtn.classList.add('hidden')
+            editID = id;
+
+            //loadComputerModels()
+
+            fetch(`/misc/getById?id=${editID}`)
+            .then(response => response.json())
+            .then(data => {
+                let obj = data[0];
+                miscNameBox.value = obj.itemName;
+                miscAssetTagBox.value = obj.assetTag;
+                miscSerialNumberBox.value = obj.serialNumber;
+                miscAssignedUserBox.value = obj.assignedUser;
+                miscInfoBox.value = obj.info;
+                //selectIndexByName(obj.miscComputerModel)
+            })
+        }
+
+        function AddModalClose() {
+            if(editBtn == 0) {
+                addModal.classList.add('hidden')
+            } else {
+                addModal.classList.add('hidden')
+                addBtn.classList.remove('hidden')
+                editBtn.classList.add('hidden')
+                delBtn.classList.add('hidden')
+                editID = 0
+
+                miscNameBox.value = '';
+                miscAssetTagBox.value = '';
+                miscSerialNumberBox.value = '';
+                miscAssignedUserBox.value = '';
+                miscInfoBox.value = '';
+                //modelSelect.selectedIndex = 0;
+            }
+        }
+
+        function getMiscHistory() {
+            document.getElementById('miscHistory-table').innerHTML = '';
+
+            fetch(`/misc/log?id=${editID}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        for(let i = 0; i < data.length; i++) {
+                            let miscHistory = data[i]
+                            let row = `
+                                <tr class="hover:bg-blue-400">
+                                <td class="py-2 px-4 border">${miscHistory.action}</td>
+                                <td class="py-2 px-4 border">${miscHistory.date}</td>
+                                <td class="py-2 px-4 border">${miscHistory.log}</td>
+                                </tr>`;
+                            document.getElementById('miscHistory-table').innerHTML += row;
+                        }
+                    });
+        }
+
+        function logMisc(id, action, info) {
+            let currentDate = new Date();
+            let data = {
+                misc_id: id,
+                action: action,
+                log: info,
+                date: currentDate.toLocaleDateString(),
+            }
+
+            fetch(`/misc/log`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+            })
+                    .then(response => response.text())
+                    .then(data => {
+                        if(data == 'added') {
+                            getMiscHistory(id)
+                        }
+                    });
+        }
+
+        function getMiscs(page = 1) {
+            localStorage.clear()
+            document.getElementById('misc-table').innerHTML = ''
+            fetch(`/misc/list`)
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(obj => {
+                    let row = `
+                        <tr class="hover:bg-blue-400" onclick="EditModal('${obj.id}')">
+                            <td class="py-2 px-4 border">${obj.itemName}</td>
+                            <td class="py-2 px-4 border">${obj.assetTag}</td>
+                            <td class="py-2 px-4 border">${obj.serialNumber}</td>
+                            <td class="py-2 px-4 border">${obj.assignedUser}</td>
+                        </tr>`;
+                    document.getElementById('misc-table').innerHTML += row;
+                });
+                
+            })
+            currentPage = page;
+            document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
+
+        }
+
+
+        function addMiscItem() {
+            // if(modelSelect.value == '') {
+            //     showAlertwarning("Please select a computer model.");
+            //     return;
+            // }
+            if(miscNameBox.value == '') {
+                showAlertwarning('Enter the name of this item.')
+                return;
+            }
+            if(miscAssetTagBox.value == '') {
+                showAlertwarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
+                return;
+            }
+            if(miscSerialNumberBox.value == '') {
+                showAlertwarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
+                return;
+            }
+
+            let data = {
+                assignedUser: miscAssignedUserBox.value,
+                itemName: miscNameBox.value,
+                assetTag: miscAssetTagBox.value,
+                serialNumber: miscSerialNumberBox.value,
+                info: miscInfoBox.value,
+            };
+
+            fetch('/misc/addMisc', {
+                method: 'Post',
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}
+            })
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'added') {
+                    showAlertSuccess("Item has been successfully added!");
+                    logMisc(editID,"Added", "Added to Inventory");
+                    AddModalClose();
+                    getMiscs(1);
+                }
+            })
+
+        }
+
+        function updateMiscItem() {
+            if(miscNameBox.value == '') {
+                showAlertwarning('Enter the name of this item.')
+                return;
+            }
+            if(miscAssetTagBox.value == '') {
+                showAlertwarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
+                return;
+            }
+            if(miscSerialNumberBox.value == '') {
+                showAlertwarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
+                return;
+            }
+
+            let data = {
+                assignedUser: miscAssignedUserBox.value,
+                itemName: miscNameBox.value,
+                assetTag: miscAssetTagBox.value,
+                serialNumber: miscSerialNumberBox.value,
+                info: miscInfoBox.value,
+            };
+
+            fetch(`/misc/updateMisc?id=${editID} `, {
+                method: 'Put',
+                body: JSON.stringify(data),
+                headers: {"Content-Type": "application/json"}
+            })
+            .then(response => response.text())
+            .then(data => {
+                if(data == 'updated') {
+                    showAlertSuccess("Item has been successfully updated!");
+                    logMisc(editID,"Modified", "Modified by @@@");
+                    AddModalClose()
+                    getMiscs(1);
+                }
+            })
+        }
+        
+        function deleteMisc() {
+            var answer = prompt(`Do you want to delete this misc? (yes/no)`);
+
+            let data = {
+                itemName: miscNameBox.value,
+                itemId: editID,
+                serialNumber: miscSerialNumberBox.value,
+            }
+            if (answer === "yes") {
+               fetch(`/misc/deleteMisc?id=${editID}`, {
+                   method: 'delete',
+                   body: JSON.stringify(data),
+                   headers: { "Content-Type": "application/json" }
+               })
+               .then(response => response.text())
+               .then(data => {
+                    if(data == 'deleted') {
+                        showAlertSuccess("Item has been deleted!");
+                        AddModalClose();
+                        getMiscs(1);
+                    }
+               });
+            }
+        }
+
+        let timeout;
+        searchBox.addEventListener("input", () => {
+            clearTimeout(timeout)
+
+            timeout = setTimeout( () => {
+
+            document.getElementById('misc-table').innerHTML = ''
+            if(searchBox.length = 0) {
+                getChromebook(1)
+                return
+            } else {
+                
+            fetch(`/misc/list?search=${searchBox.value}`)
+            .then(response => response.json())
+            .then(data => {
+               
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i];
+                    let row = `
+                        <tr class="hover:bg-blue-400" onclick="EditModal('${obj.id}')">
+                            <td class="py-2 px-4 border">${obj.itemName}</td>
+                            <td class="py-2 px-4 border">${obj.assetTag}</td>
+                            <td class="py-2 px-4 border">${obj.assignedUser}</td>
+                        </tr>`;
+                    document.getElementById('miscs-table').innerHTML += row;
+                }
+            })
+            }
+
+            },1500)
+        })
+
+
+        // function selectIndexByName(name) {
+        //     allModelOptions = modelSelect.options;
+        //     for(let i = 0; i < allModelOptions.length; i++) {
+        //         if(allModelOptions[i].innerText == name) {
+        //             allModelOptions.selectedIndex = i;
+        //             return;
+        //         }
+        //     }
+        //     return 0;
+        // }
+
+    getMiscs(1)
+    </script>
+</body>
+</html>

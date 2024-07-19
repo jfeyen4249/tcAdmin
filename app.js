@@ -35,6 +35,7 @@ const monitoring = require('./routes/monitoring.js');
 const info = require('./routes/info.js');
 const guide = require('./routes/guide.js');
 const parts = require('./routes/parts.js');
+const misc = require('./routes/misc.js');
 
 const app = express();
 const port = 5500;
@@ -95,6 +96,7 @@ app.use("/networking", networking);
 app.use("/info", info);
 app.use("/guide", guide);
 app.use("/parts", parts);
+app.use("/misc", misc);
 
 const server = app.listen(port, () => {
   console.log(`Listening at http://localhost:${port}`);
