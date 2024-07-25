@@ -5,6 +5,10 @@
      .wpc {
         width: 30vw;
     }
+
+    body {
+        overflow: hidden;
+    }
    </style>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -85,7 +89,7 @@
 
     <!-- Modal -->
     <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md">
+        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md overflow-y-auto" style="height: 100%;">
             <h2 class="text-2xl font-bold mb-4 text-center">Add Printer</h2>
             <form>
                 <!-- Documentation Title -->
@@ -139,7 +143,7 @@
 
 
     <div id="edit-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md">
+        <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md overflow-y-auto" style="height: 100%;">
             <h2 class="text-2xl font-bold mb-4 text-center">Edit Printer</h2>
             <form>
                 <!-- Documentation Title -->

@@ -51,7 +51,7 @@ app.get("/scan", (req, res) => {
   res.render("scan");
 });
 
-app.get("/",  (req, res) => {
+app.get("/", session.validateSession,  (req, res) => {
   res.render("index");
 });
 
