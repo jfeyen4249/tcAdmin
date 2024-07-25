@@ -84,7 +84,7 @@ router.delete("/deletePart", session.validateSession, (req, res) => {
 router.put("/usePart/:chromebook", session.validateSession, (req, res) => {
 
     const partID = req.query.id;
-    const chromebookID = req.params.chromebook;
+    const chromebookSN = req.params?.chromebook;
 
     getPartName(partID, (err, results, fields) => {
        if(err) throw err;
@@ -94,7 +94,7 @@ router.put("/usePart/:chromebook", session.validateSession, (req, res) => {
         database.query(`UPDATE parts SET partCount = partCount - 1 WHERE id = ?`, [partID],
             function (error, results, fields) {
                 if (error) throw error;
-                logs.SystemLog(`Part: ${partInfo.partName},${partInfo.partSKU} was used from the part inventory on chromebook: ${chromebookID}`, req.cookies.username)
+                logs.SystemLog(`Part: ${partInfo.partName},${partInfo.partSKU} was used from the part inventory on chromebook: ${chromebookSN}`, req.cookies.username)
                 res.send('used');
             }
         );
