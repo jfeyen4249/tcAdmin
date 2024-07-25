@@ -894,7 +894,7 @@
             const partRepairedText = partRepairedSelect.options[partRepairedSelect.selectedIndex].text;
 
 
-            fetch(`/parts/usePart/${editID}?id=${partRepairedValue}`, { method: 'Put' })
+            fetch(`/parts/usePart/${addSN.value}?id=${partRepairedValue}`, { method: 'Put' })
                 .then(response => response.text())
                 .then(data => {
                     if(data === 'used') {
