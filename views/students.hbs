@@ -171,8 +171,7 @@
         let upload = document.getElementById('upload')
         
         function openModal(id) {
-            console.log("Test");
-            if(id == 0) {
+            if(id === 0) {
                 modal.classList.remove('hidden')
                 addBTN.classList.remove('hidden')
             } else {
@@ -193,7 +192,7 @@
         }
 
         function closeModal() {
-            if(editid == 0) {
+            if(editid === 0) {
                 modal.classList.add('hidden')
                 addBTN.classList.add('hidden')
             } else {
@@ -207,8 +206,8 @@
             editid = 0
         }
 
-        let currentPage = 1;
         const limit = 30; // Number of items per page
+        let currentPage = 1;
         let allStudents = [];
         let filteredStudents = [];
         let isFilteringSearch = false;
@@ -222,25 +221,23 @@
             populateStudentTable(1, allStudents);
         }
 
-        function populateStudentTable(page = 1, table) {
-            let pageToPopulate = page;
+        function populateStudentTable(page, table) {
+            const pageToPopulate = page || 1;
             const positionToStartInArray = (pageToPopulate * limit) - limit;
             const positionToEndInArray = (pageToPopulate * limit) - 1;
             maxPages = Math.ceil(table.length / limit);
 
-            console.log("Table Length: " + table.length);
-            console.log("Limit: " + limit);
-            console.log("MaxPages: " + Math.ceil(table.length / limit));
             if(currentPage > maxPages) return;
+            if(maxPages === 1) document.getElementById('pageBTN').style.display = 'none';
 
             document.getElementById('student-table').innerHTML = '';
             for(let i = positionToStartInArray; i <= positionToEndInArray; i++) {
                 try {
                     let obj = table[i];
                     let row = `<tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
-                               <td class="py-2 px-4 border">${obj.student}</td>
-                               <td class="py-2 px-4 border">${obj.year}</td>
-                           </tr>`;
+                                   <td class="py-2 px-4 border">${obj.student}</td>
+                                   <td class="py-2 px-4 border">${obj.year}</td>
+                                </tr>`;
                     document.getElementById('student-table').innerHTML += row;
                 } catch(err) {
 
@@ -261,24 +258,91 @@
             return allStudentsFromFetch;
         }
 
-        let getList = (page = 1) => {
-            document.getElementById('student-table').innerHTML = '';
-            fetch(`/students/list?page=${page}&limit=${limit}`)
-                .then(response => response.json())
+        function isInSearch(search, student) {
+            let studentString = JSON.stringify(student).toLocaleLowerCase();
+            if(student.id.toString().includes(search)) return false; //I hate this but fuck it, it works.
+            return studentString.includes(search.toLocaleLowerCase());
+        }
+
+        function filterStudentsBySearch(search) {
+            filteredStudents = allStudents.filter((student) => isInSearch(search, student))
+        }
+
+        function addStudent() {
+            if(studentName.value.length === 0) {
+                showalertwarning('Enter the students full name')
+                return
+            }
+        
+            if(gradYear.value.length === 0) {
+                showalertwarning('Enter the students graduation year')
+                return
+            }
+
+            let data = {
+                    student: studentName.value,
+                    year: gradYear.value,
+                }
+                
+                fetch(`/students/student`, {
+                method: 'Put',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+                })
+                .then(response => response.text())
                 .then(data => {
-                    data.forEach(obj => {
-                        let row = `
-                            <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
-                                <td class="py-2 px-4 border">${obj.student}</td>
-                                <td class="py-2 px-4 border">${obj.year}</td>
-                            </tr>`;
-                        document.getElementById('student-table').innerHTML += row;
-                    });
-                    currentPage = page;
-                    document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
-                    
+                    if(data === 'added') {
+                       closeModal();
+                       populateStudentList();
+                    }
                 });
-        };
+        }
+
+        function editStudent() {
+            if(studentName.value.length === 0) {
+                showalertwarning('Enter the students full name')
+                return
+            }
+        
+            if(gradYear.value.length === 0) {
+                showalertwarning('Enter the students graduation year')
+                return
+            }
+
+            let data = {
+                    student: studentName.value,
+                    year: gradYear.value,
+                }
+                
+                fetch(`/students/student?id=${editid}`, {
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {"Content-Type": "application/json",}
+                })
+                .then(response => response.text())
+                .then(data => {
+                    if(data === 'added') {
+                       closeModal()
+                        populateStudentList();
+                    }
+                });
+        }
+
+        function deleteStudent() {
+            let answer = prompt(`Do you want to delete ${studentName.value}? (yes/no)`);
+            if (answer === "yes") {
+                fetch(`/students/student?id=${editid}`, {method : 'delete'})
+                .then(response => response.text())
+                .then(data => {
+                    if(data === 'deleted') {
+                        closeModal()
+                        populateStudentList();
+                    }
+                });
+            } else if (answer === "no") {
+                populateStudentList();
+            } 
+        }
 
         document.getElementById('prevButton').addEventListener('click', () => {
             if (currentPage > 1) {
@@ -300,121 +364,28 @@
             }
         });
 
-        function isInSearch(search, obj) {
-            obj.id = null;
-            let stringObj = JSON.stringify(obj).toLocaleLowerCase();
-            return stringObj.includes(search.toLocaleLowerCase());
-        }
+        document.getElementById('search').addEventListener('input', () => {
 
-        function filterStudentsBySearch(search) {
-            filteredStudents = allStudents.filter((x) => isInSearch(search, x))
-        }
+            const searchString = document.getElementById('search').value;
+            currentPage = 1;
 
-        let searchBox = document.getElementById('search')
-        let timeout;
-        searchBox.addEventListener('input', () => {
-            clearTimeout(timeout);
+            if(searchString.length === 0) {
+                document.getElementById('student-table').innerHTML = ''
+                document.getElementById('pageBTN').style.display = 'block'
 
-            timeout = setTimeout( () => {
-                const search = document.getElementById('search').value;
-                currentPage = 1;
-
-                if(search.length == 0) {
-                    document.getElementById('student-table').innerHTML = ''
-                    document.getElementById('pageBTN').style.display = 'block'
-                    if(isFilteringSearch) {
-                        isFilteringSearch = false;
-                    }
-                    populateStudentList();
-                } else if(document.getElementById('search').value.length >= 1){
-                    document.getElementById('pageBTN').style.display = 'block'
-                    document.getElementById('student-table').innerHTML = '';
-                    isFilteringSearch = true;
-                    filterStudentsBySearch(search);
-                    populateStudentTable(currentPage, filteredStudents);
+                if(isFilteringSearch) {
+                    isFilteringSearch = false;
                 }
-            }, 1500);
-        })
 
-        function addStudent() {
-            if(studentName.value.length == 0) {
-                showalertwarning('Enter the students full name')
-                return
-            }
-        
-            if(gradYear.value.length == 0) {
-                showalertwarning('Enter the students graduation year')
-                return
-            }
-
-            let data = {
-                    student: studentName.value,
-                    year: gradYear.value,
-                }
-                
-                fetch(`/students/student`, {
-                method: 'Put',
-                body : JSON.stringify(data),
-                headers: {"Content-Type": "application/json",}
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'added') {
-                       closeModal()
-                        populateStudentList();
-                    }
-                });
-        }
-
-        function editStudent() {
-            if(studentName.value.length == 0) {
-                showalertwarning('Enter the students full name')
-                return
-            }
-        
-            if(gradYear.value.length == 0) {
-                showalertwarning('Enter the students graduation year')
-                return
-            }
-
-            let data = {
-                    student: studentName.value,
-                    year: gradYear.value,
-                }
-                
-                fetch(`/students/student?id=${editid}`, {
-                method: 'Post',
-                body : JSON.stringify(data),
-                headers: {"Content-Type": "application/json",}
-                })
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'added') {
-                       closeModal()
-                        populateStudentList();
-                    }
-                });
-        }
-
-        function deleteStudent() {
-            var answer = prompt(`Do you want to delete ${studentName.value}? (yes/no)`);
-            if (answer === "yes") {
-                fetch(`/students/student?id=${editid}`, {method : 'delete'})
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'deleted') {
-                        closeModal()
-                        populateStudentList();
-                    }
-                });
-            } else if (answer === "no") {
                 populateStudentList();
-            } 
-        }
-
-        importBTN.addEventListener('click', function() {
-            upload.click()
-        })
+            } else if(document.getElementById('search').value.length >= 1) {
+                document.getElementById('pageBTN').style.display = 'block'
+                document.getElementById('student-table').innerHTML = '';
+                isFilteringSearch = true;
+                filterStudentsBySearch(searchString);
+                populateStudentTable(currentPage, filteredStudents);
+            }
+        });
 
         document.getElementById('upload').addEventListener('change', function(event) {
             const file = event.target.files[0];
@@ -423,15 +394,29 @@
             reader.onload = function(e) {
                 const lines = e.target.result.split('\n');
                 lines.forEach(function(line) {
-                    //console.log(line);
-                    let data = {student : line.split(',')[0] + " " + line.split(',')[1], year : line.split(',')[2].slice(0, 4)}
-                    fetch(`/students/student/`,{method: 'Put', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
+                    let data = {
+                        student : line.split(',')[0] + " " + line.split(',')[1],
+                        year : line.split(',')[2].slice(0, 4)
+                    }
+                    fetch(`/students/student/`,{
+                        method: 'Put',
+                        body : JSON.stringify(data),
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                    })
                         .then(response => response.text())
-                        .then(data => {console.log(data)});
+                        .then(data => {
+                            console.log(data)
+                        });
                 });
             }
             reader.readAsText(file);
         });
+
+        importBTN.addEventListener('click', function() {
+            upload.click()
+        })
 
     
     </script>
