@@ -446,6 +446,7 @@ router.post("/slack", session.validateSession, async (req, res) => {
         },
       }
     );
+    console.log(response.data);
     res.send(response.data);
   } catch (error) {
     res.status(500).send(error.message);
