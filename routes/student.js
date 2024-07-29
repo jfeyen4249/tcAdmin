@@ -24,6 +24,17 @@ router.get("/list", session.validateSession, (req, res) => {
     );
 });
 
+router.get("/listAll", session.validateSession, (req, res) => {
+
+    database.query(
+        `SELECT * FROM students WHERE status = 'true' ORDER BY year ASC`,
+        function (error, results, fields) {
+            if (error) throw error;
+            return res.send(results);
+        }
+    );
+});
+
 
 router.get("/student", session.validateSession,  (req, res) => {
     database.query(
@@ -37,6 +48,7 @@ router.get("/student", session.validateSession,  (req, res) => {
 });
   
 router.put("/student", session.validateSession, (req, res) => {
+    console.log(req.body);
     database.query(
         `INSERT INTO students SET ?`, [req.body],
         function (error, results, fields) {

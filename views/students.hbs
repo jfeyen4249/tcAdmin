@@ -107,7 +107,7 @@
                         <th class="py-2 px-4 border">Graduation Year</th>
                     </tr>
                 </thead>
-                <tbody class="text-center" id="password-table">
+                <tbody class="text-center" id="student-table">
                     <!-- Table rows -->
                 </tbody>
             </table>
@@ -209,9 +209,60 @@
 
         let currentPage = 1;
         const limit = 30; // Number of items per page
+        let allStudents = [];
+        let filteredStudents = [];
+        let isFilteringSearch = false;
+        let maxPages = 1;
+
+        populateStudentList();
+
+        async function populateStudentList() {
+            if(isFilteringSearch) return;
+            allStudents = await loadStudents();
+            populateStudentTable(1, allStudents);
+        }
+
+        function populateStudentTable(page = 1, table) {
+            let pageToPopulate = page;
+            const positionToStartInArray = (pageToPopulate * limit) - limit;
+            const positionToEndInArray = (pageToPopulate * limit) - 1;
+            maxPages = Math.ceil(table.length / limit);
+
+            console.log("Table Length: " + table.length);
+            console.log("Limit: " + limit);
+            console.log("MaxPages: " + Math.ceil(table.length / limit));
+            if(currentPage > maxPages) return;
+
+            document.getElementById('student-table').innerHTML = '';
+            for(let i = positionToStartInArray; i <= positionToEndInArray; i++) {
+                try {
+                    let obj = table[i];
+                    let row = `<tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
+                               <td class="py-2 px-4 border">${obj.student}</td>
+                               <td class="py-2 px-4 border">${obj.year}</td>
+                           </tr>`;
+                    document.getElementById('student-table').innerHTML += row;
+                } catch(err) {
+
+                }
+            }
+            currentPage = pageToPopulate;
+            document.getElementById('pageIndicator').innerText = `Page ${pageToPopulate}`;
+        }
+
+        async function loadStudents() {
+            let allStudentsFromFetch = []
+            document.getElementById('student-table').innerHTML = '';
+           await fetch('/students/listAll/')
+                    .then(response => response.json())
+                    .then(data => {
+                        allStudentsFromFetch = data;
+                    });
+            return allStudentsFromFetch;
+        }
 
         let getList = (page = 1) => {
-            document.getElementById('password-table').innerHTML = '';
+            document.getElementById('student-table').innerHTML = '';
             fetch(`/students/list?page=${page}&limit=${limit}`)
                 .then(response => response.json())
                 .then(data => {
@@ -221,7 +272,7 @@
                                 <td class="py-2 px-4 border">${obj.student}</td>
                                 <td class="py-2 px-4 border">${obj.year}</td>
                             </tr>`;
-                        document.getElementById('password-table').innerHTML += row;
+                        document.getElementById('student-table').innerHTML += row;
                     });
                     currentPage = page;
                     document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
@@ -230,39 +281,59 @@
         };
 
         document.getElementById('prevButton').addEventListener('click', () => {
-            if (currentPage > 1) getList(currentPage - 1);
+            if (currentPage > 1) {
+                if(isFilteringSearch) {
+                    populateStudentTable(currentPage - 1, filteredStudents);
+                } else {
+                    populateStudentTable(currentPage - 1, allStudents);
+                }
+            }
         });
 
         document.getElementById('nextButton').addEventListener('click', () => {
-            getList(currentPage + 1); // You might want to check here if there are still more data
+            if(currentPage < maxPages) {
+                if (isFilteringSearch) {
+                    populateStudentTable(currentPage + 1, filteredStudents);
+                } else {
+                    populateStudentTable(currentPage + 1, allStudents);
+                }
+            }
         });
 
-        // Initial call
-        getList(1);
+        function isInSearch(search, obj) {
+            obj.id = null;
+            let stringObj = JSON.stringify(obj).toLocaleLowerCase();
+            return stringObj.includes(search.toLocaleLowerCase());
+        }
 
+        function filterStudentsBySearch(search) {
+            filteredStudents = allStudents.filter((x) => isInSearch(search, x))
+        }
 
-        document.getElementById('search').addEventListener('input', function(){
-            if(document.getElementById('search').value.length == 0) {
-                document.getElementById('password-table').innerHTML = ''
-                document.getElementById('pageBTN').style.display = 'block'
-                getList(1)
-            } else if(document.getElementById('search').value.length >= 1){
-                document.getElementById('pageBTN').style.display = 'none'
-                document.getElementById('password-table').innerHTML = '';
-                fetch(`/students/search?search=${document.getElementById('search').value}`,{method : 'get'})
-                    .then(response => response.json())
-                    .then(data => {
-                        data.forEach(obj => {
-                            let row = `
-                                 <tr class="hover:bg-blue-400" onclick="openModal('${obj.id}')">
-                                <td class="py-2 px-4 border">${obj.student}</td>
-                                <td class="py-2 px-4 border">${obj.year}</td>
-                            </tr>`;
-                            document.getElementById('password-table').innerHTML += row;
-                        });
-                    });
-                
-            }
+        let searchBox = document.getElementById('search')
+        let timeout;
+        searchBox.addEventListener('input', () => {
+            clearTimeout(timeout);
+
+            timeout = setTimeout( () => {
+                const search = document.getElementById('search').value;
+                currentPage = 1;
+
+                if(search.length == 0) {
+                    document.getElementById('student-table').innerHTML = ''
+                    document.getElementById('pageBTN').style.display = 'block'
+                    if(isFilteringSearch) {
+                        isFilteringSearch = false;
+                    }
+                    populateStudentList();
+                } else if(document.getElementById('search').value.length >= 1){
+                    document.getElementById('pageBTN').style.display = 'block'
+                    document.getElementById('student-table').innerHTML = '';
+                    isFilteringSearch = true;
+                    filterStudentsBySearch(search);
+                    populateStudentTable(currentPage, filteredStudents);
+                }
+            }, 1500);
         })
 
         function addStudent() {
@@ -290,7 +361,7 @@
                 .then(data => {
                     if(data == 'added') {
                        closeModal()
-                       getList()
+                        populateStudentList();
                     }
                 });
         }
@@ -320,7 +391,7 @@
                 .then(data => {
                     if(data == 'added') {
                        closeModal()
-                       getList()
+                        populateStudentList();
                     }
                 });
         }
@@ -333,11 +404,11 @@
                 .then(data => {
                     if(data == 'deleted') {
                         closeModal()
-                        getList()
+                        populateStudentList();
                     }
                 });
             } else if (answer === "no") {
-                 getList()
+                populateStudentList();
             } 
         }
 
@@ -352,7 +423,7 @@
             reader.onload = function(e) {
                 const lines = e.target.result.split('\n');
                 lines.forEach(function(line) {
-                    //console.log(line); 
+                    //console.log(line);
                     let data = {student : line.split(',')[0] + " " + line.split(',')[1], year : line.split(',')[2].slice(0, 4)}
                     fetch(`/students/student/`,{method: 'Put', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
                         .then(response => response.text())
@@ -360,7 +431,6 @@
                 });
             }
             reader.readAsText(file);
-            getList();
         });
 
     
