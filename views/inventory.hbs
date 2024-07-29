@@ -2,6 +2,12 @@
 <html lang="en">
 <head>
 
+    <style>
+        body {
+            overflow: hidden;
+        }
+    </style>
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
     <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
@@ -59,7 +65,7 @@
     <!-- Main Content -->
     <div class="flex-1 p-8">
        
-        <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+        <div class="max-w-full w-full bg-white p-8 rounded shadow-md overflow-y-auto" style="height: 100%;">
             <h1 class="text-2xl font-bold mb-4">Inventory List</h1>
 
             <!-- Documentation List -->
