@@ -643,7 +643,8 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    showa('Added!')
+                    showAlertSuccess('Added!')
+                    addRoom.value = ''
                     GetLog()
                 }
             })
