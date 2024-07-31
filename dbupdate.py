@@ -537,6 +537,25 @@ def main():
                 PRIMARY KEY (`id`)
             );
         """, 
+        "hotspot": """
+            CREATE TABLE `tcadmin`.`hotspot` (
+                `id` INT NOT NULL AUTO_INCREMENT,
+                `make` VARCHAR(245) NULL,
+                `model` VARCHAR(245) NULL,
+                `tag` VARCHAR(45) NULL,
+                `sn` VARCHAR(45) NULL,
+                `building` VARCHAR(45) NULL,
+                `status` VARCHAR(45) NULL DEFAULT 'true',
+                PRIMARY KEY (`id`));
+        """, 
+        "hotspot_log": """
+            CREATE TABLE `tcadmin`.`hotspot_log` (
+                `id` INT NOT NULL AUTO_INCREMENT,
+                `hotspot_id` VARCHAR(245) NULL,
+                `date` VARCHAR(245) NULL,
+                `log` LONGTEXT NULL,
+                PRIMARY KEY (`id`));
+        """, 
     }
 
     for table_name, create_sql in tables.items():
