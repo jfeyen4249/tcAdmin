@@ -219,6 +219,7 @@
                     
                 <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddiPad()">Add iPad</button>
                  <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4 hidden" onclick="EditiPad()">Update iPad</button>
+                 <button type="button" id="modal-save" class="w-full bg-orange-500 text-white p-2 rounded-md hover:bg-orange-700 mb-4" onclick="closeModal()">Cancel</button>
                  </div>
             </div>
         </div>
@@ -466,7 +467,7 @@
 
         function getmodel() {
             document.getElementById('modal-model').innerHTML = ``
-            document.getElementById('modal-model').innerHTML += `<option value="">Select A Make</option>`;
+            document.getElementById('modal-model').innerHTML += `<option value="">Select an Ipad Model</option>`;
 
             fetch(`/ipad/model`)
                 .then(response => response.json())

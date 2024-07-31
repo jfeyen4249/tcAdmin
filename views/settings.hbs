@@ -167,7 +167,7 @@
 
                         {{!-- <label for="modal-student" class="block text-gray-600 text-sm font-medium mb-2 mt-6">Device Type</label> --}}
                         <select name="add-device-type" id="add-device-type" class="mt-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
-                             <option value="">Select a Device Type</option>
+                            <option value="">Select a Device Type</option>
                             <option value="ap">Access Points</option>
                             <option value="chromebook">Chromebook</option>
                             <option value="Desktop">Desktop</option>
@@ -221,7 +221,22 @@
                     <div class="move-edit">
 
                         {{!-- <label for="device-select" class="block text-gray-600 text-sm font-medium mb-1 mt-6">Select A Device</label> --}}
-                        <select name="device-select" oninput="getDevice()" id="device-select" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                        <select name="device-select" oninput="getDevice()" id="device-select" class="mb-4 w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500">
+                            <option value="">Select a Device Type</option>
+                            <option value="ap">Access Points</option>
+                            <option value="chromebook">Chromebook</option>
+                            <option value="Desktop">Desktop</option>
+                            <option value="ipad">iPad</option>
+                            <option value="hotspot">Hotspot</option>
+                            <option value="laptop">Laptop</option>
+                            <option value="mac">MacBook</option>
+                            <option value="networking">Networking</option>
+                            <option value="phone">Phone</option>
+                            <option value="printer">Printer</option>
+                            <option value="projector">Projector</option>
+                            <option value="server">Server</option>
+                            <option value="snartboard">Smartboard</option>
+                        </select>
 
                         {{!-- <label for="make" class="block text-gray-600 text-sm font-medium mb-1">Make</label> --}}
                         <input type="text" id="edit-device-make" name="make" placeholder="Make" class="w-full px-3 py-2 border mb-4 rounded-md focus:outline-none focus:border-blue-500">
@@ -673,7 +688,8 @@
             .then(response => response.text())
             .then(data => {
                 if(data == 'added'){
-                    showa('Added!')
+                    showAlertSuccess('Added!')
+                    addRoom.value = ''
                     GetLog()
                 }
             })
@@ -1274,6 +1290,7 @@
        function slack() {
             let data = {
                 text: 'Test slack webhook URL.',
+                url: slackURL.value,
             };
 
             fetch('/settings/slack', {
@@ -1358,8 +1375,8 @@
 
         getUserAccounts()
         getBuilding()
-        //getDevicesType()
-        getDevices()
+        getDevicesType()
+        //getDevices()
         getChromeMakes()
         GetLog() 
         getSlack()

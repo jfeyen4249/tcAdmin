@@ -142,7 +142,7 @@
 
     <!-- Modal -->
     <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-    <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col">
+    <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col mt-[-25%]">
         
         
         <div id="modal-device">
@@ -344,12 +344,14 @@
         }
 
         function addDevice() {
+            const localTime = new Date();
             let data = {
                     type: modalType.value,
                     name: modalName.value,
                     ip: modalIP.value,
                     port: modalPort.value,
-                    trys: modalRetry.value
+                    trys: modalRetry.value,
+                    time: Math.floor(localTime.getTime() / 1000)
                 }
 
             fetch(`/monitoring/add`,{
