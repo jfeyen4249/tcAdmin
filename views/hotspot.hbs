@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <style>
+        /* You may adjust these values as needed */
+        .w-85 {
+            width: 75%;
+        }
+
+        .h-70 {
+            height: 55vh;
+        }
+        #modal {
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-btn {
+            position: absolute;
+            left: 50%;
+            transform: translate(45%);
+        }
+
+        .ql-editor {
+            min-height: 96px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .ql-editor {
+            margin-bottom: 10px;
+        }
+
+        body {
+            overflow: hidden;
+            }
+
+    </style>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://qajavascriptsdktests.azurewebsites.net/JavaScript/dymo.connect.framework.js"></script>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+
+    {{!-- <script defer src=".././dymo.js"></script> --}}
+    <script defer src=".././menu.js"></script>
+    <script defer src=".././label.js"></script> 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Wireless Access Points</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../fav/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../fav/favicon-16x16.png">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/alertify.min.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/alertifyjs/build/css/themes/default.min.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/alertifyjs/build/alertify.min.js"></script>
+    <script>
+
+        function showAlertSuccess(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.success(text);
+        }
+        function showalertwarning(text) {
+            alertify.set('notifier','delay', 6);
+            alertify.set('notifier','position', 'top-center');
+            alertify.error(text);
+        }
+    </script>
+</head>
+
+<body class="bg-slate-800 h-screen flex">
+<input type="text" id="textInput" placeholder="Type something" hidden>
+    <!-- Left Side Menu -->
+    <div class="w-1/6 bg-slate-950 text-white p-4 text-center">
+        <img src="../img/tc-logo.png" style="width: 90%; height: auto; margin-bottom: 20px; padding: 1rem;">
+        <ul id="menu">
+            
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-8">
+       <div class="max-w-full w-full bg-white p-8 rounded shadow-md">
+    <div class="flex items-center justify-between mb-4">
+        <!-- Password Manager Passwords text -->
+        <h1 class="text-2xl font-bold mb-4">Hotspot Inventory</h1>
+
+        <!-- Search Box and Add New Password Button Container -->
+        <div class="flex items-center">
+            <!-- Search Box -->
+            <div class="flex items-center">
+                <input type="text" id="search" oninput="searchDB(this.value)" placeholder="Search..." class="bg-gray-100 border border-gray-300 px-4 py-2 rounded-l-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+            </div>
+            
+            <!-- Add New Password Button -->
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-md ml-4" onclick="AddModal()"><i class="fa-solid fa-plus"></i> Add</button>
+            <input type="file" name="" id="upload" hidden>
+            <button class="bg-green-500 text-white px-4 py-2 rounded-md ml-4" id="import"></i> Import</button>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="relative h-[70vh] overflow-y-auto">
+    <table class="w-full border-collapse border border-gray-800">
+        <thead>
+            <tr class="bg-gray-800 text-white">
+                <th class="py-2 px-4 border">Make</th>
+                <th class="py-2 px-4 border">Model</th>
+                <th class="py-2 px-4 border">SN</th>
+                <th class="py-2 px-4 border">Building</th>
+            </tr>
+        </thead>
+        <tbody class="text-center" id="password-table">
+           
+        </tbody>
+    </table>
+    </div>
+     <div class="w-full text-right mt-4" id="pageBTN">
+            <button id="prevButton" data-page="0" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Previous</button>
+            <span id="pageIndicator">Page 1</span>
+            <button id="nextButton" data-page="2" class="bg-gray-800 text-white py-2 px-4 rounded hover:bg-gray-700">Next</button>
+
+        </div>
+</div>
+ 
+
+    <!-- Modal -->
+    <div id="modal" class="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
+    <div class="relative w-85 h-70 bg-white rounded shadow-md flex flex-col overflow-y-auto" style="max-height: 75vh;">
+        <div class="grid grid-cols-2 flex-grow">
+            <div class="col-span-1 bg-white p-8 rounded-l">
+                    <!-- Website/Service -->
+                    <div class="mb-4">
+                        <label for="modal-make" class="block text-gray-600 text-sm font-medium mb-2">Make</label>
+                        <select name="modal-make" id="modal-make" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                         
+                    </div>
+                    <!-- URL -->
+                    <div class="mb-4">
+                       <label for="modal-model" class="block text-gray-600 text-sm font-medium mb-2">Model</label>
+                        <select name="modal-model" id="modal-model" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <!-- Username/Email -->
+                    <div class="mb-4 hidden">
+                        <label for="modal-mac" class="block text-gray-600 text-sm font-medium mb-2">Mac Address</label>
+                        <input type="text" id="modal-mac" name="modal-mac" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label for="modal-sn" class="block text-gray-600 text-sm font-medium mb-2">Serial Number</label>
+                        <input type="text" id="modal-sn" name="modal-sn" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+
+                    <!-- Last Updated -->
+                    <div class="mb-6">
+
+                        <label for="modal-tag" class="block text-gray-600 text-sm font-medium mb-2">Tag</label>
+                        <input type="text" id="modal-tag" name="modal-tag" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                        <br>
+                        {{!-- <label for="modal-installed" class="block text-gray-600 text-sm font-medium mb-2">Date Installed</label>
+                        <input type="text" id="modal-installed" name="modal-installed" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" > --}}
+
+                        </select>
+                    </div>
+
+                    <!-- Information -->
+                    <div class="mb-4">
+                        </div>
+                
+            </div>
+            <div class="col-span-1 p-4 mb-4 rounded-r">                 
+                <div class="mb-4 mt-3">
+                        <label for="modal-building" class="block text-gray-600 text-sm font-medium mb-2">Building Locations</label>
+                        <select name="modal-building" id="modal-building" oninput="getRoom()" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                    <div class="mb-4 hidden">
+                        <label for="modal-name" class="block text-gray-600 text-sm font-medium mb-2">AP Name</label>
+                        <input type="text" id="modal-name" name="modal-name" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500" >
+                    </div>
+
+                    <div class="mb-4 hidden">
+                        <label for="modal-room" class="block text-gray-600 text-sm font-medium mb-2">Room Number</label>
+                        <select name="modal-room" id="modal-room" class="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500"></select>
+                    </div>
+
+                 <div class="modal-btn mt-6">
+                <button type="button" id="modal-save" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="EditAP()">Save Changes</button>
+                <button type="button" id="modal-add" class="w-full bg-green-500 text-white p-2 rounded-md hover:bg-green-700 mb-4 hidden" onclick="AddAP()">Add Hotspot</button>
+                 {{!-- <button type="button" id="modal-print" class="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-700 mb-4" onclick="closeModal()">Cancel</button> --}}
+                 </div>
+            </div>
+        </div>
+        <button class="absolute top-4 right-4 text-gray-600" onclick="closeModal()">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+</div>
+    
+    <script defer>
+        const dateString = new Date().toDateString();
+        let passid = 0;
+        let makeList = document.getElementById('modal-make')
+        let modelList = document.getElementById('modal-model')
+        let macAddress = document.getElementById('modal-mac')
+        let serialNumber = document.getElementById('modal-sn')
+        let name = document.getElementById('modal-name')
+        let install = document.getElementById('modal-installed')
+        let assetTag = document.getElementById('modal-tag')
+        let building = document.getElementById('modal-building')
+        let room = document.getElementById('modal-room')
+        let importBTN = document.getElementById('import')
+        let upload = document.getElementById('upload')
+
+        function openModal(id, make, model) {
+            room.innerHTML = ''
+            fetch(`/hotspot/ap?id=${id}`,{ method: 'post'})
+  		    .then(response => response.json())
+            .then(data => {
+                    document.getElementById('modal-save').classList.add('hidden')
+                    document.getElementById('modal').style.display = 'flex';
+                    passid = id;
+                    getmodel(make, model)
+                    //macAddress.value = data[0].mac.toUpperCase()
+                    serialNumber.value = data[0].sn.toUpperCase()
+                    //name.value = data[0].name.toUpperCase()
+                    //install.value = data[0].installed
+                    assetTag.value = data[0].tag
+                    //building.value = data[0].building
+                    
+                    
+
+                    var selectElement = document.getElementById("modal-make"); 
+                    for (var i = 0; i < selectElement.options.length; i++) {
+                        var option = selectElement.options[i];
+                        if (option.value === make) {
+                            option.selected = true;
+                            break;
+                        }   
+                    }
+
+                    var selectElement = building; 
+                    for (var i = 0; i < selectElement.options.length; i++) {
+                        var option = selectElement.options[i];
+                        if (option.value === data[0].building) {
+                            option.selected = true;
+                            break;
+                        }   
+                        setTimeout( () => {
+                            getEditRoom(data[0].room)
+                        }, 100)
+                    }
+            })
+        }
+
+        function AddModal() {
+           document.getElementById('modal').style.display = 'flex';
+           document.getElementById('modal-add').classList.remove('hidden')
+           document.getElementById('modal-save').classList.add('hidden')
+
+        }
+
+        function AddAP() {
+            let apName = building.value + '-' + macAddress.value.slice(-4)
+            let data = {
+                make : makeList.value,
+                model : modelList.value,
+                sn : serialNumber.value,
+                tag : assetTag.value,
+                building : building.value,
+                }
+
+            fetch(`/hotspot/add`,{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('password-table').innerHTML = '';
+                        closeModal()
+                        getList()
+                    });
+        }
+
+        function EditAP() {
+            let data = {
+                make : makeList.value,
+                model : modelList.value,
+                sn : serialNumber.value,
+                tag : assetTag.value,
+                building : building.value,
+                }
+
+            fetch(`/hotspot/edit?id=${passid}`,{
+                method: 'Post',
+                body : JSON.stringify(data),
+                headers: {
+                    "Content-Type": "application/json",
+                    },
+            })
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('password-table').innerHTML = '';
+                        closeModal()
+                        getList()
+                    });
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none'
+            macAddress.value = ''
+            serialNumber.value = ''
+            assetTag.value = ''
+            room.value = ''
+            passid = 0
+           document.getElementById('modal-save').classList.add('hidden')
+        }
+
+        let currentPage = 1;
+        const limit = 30; // Number of items per page
+
+        let getList = (page = 1) => {
+            document.getElementById('password-table').innerHTML = '';
+            fetch(`/hotspot?page=${page}&limit=${limit}`)
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data)
+                    data.forEach(obj => {
+                        let row = `
+                            <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <td class="py-2 px-4 border">${obj.make}</td>
+                                <td class="py-2 px-4 border">${obj.model}</td>
+                                <td class="py-2 px-4 border">${obj.sn}</td>
+                                <td class="py-2 px-4 border">${obj.building}</td>
+                            </tr>`;
+                        document.getElementById('password-table').innerHTML += row;
+                    });
+                });
+                 currentPage = page;
+                document.getElementById('pageIndicator').innerText = `Page ${currentPage}`;
+        };
+
+
+        document.getElementById('prevButton').addEventListener('click', () => {
+            if (currentPage > 1) getList(currentPage - 1);
+        });
+
+        document.getElementById('nextButton').addEventListener('click', () => {
+            getList(currentPage + 1); // You might want to check here if there are still more data
+        });
+
+        function getmake() {
+            document.getElementById('modal-make').innerHTML = ``
+            document.getElementById('modal-make').innerHTML += `<option value="" >Select A Make</option>`
+            fetch('/hotspot/makes')
+  		    .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                    for(let i = 0; i<data.length; i++) {
+                        let obj = data[i]
+                        document.getElementById('modal-make').innerHTML += `
+                            <option value="${obj.make}">${obj.make}</option>`
+                    }
+                });     
+        }
+
+
+        function getBuildings() {
+                localStorage.clear()
+                building.innerHTML = ``
+                building.innerHTML += `<option value="" >Select A Building</option>`
+                building.innerHTML += `<option value="none" >Unassign From a Building</option>`
+                fetch('/ap/buildings')
+                .then(response => response.json())
+                .then(data => {
+                    //console.log(data)
+                        for(let i = 0; i<data.length; i++) {
+                            let obj = data[i]
+                            building.innerHTML += `<option value="${obj.name}">${obj.name}</option>`
+                            localStorage.setItem(obj.name, obj.color)
+                        }
+                    });     
+
+                }
+
+        function getRoom() {
+                    room.innerHTML = ``
+                    room.innerHTML += `<option value="" >Select A Room</option>`
+                
+                    fetch(`//room?building=${building.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        //console.log(data)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                room.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
+                            }
+                        });    
+            }
+
+         function getEditRoom(rm) {
+                    room.innerHTML = ``
+                    room.innerHTML += `<option value="" >Select A Room</option>`
+                    
+                    fetch(`/hotspot/room?building=${building.value}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(rm)
+                            for(let i = 0; i<data.length; i++) {
+                                let obj = data[i]
+                                room.innerHTML += `<option value="${obj.room}">${obj.room}</option>`
+                            }
+
+                            var selectRoom = room; 
+                            for (var i = 0; i < selectRoom.options.length; i++) {
+                                console.log(selectRoom.value)
+                                var option = selectRoom.options[i];
+                                if (option.value === rm) {
+                                    console.log("Room Running")
+                                    option.selected = true;
+                                    break;
+                                }   
+                            }
+                        });     
+            }
+       
+
+        function getmodel(make, model) {
+            document.getElementById('modal-model').innerHTML = ``
+            document.getElementById('modal-model').innerHTML += `<option value="">Select A Make</option>`;
+
+            fetch(`/hotspot/model?make=${make}`)
+                .then(response => response.json())
+                .then(data => {
+                    for (let i = 0; i < data.length; i++) {
+                        let obj = data[i];
+                        document.getElementById('modal-model').innerHTML += `<option value="${obj.model}">${obj.model}</option>`;
+                    }
+                    
+                    var selectElement1 = document.getElementById("modal-model");
+                    var options = selectElement1.options;
+                    
+                    for (var i = 0; i < options.length; i++) {
+                        if (options[i].value === model) {
+                            options[i].selected = true;
+                            break; // Exit the loop after selecting the option
+                        }
+                    }
+                });
+
+        }
+
+        function textChanged() {
+            if(passid !== 0) {
+                document.getElementById('modal-save').classList.remove('hidden')
+            }
+        }
+       
+        function searchDB (search){
+            if(search.length < 1) {
+                getList(1)
+            } else {
+                document.getElementById('password-table').innerHTML = '';
+                fetch(`/hotspot/?search=${search}`,{method : 'put'})
+                    .then(response => response.json())
+                    .then(data => {
+                        data.forEach(obj => {
+                            let row = `
+                                <tr class="${localStorage.getItem(obj.building)} hover:bg-blue-400" onclick="openModal('${obj.id}', '${obj.make}', '${obj.model}')">
+                                <td class="py-2 px-4 border">${obj.make}</td>
+                                <td class="py-2 px-4 border">${obj.model}</td>
+                                <td class="py-2 px-4 border">${obj.sn}</td>
+                                <td class="py-2 px-4 border">${obj.building}</td>
+                            </tr>`;
+                            document.getElementById('password-table').innerHTML += row;
+                        });
+                    });
+            }
+        }
+
+        document.getElementById('upload').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const lines = e.target.result.split('\n');
+                lines.forEach(function(line) {
+                    let data = {make : line.split(',')[0], model : line.split(',')[1], sn : line.split(',')[2], mac : line.split(',')[3], name : line.split(',')[4], tag : line.split(',')[5], room : line.split(',')[6], building : line.split(',')[7], installed : line.split(',')[8]}
+                    fetch(`/hotspot/add`,{method: 'Post', body : JSON.stringify(data), headers: { "Content-Type": "application/json"},})
+                        .then(response => response.json())
+                        .then(data => {});
+                });
+            }
+            reader.readAsText(file);
+            getList(1); // Assuming getList() is defined elsewhere
+        }); 
+
+        makeList.addEventListener('change', function(){
+            console.log("Make changed!")
+            document.getElementById('modal-model').innerHTML = ``
+            document.getElementById('modal-model').innerHTML += `<option value="" >Select A Make</option>`
+            fetch(`/hotspot/model?make=${makeList.value}`)
+  		    .then(response => response.json())
+            .then(data => {
+                //console.log(data)
+                    for(let i = 0; i<data.length; i++) {
+                        let obj = data[i]
+                        document.getElementById('modal-model').innerHTML += `
+                            <option value="${obj.model}">${obj.model}</option>`
+                    }
+                });    
+        })
+
+        importBTN.addEventListener('click', function() {
+            upload.click()
+        })
+
+        function textChanged() {
+            if(passid !== 0) {
+                document.getElementById('modal-save').classList.remove('hidden')
+            }
+
+            if(building.value == 'none') {
+                room.value = ''
+                staff.value = ''
+            }
+
+            name.value = macAddress.value.slice(-4)
+        }
+       
+        makeList.addEventListener('input', textChanged)
+        modelList.addEventListener('input', textChanged)
+        macAddress.addEventListener('input', textChanged)
+        serialNumber.addEventListener('input', textChanged)
+        //install.addEventListener('input', textChanged)
+        assetTag.addEventListener('input', textChanged)
+        building.addEventListener('input', textChanged)
+        room.addEventListener('input', textChanged)
+
+    getBuildings()
+    getmake()
+    getList(1)
+    </script>
+
+</body>
+</html>

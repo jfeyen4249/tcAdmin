@@ -74,5 +74,9 @@ router.get("/misc", (req, res) => {
     res.render("misc");
 })
 
+router.get("/hotspot", (req, res) => {
+    res.render("hotspot");
+})
+
 
 module.exports = router;
