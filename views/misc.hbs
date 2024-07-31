@@ -185,7 +185,7 @@
 
 
     <div id="add-modal" class="fixed top-0 left-0 w-full h-full bg-gray-800 bg-opacity-50 hidden" onclick="event.stopPropagation()">
-    <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md overflow-y-auto" style="max-height: 75vh;">
+    <div class="wpc mx-auto mt-2 bg-white p-8 rounded shadow-md overflow-y-auto" style="max-height: 100vh;">
         <div class="tabs">
             <button class="tablink p-2 ml-2 active" onclick="openTab('tab1')">Misc Details</button>
             <button class="tablink p-2" onclick="openTab('tab2')" id="tab2-btn">Misc History</button>
@@ -430,15 +430,15 @@
             //     return;
             // }
             if(miscNameBox.value == '') {
-                showAlertwarning('Enter the name of this item.')
+                showAlertWarning('Enter the name of this item.')
                 return;
             }
             if(miscAssetTagBox.value == '') {
-                showAlertwarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
+                showAlertWarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
                 return;
             }
             if(miscSerialNumberBox.value == '') {
-                showAlertwarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
+                showAlertWarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
                 return;
             }
 
@@ -469,15 +469,15 @@
 
         function updateMiscItem() {
             if(miscNameBox.value == '') {
-                showAlertwarning('Enter the name of this item.')
+                showAlertWarning('Enter the name of this item.')
                 return;
             }
             if(miscAssetTagBox.value == '') {
-                showAlertwarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
+                showAlertWarning('Enter a item asset number.<br>If you do not have one, enter N/A.')
                 return;
             }
             if(miscSerialNumberBox.value == '') {
-                showAlertwarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
+                showAlertWarning('Enter the serial number of this item.<br>If you do not have one, enter N/A.');
                 return;
             }
 
