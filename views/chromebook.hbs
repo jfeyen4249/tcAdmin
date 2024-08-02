@@ -126,6 +126,10 @@
             alertify.error(text);
         }
     </script>
+
+    <script defer src=".././label.js"></script>
+
+    <script src="https://qajavascriptsdktests.azurewebsites.net/JavaScript/dymo.connect.framework.js"></script>
 </head>
 <body class="bg-slate-800 h-screen flex">
 
@@ -240,11 +244,12 @@
                 </div>
                 <!-- Save Button -->
                <div class="grid grid-flow-col justify-stretch">
-                <button type="button" onclick="addChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Chromebook</button>
-                <button type="button" onclick="addAnotherChromebook()" id="add-another-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Create and Add Another</button>
-                <button type="button" onclick="editChromebook()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
-                <button type="button" onclick="deleteChromebook()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
-                <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
+                    <button type="button" onclick="addChromebook()" id="add-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600">Add Chromebook</button>
+                    <button type="button" onclick="addAnotherChromebook()" id="add-another-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Create and Add Another</button>
+                    <button type="button" onclick="editChromebook()" id="edit-btn" class="w-half bg-green-500 text-white p-1 mr-3 rounded-md hover:bg-blue-600 hidden">Update</button>
+                    <button type="button" onclick="deleteChromebook()" id="del-btn" class="w-half bg-red-500 text-white p-1 mr-3 rounded-md hover:bg-red-600 hidden">Delete</button>
+                    <button type="button" id="print" class="w-half bg-teal-500 text-white p-1 mr-3 rounded-md hover:bg-teal-600" onclick="printStudentLabel(document.getElementById('modal-student-add').value, document.getElementById('modal-year-add').value);">Print Student Label</button>
+                    <button type="button" onclick="AddModalClose()" class="w-half bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600">Close</button>
            
                </div>
         </div>
