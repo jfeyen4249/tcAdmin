@@ -1,3 +1,7 @@
+param (
+    [switch]$i
+)
+
 # Get Windows version
 $windowsVersion = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ProductName
 $windowsBuild = (Get-ItemProperty -Path "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion").ReleaseId
@@ -62,6 +66,13 @@ $jsonPayload = @{
     make = $make
     model = $model
 } | ConvertTo-Json
+
+# Display the JSON payload if -i flag is used
+if ($i) {
+    Write-Host "JSON Payload:"
+    Write-Host $jsonPayload
+    Read-Host "Press Enter to continue..."
+}
 
 # Send JSON payload to the specified URL
 Invoke-RestMethod -Uri "http://10.1.40.32:5500/info/pc" -Method Post -ContentType "application/json" -Body $jsonPayload
