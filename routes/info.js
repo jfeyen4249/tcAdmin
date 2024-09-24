@@ -211,33 +211,54 @@ function commitDB(PCtype) {
 
 
   //console.log(data)
-  database.query(
-    `SELECT * FROM computers WHERE make = ? AND model = ? and View = 'true' AND sn = ?`, [getMake(req.body.make), req.body.model, req.body.serial_number],
-    function (error, results, fields) {
-      if (error) throw error;
-      if(results.length == 1) {
-        database.query(
-          `UPDATE computers SET ? WHERE id = ?`, [data, results[0].id],
-          function (error, results, fields) {
-              if (error) throw error;
-              res.send('Updated in database')
-            }
-          );
-      } else {
-        database.query(
-          `INSERT INTO computers SET ?`, [data],
-          function (error, results, fields) {
-              if (error) throw error;
-              let pctype = getType(data.make, data.model)
-              database.query(
-                `UPDATE computers SET type = ? WHERE id = ?`, [pctype, results.insertId],
-              )
-              res.send('Added to database')
-            }
-          );
-      }
+  const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
+
+// Data object to use for insertion or update
+const pcdata = {
+  make: req.body.make,
+  total_disk_size_gb: req.body.total_disk_size_gb,
+  local_ip: req.body.local_ip,
+  processor: processor,
+  hostname: req.body.hostname,
+  serial_number: req.body.serial_number,
+  model: req.body.model,
+  os: req.body.os,
+  free_disk_space_gb: req.body.free_disk_space_gb,
+  windows_build: req.body.windows_build,
+  total_memory_gb: req.body.total_memory_gb,
+  used_memory_gb: req.body.used_memory_gb
+};
+
+database.query(
+  `SELECT * FROM computers WHERE make = ? AND model = ? AND View = 'true' AND sn = ?`, 
+  [getMake(req.body.make), req.body.model, req.body.serial_number],
+  function (error, results, fields) {
+    if (error) throw error;
+    
+    if(results.length == 1) {
+      // Update the existing record
+      database.query(
+        `UPDATE computers SET ? WHERE id = ?`, 
+        [pcdata, results[0].id],
+        function (error, results, fields) {
+          if (error) throw error;
+          res.send('Updated in database');
+        }
+      );
+    } else {
+      // Insert a new record
+      database.query(
+        `INSERT INTO computers SET ?`, 
+        [pcdata],
+        function (error, results, fields) {
+          if (error) throw error;
+          res.send('Added to database');
+        }
+      );
     }
-  );
+  }
+);
+
 
 }
 });
