@@ -199,6 +199,16 @@ function commitDB(PCtype) {
     clearHighUsage()
   }
 
+  function getType(make, model) { 
+    database.query(
+      `SELECT type FROM makes WHERE make = ? AND model = ?`, [make, model],
+      function (error, results, fields) {
+        if (error) throw error;
+        return results[0].type
+      }
+    )
+  }
+
 
   //console.log(data)
   database.query(
@@ -218,6 +228,10 @@ function commitDB(PCtype) {
           `INSERT INTO computers SET ?`, [data],
           function (error, results, fields) {
               if (error) throw error;
+              let pctype = getType(data.make, data.model)
+              database.query(
+                `UPDATE computers SET type = ? WHERE id = ?`, [pctype, results.insertId],
+              )
               res.send('Added to database')
             }
           );
@@ -285,7 +299,6 @@ router.post("/mac",  (req, res) => {
   );
 
 });
-
 
 router.get("/monitor",  (req, res) => {
   database.query(
@@ -592,7 +605,6 @@ router.post("/monitor", (req, res) => {
 
 });
 
-
 router.get("/renewal",  (req, res) => {
   database.query(
       `SELECT id,renewal_date FROM renewals WHERE status = 'Active'`,
@@ -602,7 +614,6 @@ router.get("/renewal",  (req, res) => {
       }
   );
 });
-
 
 router.post("/renewal",  (req, res) => {
   //console.log(req.body)
