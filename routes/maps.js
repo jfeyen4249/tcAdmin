@@ -11,6 +11,7 @@ const { v4: uuidv4 } = require('uuid');
 
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
+const logs = require("../utils/logs.js");
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
