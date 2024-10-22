@@ -1155,10 +1155,10 @@
                 return
             }
 
-            if(addPhone.value == ''){
+            {{!-- if(addPhone.value == ''){
                 showalertwarning('Enter screen size')
                 return
-            }
+            } --}}
 
             fetch(`/settings/user?username=${addUsername.value}&name=${addName.value}&phone=${addPhone.value}`, {method : 'Put'})
             .then(response => response.text())
@@ -1190,10 +1190,10 @@
                 return
             }
 
-            if(editPhone.value == ''){
+            {{!-- if(editPhone.value == ''){
                 showalertwarning('Enter phone number')
                 return
-            }
+            } --}}
             
             if(editUserStatus.value == 'none'){
                 showalertwarning('Select account status')
