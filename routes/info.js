@@ -111,7 +111,8 @@ router.post("/pc",  (req, res) => {
         if (error) throw error;
         commitDB(results[0].type)
       }else{
-        console.log("Model Not found!")
+        console.log('Model Not found! Make: ' + req.body.make + ' Model: ' + req.body.model)
+        logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, req.cookies.username)
         res.send("Model Not Found!!")
       }
     }
@@ -137,7 +138,7 @@ function commitDB(PCtype) {
   }
 
 
-  console.log(data)
+  // console.log(data)
 
   // Function to calculate the percentage
   function calculatePercentage(total, used) {
