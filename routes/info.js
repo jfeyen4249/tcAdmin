@@ -119,12 +119,15 @@ router.post("/pc",  (req, res) => {
 
 function commitDB(PCtype) {
 
+  const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
+
+
   let data = {
     name : req.body.hostname,
     hdd : req.body.total_disk_size_gb + '/' + req.body.free_disk_space_gb,
     ram : req.body.total_memory_gb + '/' + req.body.used_memory_gb,
     os : req.body.os,
-    processor: req.body.processor,
+    processor: processor,
     type : PCtype,
     ip: req.body.local_ip,
     make : getMake(req.body.make),
@@ -199,6 +202,7 @@ function commitDB(PCtype) {
   } else {
     clearHighUsage()
   }
+  
 
 
   //console.log(data)
@@ -286,7 +290,6 @@ router.post("/mac",  (req, res) => {
   );
 
 });
-
 
 router.get("/monitor",  (req, res) => {
   database.query(
@@ -593,7 +596,6 @@ router.post("/monitor", (req, res) => {
 
 });
 
-
 router.get("/renewal",  (req, res) => {
   database.query(
       `SELECT id,renewal_date FROM renewals WHERE status = 'Active'`,
@@ -603,7 +605,6 @@ router.get("/renewal",  (req, res) => {
       }
   );
 });
-
 
 router.post("/renewal",  (req, res) => {
   //console.log(req.body)
