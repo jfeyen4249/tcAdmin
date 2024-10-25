@@ -110,7 +110,6 @@ router.post("/pc",  (req, res) => {
       if(results.length == 1){
         if (error) throw error;
         commitDB(results[0].type)
-        console.log(commitDB(results))
       }else{
         console.log("Model Not found!")
         res.send("Model Not Found!!")
@@ -136,6 +135,9 @@ function commitDB(PCtype) {
     sn : req.body.serial_number,
     user: req.body.user
   }
+
+
+  console.log(data)
 
   // Function to calculate the percentage
   function calculatePercentage(total, used) {
