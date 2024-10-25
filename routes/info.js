@@ -133,7 +133,7 @@ function commitDB(PCtype) {
     make : getMake(req.body.make),
     model: req.body.model,
     sn : req.body.serial_number,
-    user: req.body.user
+    user: req.body.username
   }
 
 
