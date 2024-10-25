@@ -154,6 +154,8 @@ def main():
                 `make` varchar(45) DEFAULT 'N/A',
                 `model` varchar(45) DEFAULT 'N/A',
                 `alert` varchar(45) DEFAULT '0',
+                `user` varchar(245) DEFAULT ' N/A',
+
                 PRIMARY KEY (`id`)
             );
         """,
