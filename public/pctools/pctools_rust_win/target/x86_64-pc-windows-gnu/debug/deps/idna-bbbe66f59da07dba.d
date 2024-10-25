@@ -1,0 +1,10 @@
+/Users/josephfeyen/Documents/Source Code/tcAdmin/public/pctools/pctools_rust_win/target/x86_64-pc-windows-gnu/debug/deps/libidna-bbbe66f59da07dba.rmeta: /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/lib.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/punycode.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46_mapping_table.rs
+
+/Users/josephfeyen/Documents/Source Code/tcAdmin/public/pctools/pctools_rust_win/target/x86_64-pc-windows-gnu/debug/deps/libidna-bbbe66f59da07dba.rlib: /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/lib.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/punycode.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46_mapping_table.rs
+
+/Users/josephfeyen/Documents/Source Code/tcAdmin/public/pctools/pctools_rust_win/target/x86_64-pc-windows-gnu/debug/deps/idna-bbbe66f59da07dba.d: /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/lib.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/punycode.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46.rs /Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46_mapping_table.rs
+
+/Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/lib.rs:
+/Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/punycode.rs:
+/Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46.rs:
+/Users/josephfeyen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/idna-0.5.0/src/uts46_mapping_table.rs:

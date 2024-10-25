@@ -132,7 +132,8 @@ function commitDB(PCtype) {
     ip: req.body.local_ip,
     make : getMake(req.body.make),
     model: req.body.model,
-    sn : req.body.serial_number
+    sn : req.body.serial_number,
+    user: req.body.user
   }
 
   // Function to calculate the percentage
