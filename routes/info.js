@@ -120,7 +120,7 @@ router.post("/pc",  (req, res) => {
 function commitDB(PCtype) {
 
   const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
-
+  const user = req.body.username == "undefined" ? "None" : req.body.username;
 
   let data = {
     name : req.body.hostname,
@@ -133,7 +133,7 @@ function commitDB(PCtype) {
     make : getMake(req.body.make),
     model: req.body.model,
     sn : req.body.serial_number,
-    user: req.body.username
+    user: user
   }
 
 

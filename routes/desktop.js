@@ -25,8 +25,9 @@ router.get("/list", session.validateSession,  (req, res) => {
 
 router.get("/search", session.validateSession,  (req, res) => {
     const searchQuery = req.query.search;
-    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'server' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ?) ORDER By building ASC`,
+    database.query(`SELECT * FROM computers WHERE view = 'true' AND type = 'server' AND (name LIKE ? OR make LIKE ? OR model LIKE ? OR mac LIKE ? OR room LIKE ? OR tag LIKE ? OR building LIKE ? OR ip LIKE ? OR os LIKE ? OR user LIKE ?) ORDER By building ASC`,
       [
+        `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
         `%${searchQuery}%`,
