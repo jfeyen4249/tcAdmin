@@ -1,0 +1,19 @@
+[package]
+name = "pctools_rust_win"
+version = "0.1.0"
+edition = "2021"
+
+[profile.release]
+panic = "abort"
+
+# Add this section to prevent a console window from opening on Windows
+[package.metadata.winres]
+"windows-subsystem" = "windows"
+
+[dependencies]
+sysinfo = "0.26"
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+reqwest = { version = "0.11", features = ["json", "blocking"] }
+winreg = "0.10.1"
+whoami = "1.5.2"
