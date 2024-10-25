@@ -135,7 +135,7 @@ function commitDB(PCtype) {
     model: req.body.model,
     sn : req.body.serial_number,
     user: user
-  }
+  } 
 
 
   // console.log(data)
