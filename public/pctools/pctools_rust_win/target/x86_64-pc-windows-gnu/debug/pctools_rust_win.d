@@ -1,1 +1,0 @@
-/Users/josephfeyen/Documents/Source\ Code/tcAdmin/public/pctools/pctools_rust_win/target/x86_64-pc-windows-gnu/debug/pctools_rust_win.exe: /Users/josephfeyen/Documents/Source\ Code/tcAdmin/public/pctools/pctools_rust_win/src/main.rs
