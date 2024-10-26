@@ -113,7 +113,7 @@ router.post("/pc",  (req, res) => {
       }else{
         console.log('Model Not found! Make: ' + req.body.make + ' Model: ' + req.body.model)
         logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, req.cookies.username)
-        res.send("Model Not Found!!")
+        res.send(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`)
       }
     }
   );
