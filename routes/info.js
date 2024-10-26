@@ -111,8 +111,9 @@ router.post("/pc",  (req, res) => {
         if (error) throw error;
         commitDB(results[0].type)
       }else{
-        console.log("Model Not found!")
-        res.send("Model Not Found!!")
+        console.log('Model Not found! Make: ' + req.body.make + ' Model: ' + req.body.model)
+        logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, req.cookies.username)
+        res.send(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`)
       }
     }
   );
@@ -120,7 +121,7 @@ router.post("/pc",  (req, res) => {
 function commitDB(PCtype) {
 
   const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
-
+  const user = req.body.username == "undefined" ? "None" : req.body.username;
 
   let data = {
     name : req.body.hostname,
@@ -133,11 +134,11 @@ function commitDB(PCtype) {
     make : getMake(req.body.make),
     model: req.body.model,
     sn : req.body.serial_number,
-    user: req.body.username
-  }
+    user: user
+  } 
 
 
-  console.log(data)
+  // console.log(data)
 
   // Function to calculate the percentage
   function calculatePercentage(total, used) {

@@ -586,9 +586,12 @@
                             <p class="col-span-2">${hddFree} GB free of ${hddTotal} GB</p>
                             <p class="font-semibold text-right col-span-1">OS:</p>
                             <p class="col-span-2">${obj.os}</p>
+                            <p class="font-semibold text-right col-span-1">Last User:</p>
+                            <p class="col-span-2">${obj.user}</p>
                                     <button type="button" onclick="getEditPc('${obj.id}')" class="w-half bg-green-500 text-white p-2 rounded-md outline outline-offset-2 outline-white hover:bg-green-800 mt-6 col-span-2">Edit</button>
                                     <button type="button" onclick="deleteDesktop('${obj.id}', '${obj.name}')" class="w-half bg-red-500 text-white p-2 rounded-md outline outline-offset-2 outline-white rounded-md hover:bg-red-900 mt-6 col-span-1">Delete</button>
-                        </div>`
+                        </div>
+                        `
                 }
             })
             }
