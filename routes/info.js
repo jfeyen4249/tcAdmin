@@ -119,8 +119,8 @@ router.post("/pc",  (req, res) => {
         if (error) throw error;
         commitDB(results[0].type)
       }else{
-        console.log('Model Not found! Make: ' + req.body.make + ' Model: ' + req.body.model)
-        logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, "PC Tools")
+        console.log('Model Not found! Make: ' + getMake(req.body.make) + ' Model: ' + getModel(req.body.model))
+        logs.SystemLog(`Model Not found! Make: ${getMake(req.body.make)} Model: ${getModel(req.body.model)}`, "PC Tools")
         res.send(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`)
       }
     }
