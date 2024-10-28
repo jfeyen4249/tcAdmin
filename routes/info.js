@@ -64,7 +64,7 @@ function getMake(make) {
 
   if(make == "Dell Inc."){
     return "Dell"
-  } else if(req.body.make == '') {
+  } else if(make == '') {
     return 'ProxMox'
     } else {
     return make
