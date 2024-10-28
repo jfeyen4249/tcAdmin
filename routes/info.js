@@ -139,11 +139,6 @@ function commitDB(PCtype) {
     
   }
 
-  if (req.body.make == '' && req.body.model == '') {
-    make = 'ProxMox';
-    model = 'ProxMox VM';
-  }
-
 
   let data = {
     name : req.body.hostname,
@@ -160,7 +155,7 @@ function commitDB(PCtype) {
   } 
 
 
-  // console.log(data)
+  console.log(data)
 
   // Function to calculate the percentage
   function calculatePercentage(total, used) {
