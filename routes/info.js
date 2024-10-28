@@ -63,12 +63,20 @@ async function slack(text) {
 function getMake(make) {
 
   if(make == "Dell Inc."){
-    //console.log('Make: ' + make)
     return "Dell"
-  } else {
+  } else if(req.body.make == '') {
+    return 'ProxMox'
+    } else {
     return make
   }
+}
 
+function getModel(model) {
+  if(model == ""){
+    return 'ProxMox VM' 
+  } else {
+    return model
+  }
 }
 
 function updateTime(id) {
@@ -112,16 +120,30 @@ router.post("/pc",  (req, res) => {
         commitDB(results[0].type)
       }else{
         console.log('Model Not found! Make: ' + req.body.make + ' Model: ' + req.body.model)
-        logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, req.cookies.username)
+        logs.SystemLog(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`, "PC Tools")
         res.send(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`)
       }
     }
   );
 
 function commitDB(PCtype) {
-
   const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
   const user = req.body.username == "undefined" ? "None" : req.body.username;
+  function sn(sn) {
+
+    if (sn.includes('Serial Number: ')) {
+      return sn.split('Serial Number: ')[1];
+    } else {
+      return sn;
+    }
+    
+  }
+
+  if (req.body.make == '' && req.body.model == '') {
+    make = 'ProxMox';
+    model = 'ProxMox VM';
+  }
+
 
   let data = {
     name : req.body.hostname,
@@ -132,8 +154,8 @@ function commitDB(PCtype) {
     type : PCtype,
     ip: req.body.local_ip,
     make : getMake(req.body.make),
-    model: req.body.model,
-    sn : req.body.serial_number,
+    model: getModel(req.body.model),
+    sn : sn(req.body.serial_number),
     user: user
   } 
 
@@ -207,8 +229,6 @@ function commitDB(PCtype) {
     clearHighUsage()
   }
   
-
-
   //console.log(data)
   database.query(
     `SELECT * FROM computers WHERE make = ? AND model = ? and View = 'true' AND sn = ?`, [getMake(req.body.make), req.body.model, req.body.serial_number],

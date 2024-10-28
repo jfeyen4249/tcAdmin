@@ -97,7 +97,7 @@ CREATE TABLE `computers` (
   `building` varchar(45)  DEFAULT 'N/A',
   `room` varchar(45)  DEFAULT 'N/A',
   `processor` varchar(255)  DEFAULT 'N/A',
-  `sn` varchar(45)  DEFAULT 'N/A',
+  `sn` varchar(2455)  DEFAULT 'N/A',
   `type` varchar(45)  DEFAULT 'N/A',
   `tag` varchar(45)  DEFAULT 'N/A',
   `ip` varchar(45)  DEFAULT 'N/A',
