@@ -112,7 +112,7 @@ router.get("/");
 router.post("/pc",  (req, res) => {
 
   database.query(
-    `SELECT * FROM makes WHERE make = ? AND model = ? and View = 'true'`, [getMake(req.body.make), req.body.model],
+    `SELECT * FROM makes WHERE make = ? AND model = ? and View = 'true'`, [getMake(req.body.make), getModel(req.body.model)],
     function (error, results, fields) {
       // console.log(data)
       if(results.length == 1){
