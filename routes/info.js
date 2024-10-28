@@ -129,11 +129,13 @@ router.post("/pc",  (req, res) => {
 function commitDB(PCtype) {
   const processor = Array.isArray(req.body.processor) ? req.body.processor[0] : req.body.processor;
   const user = req.body.username == "undefined" ? "None" : req.body.username;
-  function sn(sn) {
+  function sn(sn, hostname) {
 
     if (sn.includes('Serial Number: ')) {
       return sn.split('Serial Number: ')[1];
-    } else {
+    } else if(sn == ''){
+      return hostname
+    }else{
       return sn;
     }
     
@@ -150,7 +152,7 @@ function commitDB(PCtype) {
     ip: req.body.local_ip,
     make : getMake(req.body.make),
     model: getModel(req.body.model),
-    sn : sn(req.body.serial_number),
+    sn : sn(req.body.serial_number, req.body.hostname),
     user: user
   } 
 
