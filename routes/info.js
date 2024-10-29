@@ -140,6 +140,7 @@ function commitDB(PCtype) {
     }
     
   }
+  
 
 
   let data = {
@@ -228,7 +229,7 @@ function commitDB(PCtype) {
   
   //console.log(data)
   database.query(
-    `SELECT * FROM computers WHERE make = ? AND model = ? and View = 'true' AND sn = ?`, [getMake(req.body.make), req.body.model, req.body.serial_number],
+    `SELECT * FROM computers WHERE make = ? AND model = ? and View = 'true' AND sn = ?`, [getMake(req.body.make), getModel(req.body.model), sn(req.body.serial_number, req.body.hostname)],
     function (error, results, fields) {
       if (error) throw error;
       if(results.length == 1) {
