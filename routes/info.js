@@ -609,9 +609,6 @@ router.post("/monitor", (req, res) => {
 
       });
     }
-      
-
-
     updateTime(req.body.id);
       res.send('Updated');
 });
