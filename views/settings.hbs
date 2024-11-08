@@ -503,21 +503,10 @@
                         </label>
                     </div>
                 </div>
-
-
-
         </div>
-
-             
+    </div>
+</div>
         
-
-
-        </div>
-        </div>
-        
-             
-        
-
     <script defer>
 
 //  **********************************************************************************************************************
@@ -565,19 +554,26 @@
         }
         
         function getDevices() {
+            function checkview(view, model) {
+                if(view == 'review'){
+                    return `${model} - Need Review`
+                } else {
+                    return model
+                }
+            }
+
             editDevice.innerHTML = ``;
             editDevice.innerHTML += `<option value="">Select a Device</option>`;
             fetch(`/settings/devices`)
             .then(response => response.json())
             .then(data => {
                 data.forEach(obj => {
-                    editDevice.innerHTML += `<option value="${obj.id}">${obj.make} ${obj.model}</option>`;
+                    editDevice.innerHTML += `<option value="${obj.id}">${obj.make} ${checkview(obj.View, obj.model)}</option>`;
                 });
             })
         }
 
         function getDevicesType() {
-           
             editDeviceType.innerHTML = ``;
             editDeviceType.innerHTML += `<option value="">Select a Device Type</option>`;
             addDeviceType.innerHTML = ``;
@@ -591,6 +587,10 @@
                 });
             })
         }
+
+
+
+
 
         function getBuilding() {
             editBuildingSelect.innerHTML = ``;
@@ -625,7 +625,7 @@
             fetch(`/settings/buildings`)
             .then(response => response.json())
             .then(data => {
-                console.log(data)
+                //console.log(data)
                 data.forEach(obj => {
                     editBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
                     addBuildingSelect.innerHTML += `<option value="${obj.name}">${obj.name}</option>`;
@@ -902,8 +902,11 @@
             .then(data => {
                 console.log(data)
                 let obj = data[0]
+
+                let deviceModel = obj.model.split('-')[0] == '' ? obj.model : obj.model.split('-')[0]
+
                 editDeviceMake.value = obj.make
-                editDeviceModel.value = obj.model
+                editDeviceModel.value = deviceModel
                 var selectElement = editDeviceType; 
                 for (var i = 0; i < selectElement.options.length; i++) {
                     var option = selectElement.options[i];
@@ -1255,7 +1258,7 @@
             fetch(`/settings/log`)
                 .then(response => response.json())
                 .then(data => {
-                    console.log(data);
+                    //console.log(data);
                     let html = ''; // Initialize an empty string to accumulate HTML content
                     for(let i = 0; i < data.length; i++) {
                         let obj = data[i];
