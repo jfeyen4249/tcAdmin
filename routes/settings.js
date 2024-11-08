@@ -28,7 +28,7 @@ router.get("/device-type", session.validateSession, (req, res) => {
 
 router.get("/devices", session.validateSession, (req, res) => {
   database.query(
-    `SELECT * FROM makes WHERE view = 'true'`,
+    `SELECT * FROM makes WHERE view = 'true' OR view = 'review' ORDER BY make ASC`,
     function (error, results, fields) {
       if (error) throw error;
       res.send(results);
@@ -111,7 +111,7 @@ router.delete("/buildings", session.validateSession, (req, res) => {
 
 router.get("/device", session.validateSession, (req, res) => {
   database.query(
-    `SELECT * FROM makes WHERE view = 'true' AND id = ? ORDER BY make ASC`,[req.query.id],
+    `SELECT * FROM makes WHERE id = ? ORDER BY make ASC`,[req.query.id],
     function (error, results, fields) {
       if (error) throw error;
       res.send(results);

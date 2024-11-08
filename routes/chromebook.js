@@ -176,16 +176,20 @@ router.put("/log", session.validateSession,  (req, res) => {
     );
 });
 
-router.put("/repair", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks SET device_status = 'Out for Repair' WHERE id = ?`, [req.query.id], function (error, results, fields) {
-        if (error) throw error;
-        res.send('updated');
-        }
-    );
-});
+// router.put("/repair", session.validateSession,  (req, res) => {
+//     database.query(`UPDATE chromebooks SET device_status = 'Out for Repair' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+//         if (error) throw error;
+//         res.send('updated');
+//         }
+//     );
+// });
 
 router.post("/repair", session.validateSession,  (req, res) => {
-    database.query(`UPDATE chromebooks SET device_status = 'In Use' WHERE id = ?`, [req.query.id], function (error, results, fields) {
+    let data = {
+        serial: req.query.id,
+        reason: req.body.reason,
+    }
+    database.query(`INSERT INTO chromebook_repairs SET ?`, [data], function (error, results, fields) {
         if (error) throw error;
         res.send('updated');
         }
@@ -250,6 +254,12 @@ router.get("/getSerialNumber", session.validateSession, (req, res) => {
     );
 })
 
+router.get("/reason", session.validateSession, (req, res) => {
+    database.query("SELECT * FROM repair_reasons", function(error, results, fields) {
+        if(error) throw error;
+        res.send(results);
+    });
+})
 
 
 module.exports = router;

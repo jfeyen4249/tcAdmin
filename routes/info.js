@@ -119,9 +119,23 @@ router.post("/pc",  (req, res) => {
         if (error) throw error;
         commitDB(results[0].type)
       }else{
-        console.log('Model Not found! Make: ' + getMake(req.body.make) + ' Model: ' + getModel(req.body.model))
-        logs.SystemLog(`Model Not found! Make: ${getMake(req.body.make)} Model: ${getModel(req.body.model)}`, "PC Tools")
-        res.send(`Model Not found! Make: ${req.body.make} Model: ${req.body.model}`)
+        database.query(
+          `SELECT * FROM makes WHERE make = ? AND model = ? and View = 'review'`, [getMake(req.body.make), getModel(req.body.model)],
+          function (error, results, fields) {
+            if(results.length == 1){
+              if (error) throw error;
+            }else{
+              database.query(
+                `INSERT INTO makes SET make = ?, model = ?, type = ?, View = 'review'`,
+                [getMake(req.body.make), getModel(req.body.model), 'PC'],
+                function (error, results, fields) {
+                  logs.SystemLog(`Model added! Make: ${getMake(req.body.make)} Model: ${getModel(req.body.model)}. This model needs to be reviewed.`, "PC Tools")
+                  res.send('Added to database for review!')
+                }
+              );
+            }
+          }
+        )
       }
     }
   );

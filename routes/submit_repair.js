@@ -21,16 +21,6 @@ router.get("/", session.validateSession, (req, res) => {
     res.render("submit_repair");
   });
 
-router.get("/repairReasons", session.validateSession, (req, res) => {
-    // database.query("SELECT * FROM repair_reasons", function(error, results, fields) {
-    //     if(error) throw error;
-    //     res.send(results);
-    // });
-
-    let repairReasons = ["Broken Screen", "Keys Missing", "Will not turn on", "Trackpad not working", "Wifi not working", "Keys not working", "Other"];
-    res.json(repairReasons);
-});
-
 router.get("/returnSchools", session.validateSession, (req, res) => {
     database.query("SELECT * FROM buildings WHERE return_building = 'true'", function(error, results, fields) {
         if(error) throw error;

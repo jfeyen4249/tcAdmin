@@ -297,7 +297,7 @@
                 <div class="col-span-4 col-start-2" id="repair">
 
                     <div class="mb-10">
-                        <label for="modal-repairedPart" class="block text-gray-600 text-sm font-medium">Part To Repair</label>
+                        <label for="modal-repairedPart" class="block text-gray-600 text-sm font-medium">Reason for Repair</label>
                         <select name="modal-repairedPart" id="modal-repairedPart-add" class="w-full py-1 border rounded-md focus:outline-none focus:border-blue-500"></select>
                     </div>
 
@@ -346,6 +346,7 @@
         let returnSchool = document.getElementById('modal-returnSchool-add')
         let commentBox = document.getElementById('comment')
         let deviceStatus = '';
+        let modalRepairReason = document.getElementById('modal-repairedPart-add')
 
      
         let editID = 0
@@ -366,8 +367,8 @@
             document.getElementById(tabName).style.display = "block";
             event.currentTarget.className += " active";
 
-            getRepairInfo(deviceStatus);
-            getPartNames();
+            //getRepairInfo(deviceStatus);
+            //getPartNames();
         }
        
         let currentPage = 1;
@@ -835,196 +836,46 @@
             });
         }
 
-        async function sendChromebook() {
-            //Connect to submit repair API endpoints.
-            var reasonLong = repairReason.options[repairReason.selectedIndex].text;
-            var reason = repairReason.value;
-            var schoolName = returnSchool.options[returnSchool.selectedIndex].text;
-            var school = returnSchool.value;
-            var serial = addSN.value;
-            var explaination = repairText.value;
-            var comment = commentBox.value;
-            var ticketNumber = "";
+        function getRepairReason() {
+            modalRepairReason.innerHTML = ``
+            modalRepairReason.innerHTML += `<option value="" >Select a reason for repair</option>`
 
-            if(commentBox.value == '') {
-                comment = reasonLong;
-            }
-
-            let data = {
-                serial,
-                school,
-                reasonLong,
-                reason,
-                comment,
-                explaination,
-                schoolName,
-            }
-
-            await fetch(`/submitRepair/sendRepair`, {
-                method: 'Post',
-                body : JSON.stringify(data),
-                headers: {"Content-Type": "application/json",}
-                })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data);
-                    if(data.status === "success") {
-                        showAlertSuccess("Ticket Submitted Successfully!");
-                        ticketNumber = data.ticketNumber;
-                    } else {
-                        alert(data.Error);
-                        console.log(data);
-                        return;
-                    }
-                });
-
-            //Log that the chromebook was sent for repair
-            fetch(`/chromebook/repair?id=${editID}`, {method: 'Put'})
-                .then(response => response.text())
-                .then(data => {
-                    if(data == 'updated') {
-                        logChromebook(editID, 'Sent For Repair', ticketNumber)
-                        document.getElementById('repair-table').innerHTML = '';
-                        sendBtn.classList.add('hidden')
-                        returnBtn.classList.remove('hidden')
-                        repairText.value = ''
-                        repairStatus = 1
-                        document.getElementById('tab4-btn').click()
-                    }
-                });
-                
+            fetch(`/chromebook/reason`)
+            .then(response => response.json())
+            .then(data => {
+                for(let i = 0; i<data.length; i++) {
+                    let obj = data[i]
+                    modalRepairReason.innerHTML += `<option value="${obj.repairReason}">${obj.reason}</option>`
+                }
+            });
         }
 
         function finishRepair() {
-            const partRepairedSelect = document.getElementById("modal-repairedPart-add");
-            const partRepairedValue = partRepairedSelect.value;
-            const partRepairedText = partRepairedSelect.options[partRepairedSelect.selectedIndex].text;
-
-
-            fetch(`/parts/usePart/${addSN.value}?id=${partRepairedValue}`, { method: 'Put' })
-                .then(response => response.text())
-                .then(data => {
-                    if(data === 'used') {
-                        logChromebook(editID, 'Repaired', `@@@ repaired the ${partRepairedText}`)
-                        logPartUsage(partRepairedValue, 'Repair', `@@@ repaired ${addSN.value}`)
-                        showAlertSuccess(`${partRepairedText} has been repaired.`)
-                        AddModalClose()
-                        getChromebook()
-                    }
-                });
-        }
-
-        function logPartUsage(id, action, info) {
-            let currentDate = new Date();
             let data = {
-                part_id: id,
-                action: action,
-                log: info,
-                date: currentDate.toLocaleDateString(),
+                reason : modalRepairReason.value,
             }
-
-            fetch(`/parts/log`, {
+            fetch(`/chromebook/repair?id=${addSN.value}`, {
                 method: 'Post',
                 body : JSON.stringify(data),
                 headers: {"Content-Type": "application/json",}
-            });
-        }
-
-        function getPartNames() {
-            const partRepairedSelect = document.getElementById("modal-repairedPart-add");
-            partRepairedSelect.innerHTML = '';
-
-            fetch(`/parts/list`)
-                .then(response => response.json())
-                .then(data => {
-                    for(let i = 0; i < data.length; i++) {
-                        let part = data[i]
-                        if(part.partCount > 0) {
-                            partRepairedSelect.innerHTML += `<option value="${part.id}">${part.partName}</option>`
-                        }
-                    }
-                });
-        }
-
-        function returnChromebook() {
-            let serial = addSN.value;
-            fetch(`/chromebook/repair?id=${editID}`, {method: 'Post'})
+                })
                 .then(response => response.text())
                 .then(data => {
                     if(data == 'updated') {
-                        logChromebook(editID, 'Returned From Repair', "This chromebook was returned from repair")
-                        document.getElementById('repair-table').innerHTML = '';
-                        //chromebookLog(editID)
-                        //repairText.readonly = 'true'
-                        sendBtn.classList.remove('hidden')
-                        returnBtn.classList.add('hidden')
-                        repairStatus = 2
-                        document.getElementById('tab4-btn').click()
+                        logChromebook(addSN.value, 'Finished Repair', `Finished Repair. Reason: ${modalRepairReason.value}`)
+                        showAlertSuccess(`Repair was finished.`)
                     }
-                });
-
-            fetch(`/chromebook/return?serial=${serial}`, {method: 'PUT'})
-            .then(response => response.text())
-            .then(data => {
-                //console.log("Updated: " + serial);
-            });
-        }
-
-        function getRepairReasons(){
-            repairReason.innerHTML = ``
-            repairReason.innerHTML += `<option value="" >Select Repair Reason</option>`
-
-            let reasons = fetch(`/submitRepair/repairReasons`)
-            .then(response => response.json())
-            .then(data => {
-                for(let i = 0; i<data.length; i++) {
-                    let obj = data[i]
-                    repairReason.innerHTML += `<option value="${obj.value}">${obj.reason}</option>`
-                    }
-                });     
-        }
-
-        function getReturnSchools() {
-            returnSchool.innerHTML = ``
-            returnSchool.innerHTML += `<option value="" >Select Return School</option>`
-
-            let reasons = fetch(`/submitRepair/returnSchools`)
-            .then(response => response.json())
-            .then(data => {
-                for(let i = 0; i<data.length; i++) {
-                    let obj = data[i]
-                    returnSchool.innerHTML += `<option value="${obj.building_code}">${obj.name}</option>`
-                    }
-                });     
-        }
-
-        async function getRepairInfo(repairStatus) {
-            let serial = addSN.value;
+                            });
+                }
             
-            if(repairStatus == "Out for Repair") {
-                await fetch(`/submitRepair/repairInfo?serial=${serial}`, {method: 'Get'})
-                .then(response => response.json())
-                .then(data => {
-                    repairReason.innerHTML = `<option value="${data[0].reason}">${data[0].reasonLong}</option>`
-                    returnSchool.innerHTML = `<option value="${data[0].school}">${data[0].schoolName}</option>`
-                    commentBox.value = data[0].comment;
-                    explaination.value = data[0].explaination;
-                    explaination.ariaReadOnly = true;
-                    commentBox.ariaReadOnly = true;
-                    repairReason.ariaReadOnly = true;
-                    returnSchool.ariaReadOnly = true;
-                })
-            } else {
-                getRepairReasons();
-                getReturnSchools();
-            }
-        }
+        
+    
 
         getMakeModel()
         getBuildings()
         getChromebook(1)
         getYear()
-
+        getRepairReason()
     </script>
 </body>
 </html>
