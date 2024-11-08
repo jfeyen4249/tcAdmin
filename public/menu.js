@@ -51,3 +51,19 @@ function downloadFile(url, filename) {
     a.click();
     document.body.removeChild(a);
 }
+
+function checkSession() {
+    fetch("/check-session", { method: "GET" })
+        .then((response) => {
+            if (response.redirected) {
+                // If redirected to the login page, log out the user
+                window.location.href = "/login";
+            }
+        })
+        .catch((error) => {
+            console.error("Error checking session:", error);
+        });
+}
+
+// Run checkSession every 1 minute (60000 milliseconds)
+setInterval(checkSession, 60000);
