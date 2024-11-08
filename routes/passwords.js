@@ -289,6 +289,7 @@ router.get("/");
       }
     );
   });
+  
   router.get("/old", session.validateSession, (req, res) => {
 
     database.query(
@@ -300,5 +301,25 @@ router.get("/");
       }
     );
   });
+
+  router.delete("/password", session.validateSession,  (req, res) => {
+    database.query(`UPDATE passwords SET view = 'false' WHERE id = ?`, [req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        console.log(results)
+          res.send('deleted');
+        }
+    );
+});
+
+  router.post("/otp", session.validateSession,  (req, res) => {
+    database.query(`UPDATE passwords SET otp = ? WHERE id = ?`, [req.query.code, req.query.id],
+        function (error, results, fields) {
+        if (error) throw error;
+        console.log(results)
+          res.send('updated');
+        }
+    );
+});
 
   module.exports = router;

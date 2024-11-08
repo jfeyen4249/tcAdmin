@@ -94,17 +94,18 @@ router.post("/renew", session.validateSession, (req, res) => {
         `SELECT * FROM renewals WHERE id = ?`, [req.body.id],
         function (error, results, fields) {
         if (error) throw error;
-
-        let renewal_date = results[0].renewal_date.split('-');
-        let newYear = Number(results[0].year) + 1
         let data = {
             service: results[0].service,
             start: results[0].renewal_date,
-            renewal_date: renewal_date[0] + '-' + renewal_date[1] + '-' + newYear,
-            year: newYear,
+            renewal_date: req.body.date,
+            year: req.body.date.split('-')[2],
             cost: req.body.cost,
-            po: req.body.po
+            po: req.body.po,
+            company: results[0].company,
+            contact: results[0].contact,
         }
+
+        console.log(data)
 
         database.query(
             `INSERT INTO renewals SET ?`, [data],
@@ -137,7 +138,7 @@ router.get("/search", session.validateSession, (req, res) => {
 
 router.get("/upcoming", session.validateSession, (req, res) => {
     
-    database.query(`SELECT * FROM renewals WHERE STR_TO_DATE(renewal_date, '%m-%d-%Y') BETWEEN CURDATE() AND CURDATE() + INTERVAL 90 DAY`,
+    database.query(`SELECT * FROM renewals WHERE STR_TO_DATE(renewal_date, '%m-%d-%Y') BETWEEN CURDATE() AND CURDATE() + INTERVAL 90 DAY AND status = 'active' ORDER BY renewal_date ASC`,
         function (error, results, fields) {
         if (error) throw error;
         res.send(results);

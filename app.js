@@ -68,6 +68,11 @@ app.get("/monitoring", session.validateSession,  (req, res) => {
   res.render("monitoring");
 });
 
+app.get("/check-session", session.validateSession, (req, res) => {
+  res.status(200).send("Session is valid");
+});
+
+
 app.use("/inventory", inventory);
 app.use("/wifi",  wifi);
 app.use("/docs",  docs);

@@ -201,7 +201,7 @@
                 const data = await totalRepairs.json();
                 repairHeader.innerText += " " + data.allRepairs;
             }  catch (error) {
-                console.log('Error fetching data:', error);
+                //console.log('Error fetching data:', error);
             }
         }
 
@@ -222,7 +222,7 @@
                     const total = await fetch(`/chromebook/getRepairsBySchool/?school=${schoolName}`);
                     return await total.json();
             } catch(error) {
-                console.error('Error fetching data:',error);
+                //console.error('Error fetching data:',error);
             }
         }
 
@@ -264,7 +264,7 @@
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(obj => {
-                        console.log(data)
+                        //console.log(data)
                         let row = `
                             <tr>
                                 <td class="py-2 px-4 border">${obj.service}</td>
@@ -281,7 +281,7 @@
     fetch(`/settings/down-devices`)
         .then(response => response.json())
         .then(data => {
-            console.log(data); // Log the data to inspect its structure
+            //console.log(data); // Log the data to inspect its structure
             if (Array.isArray(data)) {
                 data.forEach(obj => {
                     let row = `
@@ -307,7 +307,7 @@
         });
 };
 
-         let getComputer = () => {
+        let getComputer = () => {
             function calc(data) {
                 const [totalSpace, usedSpace] = data.split('/').map(Number);
                 const usedPercentage = (usedSpace / totalSpace) * 100
@@ -319,7 +319,7 @@
                 .then(response => response.json())
                 .then(data => {
                     data.forEach(obj => {
-                        console.log(data)
+                        //console.log(data)
                         let row = `
                             <tr>
                                 <td class="py-2 px-4 border">${obj.name}</td>
