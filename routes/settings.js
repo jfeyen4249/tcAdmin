@@ -187,7 +187,7 @@ router.put("/room", session.validateSession, (req, res) => {
     `INSERT INTO rooms SET ?`, [data],
     function (error, results, fields) {
       if (error) throw error;
-      logs.SystemLog(`${req.query.room} in ${req.query.building} was added.`, req.cookies.username)
+      logs.SystemLog(`Room ${req.query.room} in ${req.query.building} was added.`, req.cookies.username)
       res.send('added');
     }
   );
@@ -202,7 +202,7 @@ router.post("/room", session.validateSession, (req, res) => {
     `UPDATE rooms SET ? WHERE id = ?`, [data, req.query.id],
     function (error, results, fields) {
       if (error) throw error;
-      logs.SystemLog(`${req.query.room} in ${req.query.building} was updated.`, req.cookies.username)
+      logs.SystemLog(`Room ${req.query.room} in ${req.query.building} was updated.`, req.cookies.username)
       res.send('added');
     }
   );
@@ -213,7 +213,7 @@ router.delete("/room", session.validateSession, (req, res) => {
     `UPDATE rooms SET view = 'false' WHERE id = ?`, [req.query.id],
     function (error, results, fields) {
       if (error) throw error;
-      logs.SystemLog(`${req.query.room} room was deleted.`, req.cookies.username)
+      logs.SystemLog(`Room ${req.query.room} room was deleted.`, req.cookies.username)
       res.send('deleted');
     }
   );

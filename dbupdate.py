@@ -500,10 +500,11 @@ def main():
         "staff": """
             CREATE TABLE `staff` (
                 `id` int NOT NULL AUTO_INCREMENT,
-                `name` varchar(45) DEFAULT NULL,
+                `name` varchar(245) DEFAULT NULL,
                 `building` varchar(45) DEFAULT NULL,
                 `room` varchar(45) DEFAULT NULL,
                 `view` varchar(45) DEFAULT NULL,
+                `title` varchar(145) DEFAULT 'true',
                 PRIMARY KEY (`id`)
             );
         """,
