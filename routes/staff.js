@@ -1,6 +1,7 @@
 const express = require("express");
 const database = require("../utils/database.js");
 const session = require("../utils/session.js");
+const logs = require("../utils/logs.js");
 const router = express.Router();
 const axios = require('axios');
 
@@ -31,7 +32,7 @@ router.get("/building", session.validateSession,  (req, res) => {
 });
 
 router.get("/room", session.validateSession,  (req, res) => {
-    database.query(`SELECT * FROM rooms WHERE view = 'true' AND building = ?`, [req.query.name],
+    database.query(`SELECT * FROM rooms WHERE view = 'true' AND building = ? Order By room ASC`, [req.query.name],
         function (error, results, fields) {
         if (error) throw error; 
         res.send(results);
@@ -49,21 +50,12 @@ router.get("/member", session.validateSession,  (req, res) => {
     );
 });
 
-router.get("/room", session.validateSession,  (req, res) => {
-    database.query(
-        `SELECT * FROM rooms WHERE building = ? Order By room ASC`, [req.query.name],
-        function (error, results, fields) {
-        if (error) throw error;
-        res.send(results);
-        }
-    );
-});
-  
 router.post("/add", session.validateSession, (req, res) => {
     let data = {
         name: req.body.name,
         room: req.body.room,
         building: req.body.building,
+        title: req.body.title,
         view: "true",
     };
     database.query(
@@ -71,6 +63,7 @@ router.post("/add", session.validateSession, (req, res) => {
         [data],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.name} was added to the staff directory.`, req.cookies.username)
         res.send(results);
         }
     );
@@ -81,6 +74,7 @@ router.post("/edit", session.validateSession, (req, res) => {
     let data = {
         name: req.body.name,
         room: req.body.room,
+        title: req.body.title,
         building: req.body.building,
     };
     database.query(
@@ -88,6 +82,20 @@ router.post("/edit", session.validateSession, (req, res) => {
         [data, id],
         function (error, results, fields) {
         if (error) throw error;
+        logs.SystemLog(`${req.body.name} was updated in the staff directory.`, req.cookies.username)
+        res.send(results);
+        }
+    );
+});
+
+router.post("/delete", session.validateSession, (req, res) => {
+    let id = req.query.id
+    let user = req.query.user
+    database.query(
+        `UPDATE staff SET view = 'false' WHERE id = ?`,[id],
+        function (error, results, fields) {
+        if (error) throw error;
+        logs.SystemLog(`${user} was deleted from the staff directory.`, req.cookies.username)
         res.send(results);
         }
     );
